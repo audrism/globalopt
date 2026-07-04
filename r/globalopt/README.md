@@ -2,6 +2,8 @@
 
 This directory contains a CRAN-style R package scaffold implemented directly for the R ecosystem.
 
+The public API is R-first. Fortran is used only as an internal performance/reference backend in benchmarks and comparisons, not as the user-facing package interface.
+
 ## Installation
 
 From CRAN (after release):
