@@ -6,7 +6,6 @@ Authors@R: person("Audrism", "", email = "audrism@example.com", role = c("aut", 
 Description: Global optimization routines translated from the GlobalMinimum Fortran package, with adapters for common local minimization packages from CRAN and Bioconductor ecosystems.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Imports: stats
 Suggests: optimx, nloptr, minqa, DEoptim, GA, GenSA, pso, cmaes, smoof, testthat
 URL: https://github.com/audrism/globalopt

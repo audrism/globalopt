@@ -26,6 +26,13 @@ class AnalResult:
 
 
 furasn = _native.furasn_py
+fush5 = _native.fush5_py
+fush7 = _native.fush7_py
+fush10 = _native.fush10_py
+fuhar3 = _native.fuhar3_py
+fuhar6 = _native.fuhar6_py
+fubran = _native.fubran_py
+fugold = _native.fugold_py
 lp_tau_point = _native.lp_tau_point_py
 
 

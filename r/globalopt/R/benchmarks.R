@@ -25,10 +25,51 @@ benchmark_optimizers <- function() {
       init <- max(2L, min(20L, budget %/% 5L))
       bayes1(lower, upper, budget, init, fn)$best_f
     },
+    globalopt_lpmin = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      analysis <- max(0L, min(50L, budget %/% 4L))
+      search <- max(1L, budget - analysis)
+      lpmin(lower, upper, analysis, search, fn)$best_f
+    },
     globalopt_glopt = function(lower, upper, budget, fn, seed) {
       set.seed(seed)
       init <- max(10L, min(80L, budget %/% 5L))
       glopt(lower, upper, budget, init, 6L, 0.92, fn)$best_f
+    },
+    globalopt_unt = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      unt(lower, upper, budget, 0.15, fn)$best_f
+    },
+    globalopt_exkor = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      x0 <- (lower + upper) / 2
+      exkor(x0, lower, upper, max(10L, budget %/% 2L), 0.25, 0.8, fn)$best_f
+    },
+    globalopt_extr = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      x0 <- (lower + upper) / 2
+      extr(x0, lower, upper, budget, fn)$best_f
+    },
+    globalopt_mivar4 = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      x0 <- (lower + upper) / 2
+      mivar4(x0, lower, upper, max(10L, budget %/% 2L), 0.1, fn)$best_f
+    },
+    globalopt_flexi = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      x0 <- (lower + upper) / 2
+      flexi(x0, lower, upper, max(20L, budget), 0.08, fn)$best_f
+    },
+    globalopt_reqp = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      x0 <- (lower + upper) / 2
+      reqp(x0, lower, upper, max(10L, budget %/% 2L), 10, 1.25, fn, function(x) numeric(0))$best_f
+    },
+    globalopt_lbayes = function(lower, upper, budget, fn, seed) {
+      set.seed(seed)
+      init <- max(10L, min(80L, budget %/% 5L))
+      lit <- max(20L, min(120L, budget %/% 2L))
+      lbayes(lower, upper, budget, init, lit, fn)$best_f
     }
   )
 }

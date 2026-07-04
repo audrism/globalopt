@@ -9,12 +9,20 @@ from statistics import median
 from typing import Any, Callable, Sequence
 
 try:
-    from .api import bayes1, glopt, mig1, mig2
+    from .api import bayes1, exkor, extr, flexi, glopt, lbayes, lpmin, mig1, mig2, mivar4, reqp, unt
 except Exception:  # pragma: no cover - allows benchmarking external methods when native module is unavailable
     bayes1 = None  # type: ignore[assignment]
+    exkor = None  # type: ignore[assignment]
+    extr = None  # type: ignore[assignment]
+    flexi = None  # type: ignore[assignment]
     glopt = None  # type: ignore[assignment]
+    lbayes = None  # type: ignore[assignment]
+    lpmin = None  # type: ignore[assignment]
     mig1 = None  # type: ignore[assignment]
     mig2 = None  # type: ignore[assignment]
+    mivar4 = None  # type: ignore[assignment]
+    reqp = None  # type: ignore[assignment]
+    unt = None  # type: ignore[assignment]
 
 Objective = Callable[[Sequence[float]], float]
 Optimizer = Callable[[Sequence[float], Sequence[float], int, Objective, int], float]
@@ -93,21 +101,34 @@ def default_problems(dim: int) -> list[BenchmarkProblem]:
 
 def _opt_mig1(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
     if mig1 is None:
-        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_mig1")
+        try:
+            import globalopt_native as _native
+            return float(_native.mig1_py(list(a), list(b), int(budget), objective)["best_f"])
+        except Exception as exc:
+            raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_mig1") from exc
     del seed
     return float(mig1(a, b, budget, objective).best_f)
 
 
 def _opt_mig2(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
     if mig2 is None:
-        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_mig2")
+        try:
+            import globalopt_native as _native
+            return float(_native.mig2_py(list(a), list(b), int(budget), objective)["best_f"])
+        except Exception as exc:
+            raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_mig2") from exc
     del seed
     return float(mig2(a, b, budget, objective).best_f)
 
 
 def _opt_bayes1(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
     if bayes1 is None:
-        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_bayes1")
+        try:
+            import globalopt_native as _native
+            init = max(2, min(20, budget // 5))
+            return float(_native.bayes1_py(list(a), list(b), int(budget), int(init), objective, None)["best_f"])
+        except Exception as exc:
+            raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_bayes1") from exc
     del seed
     init = max(2, min(20, budget // 5))
     return float(bayes1(a, b, budget, init, objective).best_f)
@@ -115,10 +136,88 @@ def _opt_bayes1(a: Sequence[float], b: Sequence[float], budget: int, objective: 
 
 def _opt_glopt(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
     if glopt is None:
-        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_glopt")
+        try:
+            import globalopt_native as _native
+            init = max(10, min(80, budget // 5))
+            return float(_native.glopt_py(list(a), list(b), int(budget), int(init), 6, 0.92, objective)["best_f"])
+        except Exception as exc:
+            raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_glopt") from exc
     del seed
     init = max(10, min(80, budget // 5))
     return float(glopt(a, b, budget, init, 6, 0.92, objective).best_f)
+
+
+def _midpoint(a: Sequence[float], b: Sequence[float]) -> list[float]:
+    return [(ai + bi) * 0.5 for ai, bi in zip(a, b)]
+
+
+def _opt_lpmin(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if lpmin is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_lpmin")
+    del seed
+    analysis = max(0, min(50, budget // 4))
+    search = max(1, budget - analysis)
+    return float(lpmin(a, b, analysis, search, objective).best_f)
+
+
+def _opt_unt(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if unt is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_unt")
+    del seed
+    return float(unt(a, b, max(1, budget), 0.15, objective).best_f)
+
+
+def _opt_exkor(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if exkor is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_exkor")
+    del seed
+    x0 = _midpoint(a, b)
+    iterations = max(10, budget // 2)
+    return float(exkor(x0, a, b, iterations, 0.25, 0.8, objective).best_f)
+
+
+def _opt_extr(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if extr is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_extr")
+    del seed
+    x0 = _midpoint(a, b)
+    return float(extr(x0, a, b, max(1, budget), objective).best_f)
+
+
+def _opt_mivar4(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if mivar4 is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_mivar4")
+    del seed
+    x0 = _midpoint(a, b)
+    iterations = max(10, budget // 2)
+    return float(mivar4(x0, a, b, iterations, 0.1, objective).best_f)
+
+
+def _opt_flexi(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if flexi is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_flexi")
+    del seed
+    x0 = _midpoint(a, b)
+    iterations = max(20, budget)
+    return float(flexi(x0, a, b, iterations, 0.08, objective).best_f)
+
+
+def _opt_reqp(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if reqp is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_reqp")
+    del seed
+    x0 = _midpoint(a, b)
+    iterations = max(10, budget // 2)
+    return float(reqp(x0, a, b, iterations, 10.0, 1.25, objective, lambda _x: []).best_f)
+
+
+def _opt_lbayes(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
+    if lbayes is None:
+        raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_lbayes")
+    del seed
+    init = max(10, min(80, budget // 5))
+    local_it = max(20, min(120, budget // 2))
+    return float(lbayes(a, b, max(1, budget), init, local_it, objective).best_f)
 
 
 def random_search_optimizer(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:
@@ -219,7 +318,15 @@ def default_optimizers() -> dict[str, Optimizer]:
         "globalopt_mig1": _opt_mig1,
         "globalopt_mig2": _opt_mig2,
         "globalopt_bayes1": _opt_bayes1,
+        "globalopt_lpmin": _opt_lpmin,
         "globalopt_glopt": _opt_glopt,
+        "globalopt_unt": _opt_unt,
+        "globalopt_exkor": _opt_exkor,
+        "globalopt_extr": _opt_extr,
+        "globalopt_mivar4": _opt_mivar4,
+        "globalopt_flexi": _opt_flexi,
+        "globalopt_reqp": _opt_reqp,
+        "globalopt_lbayes": _opt_lbayes,
     }
 
 

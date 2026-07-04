@@ -3,7 +3,7 @@ pub mod lptau;
 pub mod optimizers;
 pub mod python_bindings;
 
-pub use benchmarks::furasn;
+pub use benchmarks::{fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7};
 pub use lptau::{lp_tau_point, AtsGenerator};
 pub use optimizers::{
 	anal1, anal2, bayes1, exkor, extr, flexi, glopt, lbayes, lpmin, mig1, mig2, mivar4, reqp,

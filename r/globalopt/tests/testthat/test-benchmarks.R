@@ -46,3 +46,21 @@ test_that("benchmark writers create output files", {
   expect_true(file.exists(md_path))
   expect_match(readLines(md_path, warn = FALSE)[1], "^\\| optimizer ")
 })
+
+test_that("translated objective functions are exposed and finite", {
+  expect_true(is.finite(furasn(c(0.1, -0.2))))
+
+  expect_true(is.finite(fush5(c(4, 4, 4, 4))))
+  expect_true(is.finite(fush7(c(4, 4, 4, 4))))
+  expect_true(is.finite(fush10(c(4, 4, 4, 4))))
+
+  expect_true(is.finite(fuhar3(c(0.2, 0.3, 0.4))))
+  expect_true(is.finite(fuhar6(c(0.2, 0.3, 0.4, 0.5, 0.6, 0.7))))
+
+  expect_true(is.finite(fubran(c(pi, 2.275))))
+  expect_true(is.finite(fugold(c(0, -1))))
+
+  expect_true(is.infinite(fush5(c(1, 2, 3))))
+  expect_true(is.infinite(fuhar6(c(1, 2, 3))))
+  expect_true(is.infinite(fubran(c(1, 2, 3))))
+})

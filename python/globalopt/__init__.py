@@ -1,10 +1,17 @@
 try:
-    from .api import AnalResult, OptResult, bayes1, furasn, glopt, lbayes, lp_tau_point, lpmin, mig1, mig2, mivar4, anal1, anal2, exkor, extr, reqp, unt
+    from .api import AnalResult, OptResult, bayes1, fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7, glopt, lbayes, lp_tau_point, lpmin, mig1, mig2, mivar4, anal1, anal2, exkor, extr, reqp, unt
 except Exception:  # pragma: no cover - allows utility modules to be imported without compiled native extension
     AnalResult = None  # type: ignore[assignment]
     OptResult = None  # type: ignore[assignment]
     bayes1 = None  # type: ignore[assignment]
+    fubran = None  # type: ignore[assignment]
+    fugold = None  # type: ignore[assignment]
+    fuhar3 = None  # type: ignore[assignment]
+    fuhar6 = None  # type: ignore[assignment]
     furasn = None  # type: ignore[assignment]
+    fush10 = None  # type: ignore[assignment]
+    fush5 = None  # type: ignore[assignment]
+    fush7 = None  # type: ignore[assignment]
     glopt = None  # type: ignore[assignment]
     lbayes = None  # type: ignore[assignment]
     lp_tau_point = None  # type: ignore[assignment]
@@ -47,11 +54,18 @@ __all__ = [
     "anal1",
     "anal2",
     "bayes1",
+    "fubran",
+    "fugold",
+    "fuhar3",
+    "fuhar6",
     "BenchmarkProblem",
     "BenchmarkSummary",
     "benchmark_table",
     "deap_optimizer",
     "furasn",
+    "fush10",
+    "fush5",
+    "fush7",
     "default_problems",
     "local_minimize",
     "exkor",

@@ -9,6 +9,8 @@ python/dist/
 
 # R check/build outputs
 r/globalopt.Rcheck/
+r/*.tar.gz
+r/r/
 
 # OS/editor noise
 .DS_Store

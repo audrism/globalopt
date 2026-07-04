@@ -14,6 +14,41 @@ fn furasn_py(x: Vec<f64>) -> f64 {
 }
 
 #[pyfunction]
+fn fush5_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fush5(&x)
+}
+
+#[pyfunction]
+fn fush7_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fush7(&x)
+}
+
+#[pyfunction]
+fn fush10_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fush10(&x)
+}
+
+#[pyfunction]
+fn fuhar3_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fuhar3(&x)
+}
+
+#[pyfunction]
+fn fuhar6_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fuhar6(&x)
+}
+
+#[pyfunction]
+fn fubran_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fubran(&x)
+}
+
+#[pyfunction]
+fn fugold_py(x: Vec<f64>) -> f64 {
+    crate::benchmarks::fugold(&x)
+}
+
+#[pyfunction]
 fn lp_tau_point_py(c: usize, n: usize) -> PyResult<Vec<f64>> {
     crate::lptau::lp_tau_point(c, n).map_err(to_pyerr)
 }
@@ -290,6 +325,13 @@ fn to_pyerr(err: crate::optimizers::OptError) -> PyErr {
 #[pymodule]
 pub fn globalopt_native(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(furasn_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fush5_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fush7_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fush10_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fuhar3_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fuhar6_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fubran_py, m)?)?;
+    m.add_function(wrap_pyfunction!(fugold_py, m)?)?;
     m.add_function(wrap_pyfunction!(lp_tau_point_py, m)?)?;
     m.add_function(wrap_pyfunction!(mig1_py, m)?)?;
     m.add_function(wrap_pyfunction!(mig2_py, m)?)?;
