@@ -1,0 +1,15 @@
+# Rust build outputs
+target/
+
+# Python build/test caches
+__pycache__/
+*.pyc
+.pytest_cache/
+python/dist/
+
+# R check/build outputs
+r/globalopt.Rcheck/
+
+# OS/editor noise
+.DS_Store
+.vscode/

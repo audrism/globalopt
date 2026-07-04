@@ -1,0 +1,379 @@
+C MINIMUM Copyright (c) 1989, by Jonas Mockus
+C You may give out copies of this software; for conditions see the
+C file COPYING included with this distribution.                    
+
+      SUBROUTINE LBAYES(X,A,B,N,F1,IPAR,PAR,IPA,IPAA)
+      DIMENSION X(N),A(N),B(N),IPAR(30),PAR(30),
+     CDML1(100),X1(100),DML(100),X2(100)
+      COMMON /LAIK/FM,XM(100)
+      COMMON /STATIS/IFAIL,M,IM,L/INW/IN
+      IFAIL=0
+      IN=0
+      CALL INWR36(X,A,B,N,F1,IPAR,PAR,IPA,IPAA)
+      IF (IFAIL.EQ.10) RETURN
+      IT=IPAR(IPA+2)
+      NIPA=IPAR(IPA+3)
+      AIT=FLOAT(IT)
+      EPS2=1.E-6
+      EPS3=1.E-6
+      EPS4=1.E-10
+      ANIU=PAR(IPAA+1)
+      BETA=PAR(IPAA+2)
+      N2=2*N
+      AN2=FLOAT(N2)
+      AM2=1.
+      L=0
+      M=1
+      IM=M
+      A1=0.
+      AN0=1.
+      L0=1
+      M1=INT(0.8*AIT)
+      F1=0.
+      F11=0.
+      DO 33 I=1,N
+  33  X(I)=(X(I)*2.-(B(I)+A(I)))/(B(I)-A(I))
+      DO 20 I=1,N2
+      F=FI1(X,N,A,B,NIPA)
+      F1=F1+F
+  20  F11=F11+F*F
+      F13=F1
+      F1=F1/AN2
+      IN=1
+      IPRINT=IPAR(IPA+1)
+      IF (IPRINT.GE.0) CALL INWR36(X,A,B,N,F1,IPAR,PAR,IPA,IPAA)
+      IN=0
+      F11=F11/AN2-F1*F1
+      FM=F1
+      DO 22 I=1,N
+   22 XM(I)=X(I)
+   25 LB=1
+   26 AM1=FLOAT(M)
+      AL=FLOAT(LB)
+      HM0=0.2*AM1**(-ANIU)
+      HM=SQRT(HM0)
+      DO 30 I=1,N
+      X1(I)=X(I)
+  30  X2(I)=X(I)
+      F6=0
+      DO 40 I=1,N
+      X1(I)=X(I)+HM0
+      IF (X1(I).GT.1.) X1(I)=1.
+      F2=FI1(X1,N,A,B,NIPA)
+      X2(I)=X(I)-HM0
+      IF (X2(I).LT.-1.) X2(I)=-1.
+      F3=FI1(X2,N,A,B,NIPA)
+      DML(I)=(F2-F3)*2.*HM0/ABS(X2(I)-X1(I))
+      F6=F6+F2+F3
+       X2(I)=X(I)
+   40 X1(I)=X(I)
+      IF (LB.EQ.1) GO TO 60
+      DO 50 I=1,N
+   50 DML(I)=DML(I)/AL+DML1(I)*(AL-1.)/AL
+   60 CONTINUE
+      S1=0.
+      DO 70 I=1,N
+   70 S1=S1+DML(I)**2
+      S1=SQRT(S1)+EPS4
+      DO 100 I=1,N
+      SM=DML(I)/S1
+      X1(I)=X(I)+HM*SM
+      IF (X1(I).GT.1.) X1(I)=1.
+      IF (X1(I).LT.-1.) X1(I)=-1.
+      X2(I)=X(I)-HM*SM
+      IF (X2(I).GT.1.) X2(I)=1.
+      IF (X2(I).LT.-1.) X2(I)=-1.
+  100  CONTINUE
+      HS=0.
+      HS1=0.
+      HS2=0.
+      F4=FI1(X1,N,A,B,NIPA)
+      F5=FI1(X2,N,A,B,NIPA)
+      DO 102 I=1,N
+      HS=HS+(X2(I)-X1(I))**2
+      HS1=HS1+(X1(I)-X(I))**2+EPS3
+102   HS2=HS2+(X2(I)-X(I))**2+EPS3
+      HS=SQRT(HS)
+      HS1=SQRT(HS1)
+      HS2=SQRT(HS2)
+      HS12=HS1*HS2*(HS1+HS2)
+      AM=F4*HS2-F1*HS+F5*HS1
+      AM=AM*HM0*2./HS12
+      D1=AM
+      IF (AM.LT.1.E-6) D1=1.E-6
+      IF (AM.LT.1.E-2.AND.M.EQ.1) D1=1.
+      A1=A1+D1/HM0
+      EPSM=HM0*A1/AM1
+      IF (M.GE.M1) GO TO 120
+      IF (F11.GE.EPS2) GO TO 71
+      F11=EPS2
+      N2=2
+      AN2=FLOAT(N2)
+   71 SIG0=SQRT(F11)
+      SIG0=SIG0*SQRT(AN2/(AN2-1.))
+      SIG=HM0*SIG0
+      SIGL=(SQRT(FLOAT(N)/(2*AL)))*SIG/D1
+      IF (L0.EQ.1) GO TO 115
+      IF (S1.LT.SIGL) GO TO 120
+      L0=1
+      GO TO 130
+  115 IF (S1.GT.0.5*SIGL) GO TO 130
+      L0=2
+  120 AN0=AN0+1.
+  130 CONTINUE
+      A3=(AN0**BETA+2.)*EPSM
+      DO 150 I=1,N
+      D3=X(I)-DML(I)/A3
+      IF (D3.GT.1.) D3=1.
+      IF (D3.LT.-1.) D3=-1.
+  150  X1(I)=D3
+      F8=0.
+      F12=0.
+      DO 160 I=1,N2
+      F=FI1(X1,N,A,B,NIPA)
+      F8=F8+F
+  160  F12=F12+F*F
+      F14=F8
+      F8=F8/AN2
+      M=M+1
+      IF (F8.GT.F1+0.5*SIG0/SQRT(AN2)) GO TO 185
+      DO 170 I=1,N
+  170 X(I)=X1(I)
+      F1=F8
+      F13=F14
+      AM2=AM2+1.
+      F11=(F12/AN2-F1**2)/AM2+F11*(AM2-1.)/AM2
+      IF (M.EQ.IT) GO TO 185
+      IF (FM.LE.F1) GO TO 176
+      FM=F1
+      DO 175 I=1,N
+  175 XM(I)=X(I)
+      IM=M
+  176 CONTINUE
+      IF (IPRINT.LE.0) GO TO 25
+      IF (MOD(M,IPRINT).EQ.0) CALL SPAU36(X,A,B,N,F1,IPRINT)
+      GO TO 25
+  185 F=FI1(X,N,A,B,NIPA)
+      ALF=AN2+AL
+      IF (AM2.EQ.1) ALF=FLOAT(2*N)+AL
+      F13=F13+F
+      F1=F13/ALF
+      IF (FM.LE.F1) GO TO 187
+      FM=F1
+      DO 188 I=1,N
+  188 XM(I)=X(I)
+      IM=M
+  187 CONTINUE
+      IF (M.EQ.IT) GO TO 200
+      LB=LB+1
+      DO 190  I=1,N
+  190 DML1(I)=DML(I)
+      IF (IPRINT.LE.0) GO TO 200
+      IF (MOD(M,IPRINT).EQ.0) CALL SPAU36(X,A,B,N,F1,IPRINT)
+  200 CONTINUE
+      IF (M.LT.IT)  GO TO 26
+      DO 122 I=1,N
+      X(I)=((B(I)+A(I))+X(I)*(B(I)-A(I)))/2.
+  122  XM(I)=((B(I)+A(I))+XM(I)*(B(I)-A(I)))/2.
+      IF (IPRINT.LT.0) RETURN
+      IN=1
+      CALL SPAU36(X,A,B,N,F1,IPRINT)
+      RETURN
+      END
+      FUNCTION FI1(Z,N,A,B,N3)
+      DIMENSION X(100),XE(100),Z(N),A(N),B(N)
+      COMMON /STATIS/IFAIL,M,IM,L
+      DO 22 I=1,N
+   22 X(I)=((B(I)+A(I))+Z(I)*(B(I)-A(I)))/2.
+      IF (N3.GT.0.) GO TO 36
+      FI1=FI(X,N)
+      L=L+1
+      RETURN
+ 36   Y4=0.
+      DO 11 I=1,N3
+      XE(I)=X(I)
+      IF (X(I).LE.A(I)) GO TO 11
+      IF (X(I).GE.B(I)) GO TO 10
+      IF (X(I).LT.0.) GO TO 10
+      X(I)=AINT(X(I))
+      GO TO 11
+  10  X(I)=AINT(X(I))-1.
+  11  CONTINUE
+      Y1=FI(X,N)
+      DO 12 I=1,N3
+      C2=XE(I)-X(I)
+      X(I)=X(I)+1.
+      Y2=FI(X,N)
+      Y=C2*(Y2-Y1)
+      Y4=Y+Y4
+  12  X(I)=X(I)-1.
+      L=L+N3+1
+      FI1=Y4+Y1
+      RETURN
+      END
+      SUBROUTINE INWR36(X,A,B,N,F1,IPAR,PAR,IPA,IPAA)
+      DIMENSION A(N),B(N),X(N),IPAR(30),PAR(30)
+      COMMON /STATIS/IFAIL,M,IM,L/INW/IN
+      K=3
+      MIP=30
+      NOUT=I1MACH(2)
+      IF (IN.EQ.1) GO TO 130
+      IF (IPA.GE.0.AND.IPA+K.LE.MIP) GO TO 10
+      WRITE (NOUT,520) K,MIP
+      WRITE (NOUT,510) IPA
+    5 IFAIL=10
+      RETURN
+   10 CONTINUE
+      IPRINT=IPAR(IPA+1)
+      MN=100
+      K1=2
+      IF (IPRINT.LT.0) GO TO 15
+      WRITE (NOUT,610)
+      WRITE (NOUT,620)
+      WRITE (NOUT,630) N
+   15 IF (N.GT.0.AND.N.LE.MN) GO TO 20
+      WRITE (NOUT,500) MN
+      IF (IPRINT.LT.0) WRITE (NOUT,630) N
+      GO TO 5
+   20 CONTINUE
+      M=IPAR(IPA+2)
+      NIPA=IPAR(IPA+3)
+      IF (IPRINT.LT.0) GO TO 40
+      WRITE (NOUT,640) IPRINT
+      WRITE (NOUT,650) M
+      WRITE (NOUT,660) NIPA
+   40 IF (M.GT.0) GO TO 50
+      WRITE (NOUT,525)
+      IF (IPRINT.LT.0) WRITE (NOUT,650) M
+      GO TO 5
+   50 IF (NIPA.GE.0.AND.NIPA.LE.N) GO TO 60
+      WRITE (NOUT,550)
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,630) N
+      WRITE (NOUT,660) NIPA
+      GO TO 5
+   60 IF (IPAA.GE.0.AND.IPAA+K1.LE.MIP) GO TO 70
+      WRITE (NOUT,710) K1,MIP
+      WRITE (NOUT,700) IPAA
+      GO TO 5
+   70 IF (IPRINT.LT.0) GO TO 80
+      ANIU=PAR(IPAA+1)
+      BETA=PAR(IPAA+2)
+      WRITE (NOUT,940) ANIU
+      WRITE (NOUT,950) BETA
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) A
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) B
+   80 NER=0
+      DO 90 I=1,N
+      IF (A(I).LT.B(I)) GO TO 90
+      IF (NER.EQ.0) WRITE (NOUT,600) I,I
+      IF (NER.NE.0) WRITE (NOUT,605) I,I
+      NER=1
+   90 CONTINUE
+      IF (NER.EQ.0) GO TO 100
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) A
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) B
+      GO TO 5
+  100 IF (IPRINT.LT.0) GO TO 110
+      WRITE (NOUT,820)
+      WRITE (NOUT,580) X
+  110 NER=0
+      DO 120 I=1,N
+      IF (X(I).LE.B(I).AND.X(I).GE.A(I)) GO TO 120
+      WRITE (NOUT,830) I,I,I,I
+      NER=1
+  120 CONTINUE
+      IF (NER.EQ.0) RETURN
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) A
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) B
+      WRITE (NOUT,820)
+      WRITE (NOUT,580) X
+      GO TO 5
+  130 WRITE (NOUT,850) F1
+      RETURN
+  500 FORMAT (/2X,63H**E R R O R  I N  L B A Y E S** N LESS THAN 1 OR N
+     CGREATER THAN,I4)
+  510 FORMAT (/2X,26HNUMBER OF PARAMETERS IPA =,I3)
+  520 FORMAT (/2X,47H**E R R O R  I N  L B A Y E S** IPA LESS THAN 0/2X,
+     C7HOR IPA+,I2,13H GREATER THAN,I3)
+  525 FORMAT (/2X,45H**E R R O R  I N  L B A Y E S** M LESS THAN 1/)
+  550 FORMAT (/2X,48H**E R R O R  I N  L B A Y E S** NIPA LESS THAN 0/
+     C2X,22HOR NIPA GREATER THAN N)
+  570 FORMAT (/2X,32HVECTOR OF LOWER BOUNDS (A) FOR X)
+  580 FORMAT (4(2X,E15.8))
+  590 FORMAT (2X,32HVECTOR OF UPPER BOUNDS (B) FOR X)
+  600 FORMAT (/2X,34H**E R R O R  I N  L B A Y E S** A(,I2,22H) GREATER
+     COR EQUALS B(,I2,1H))
+  605 FORMAT (34X,2HA(,I2,22H) GREATER OR EQUALS B(,I2,1H))
+  610 FORMAT (////12X,11HL B A Y E S)
+  620 FORMAT (/2X,22HI N I T I A L  D A T A)
+  630 FORMAT (/2X,19HNUMBER OF VARIABLES,12X,3HN =,I6)
+  640 FORMAT (/2X,18HPRINTING PARAMETER,11X,5HIPR =,I6)
+  650 FORMAT (2X,20HNUMBER OF ITERATIONS,11X,3HM =,I6)
+  660 FORMAT (2X,34HNUMBER OF INTEGER VARIABLES NIPA =,I6)
+  700 FORMAT (/2X,27HNUMBER OF PARAMETERS IPAA =,I3)
+  710 FORMAT (/2X,48H**E R R O R  I N  L B A Y E S** IPAA LESS THAN 0/
+     C2X,8HOR IPAA+,I2,13H GREATER THAN,I3)
+  820 FORMAT (/2X,14HSTARTING POINT)
+  830 FORMAT (/2X,34H**E R R O R  I N  L B A Y E S** X(,I2,17H) GREATER
+     CTHAN B(,I2,1H)/2X,5HOR X(,I2,14H) LESS THAN A(,I2,1H))
+  850 FORMAT (2X,19HFUNCTION VALUE F = ,E15.8)
+  940 FORMAT (/2X,29HRATE OF TRIAL STEP DECREASING,5X,6HANIU =,E15.8)
+  950 FORMAT (2X,40HRATE OF ITERATION STEP DECREASING BETA =,E15.8)
+      END
+      SUBROUTINE SPAU36(X,A,B,N,F,IPR)
+      DIMENSION X(N),A(N),B(N),Y(100)
+      COMMON /STATIS/IFAIL,IT,IM,L/INW/IN/LAIK/FM,XM(100)
+      NOUT=I1MACH(2)
+      IF (IN.EQ.1) GO TO 30
+      WRITE (NOUT,100)
+      IF (IT.EQ.IPR) WRITE (NOUT,210)
+      WRITE (NOUT,110) IT
+      WRITE (NOUT,120) F
+      WRITE (NOUT,140)
+      DO 10 I=1,N
+   10 Y(I)=((B(I)+A(I))+X(I)*(B(I)-A(I)))/2.
+      WRITE (NOUT,130) (Y(I),I=1,N)
+      IF (IT.EQ.1) RETURN
+      WRITE (NOUT,150) FM,IM
+      WRITE (NOUT,160)
+      DO 20 I=1,N
+   20 Y(I)=((B(I)+A(I))+XM(I)*(B(I)-A(I)))/2.
+      WRITE (NOUT,130) (Y(I),I=1,N)
+      RETURN
+   30 WRITE (NOUT,170)
+      WRITE (NOUT,180)
+      WRITE (NOUT,230) F
+      WRITE (NOUT,220)
+      WRITE (NOUT,130) X
+      WRITE (NOUT,150) FM,IM
+      WRITE (NOUT,160)
+      WRITE (NOUT,130) (XM(I),I=1,N)
+      WRITE (NOUT,190) L
+      WRITE (NOUT,200)
+      WRITE (NOUT,170)
+      RETURN
+  100 FORMAT (/1X,34(2H -))
+  110 FORMAT (2X,23HI T E R A T I O N  NR =,I6)
+  120 FORMAT (/2X,19HFUNCTION VALUE F = ,E15.8)
+  130 FORMAT (4(2X,E15.8))
+  140 FORMAT (2X,13HCURRENT POINT)
+  150 FORMAT (/2X,28HOPTIMAL FUNCTION VALUE FM = ,E15.8,17H OBTAINED IN
+     CNR =,I6)
+  160 FORMAT (2X,13HOPTIMAL POINT)
+  170 FORMAT (/1X,34(2H *)/1X,34(2H *))
+  180 FORMAT (/2X,13HR E S U L T S)
+  190 FORMAT (/2X,34HNUMBER OF FUNCTION EVALUATIONS L =,I6)
+  200 FORMAT (7X,17HLBAYES TERMINATED)
+  210 FORMAT (1X,34(2H -))
+  220 FORMAT (2X,10HLAST POINT)
+  230 FORMAT (/2X,24HLAST FUNCTION VALUE F = ,E15.8)
+      END

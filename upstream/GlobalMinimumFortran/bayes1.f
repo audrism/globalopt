@@ -1,0 +1,306 @@
+C MINIMUM Copyright (c) 1989, by Jonas Mockus
+C You may give out copies of this software; for conditions see the
+C file COPYING included with this distribution.                    
+
+      SUBROUTINE BAYES1(X,A,B,N,XN,NM,FM,IPAR,IPA)
+C
+C      BAYESIAN ONE-STEP METHOD.
+C
+C    PARAMETERS
+C    IPAR - THE ARRAY OF INTEGER PARAMETERS
+C    IPAR(IPA+1) = IPR - PRINTING PARAMETER
+C    IPAR(IPA+2) = M - THE TOTAL NUMBER OF FUNCTION EVALUATIONS
+C    IPAR(IPA+3) = LT - THE NUMBER OF INITIAL RANDOM POINTS
+C    IF IPR LESS 0 THEN NO PRINTNNG
+C    IF IPR = 0 THEN TERMINAL VALUES ARE PRINTED
+C    IF IPR MORE 0 THEN VALUES ARE PRINTED WITH PERIOD=IPR.
+C
+      DIMENSION X(N),A(N),B(N),XN(NM)
+      DIMENSION IPAR(30)
+      COMMON/BAYZ/Z(20)/BAYX2/IX,X2(20)
+     -/STATIS/IFAIL,M,IM,L/INW/IN/BAFI/YM
+      COMMON /BS1/Y(1000)
+C     --------------------------------------
+C     1.INITIATION
+C
+      IFAIL=0
+      IX=0
+      M=IPAR(IPA+2)
+      LT=IPAR(IPA+3)
+      IN=1
+      CALL INWR11(A,B,N,NM,IPAR,IPA)
+      IF (IFAIL.EQ.10) RETURN
+      K2=M
+      L=0
+      IPR=IPAR(IPA+1)
+C     ----------------------------------------------------------
+C      2.- MAIN LOOP
+C
+      DO 70 K=1,K2
+      IF(K.GT.LT) GOTO 20
+C     --------------------------------------------------------
+C      2.1 - RANDOM POINTS
+C
+      AKK=K
+      CALL LPTAU(AKK,N,Z)
+      DO 15 I=1,N
+   15 Z (I)=Z(I)*(B(I)-A(I))+A(I)
+      GOTO 30
+C     -----------------------------------------------------
+C      2.2 - PLANNED POINTS
+   20 CALL MIG2F2(Z,A,B,N,XN,NM)
+   30 FF=FI(Z,N)
+      J=L*N
+      L=L+1
+      Y(L)=FF
+      DO 35 I=1,N
+      M1=J+I
+   35 XN(M1)=Z(I)
+C     ------------------------------------------------------
+C      2.3 - SEARCH OF MINIMUM
+C
+      IF (K.EQ.1) GO TO 37
+      IF (FM.LE.FF) GO TO 50
+   37 FM=FF
+      IM=K
+      YM=FM
+      DO 40 I=1,N
+   40 X(I)=Z(I)
+   50 IF (IPR.LE.0) GO TO 70
+      IF (MOD(K,IPR).EQ.0) CALL SPAU11(X,Z,N,FF,IPR)
+   70 CONTINUE
+   80 IF(IPR.LT.0)RETURN
+      IN=IN+100
+      CALL SPAU11(X,Z,N,FF,IPR)
+      RETURN
+      END
+      SUBROUTINE MIG2F2(X,A,B,NN,XN,NM)
+C
+C      MINIMIZATION BY MONTE CARLO METHOD.
+C      THE SECOND MINIMUM IS FOUND ALSO.
+C     -----------------------------------------
+C
+      DIMENSION X(NN),A(NN),B(NN),XN(NM)
+      COMMON/BAYX2/IX,X2(20)
+      COMMON/MIGZ/Z(20)/BAYFM/FMIN/ATT/T(15)
+      COMMON /STATIS/IFAIL,IT,IMP,L
+C     --------------------------------------
+C      1.INITIATION
+C
+       N=NN
+      FMIN=0.
+      M=MIN0(50*N,MAX0(10*N,L*N))
+      K2=M
+C     ------------------------------------------
+C      2.GENERATION OF INITIAL SECOND MINIMUM POINT X2
+C
+      IF(IX.EQ.1)GOTO50
+      DO 40 I=1,N
+   40 X2(I)=ATS(1)*(B(I)-A(I))+A(I)
+      K2=K2-1
+   50 F2=FIAP1(X2,N,XN,NM)
+C     -----------------------------------------
+C      3.MAIN LOOP
+C
+      DO 150 K=1,K2
+      DO 55 I=1,N
+   55 Z(I)=ATS(1)*(B(I)-A(I))+A(I)
+      FF=FIAP1(Z,N,XN,NM)
+C     -----------------------------------------
+C      3.1.SEARCH OF MINIMUM AND OF SECOND MINIMUM
+C
+      IF(K.NE.1)GOTO 90
+      IF(FF.LT.F2)GOTO 110
+      FM=F2
+      IM=K
+      DO 60 I=1,N
+   60 X(I)=X2(I)
+   70 F2=FF
+      FMIN=FF
+      DO 80 I=1,N
+   80 X2(I)=Z(I)
+      GO TO 150
+   90 IF (FF.GE.F2) GO TO 150
+      IF(FF.GE.FM)GOTO 70
+      F2=FM
+      DO 100 I=1,N
+  100 X2(I)=X(I)
+  110 FM=FF
+      IM=K
+      FMIN=F2
+      DO 120 I=1,N
+  120 X(I)=Z(I)
+  150 CONTINUE
+      IX=1
+      RETURN
+      END
+      FUNCTION FIAP1(X,NN,XN,NM)
+      DIMENSION X(NN),XN(NM)
+      COMMON /STATIS/IFAIL,IT,LM,LL/BAFI/YM/BS1/Y(1000)
+      COMMON/BAYFM/FMIN
+      RMAX=R1MACH(2)/2.
+      RLRS=100.*R1MACH(4)*ABS(YM)
+      E=AMAX1(1.E-6,RLRS)
+      N=NN
+      L=LL
+      FM=-FMIN
+      YK=YM-E
+      P=AMAX1(1.,Y(1)-YK)
+      FII=RMAX/P
+      M=0
+      DO 20 J=1,L
+      D=0.
+      PP=Y(J)-YK
+      IF (PP.LT.1.) GO TO 4
+      IF (RMAX/PP.GT.FII) GO TO 4
+      P=RMAX
+      GO TO 6
+    4 P=PP*FII
+    6 CONTINUE
+      DO 10 I=1,N
+      M1=M+I
+      D=D+(XN(M1)-X(I))**2
+      IF(D.GE.P)GOTO 20
+   10 CONTINUE
+      FII=D/PP
+      IF(FII.LE.FM) GOTO 30
+   20 M=M+N
+   30 FIAP1=-FII
+      RETURN
+      END
+      SUBROUTINE SPAU11(X,Z,N,FF,IPR)
+      DIMENSION X(N),Z(N)
+      COMMON /STATIS/IFAIL,IT,IM,L/INW/IN/BAFI/YM
+      NOUT=I1MACH(2)
+      IF(IN.GT.100) GOTO 10
+      WRITE(NOUT,100)
+      IF (L.EQ.IPR) WRITE(NOUT,210)
+      WRITE(NOUT,110) L
+      WRITE(NOUT,120) FF
+      WRITE(NOUT,140)
+      WRITE(NOUT,130) (Z(I),I=1,N)
+      IF (L.EQ.1) RETURN
+      WRITE(NOUT,150) YM,IM
+      WRITE(NOUT,160)
+      WRITE(NOUT,130) (X(I),I=1,N)
+      RETURN
+   10 WRITE(NOUT,170)
+      WRITE(NOUT,180)
+      WRITE(NOUT,150) YM,IM
+      WRITE(NOUT,160)
+      WRITE(NOUT,130) (X(I),I=1,N)
+      WRITE(NOUT,190) L
+      WRITE (NOUT,200)
+      WRITE(NOUT,170)
+      RETURN
+  100 FORMAT (/1X,34(2H -))
+  110 FORMAT(2X,23HI T E R A T I O N  NR =,I6)
+  120 FORMAT (/2X,19HFUNCTION VALUE F = ,E15.8)
+  130 FORMAT(4(2X,E15.8))
+  140 FORMAT (2X,13HCURRENT POINT)
+  150 FORMAT (/2X,28HOPTIMAL FUNCTION VALUE FM = ,E15.8,17H OBTAINED IN
+     CNR =,I6)
+  160 FORMAT(2X,13HOPTIMAL POINT)
+  170 FORMAT (/1X,34(2H *)/1X,34(2H *))
+  180 FORMAT (/2X,13HR E S U L T S)
+  190 FORMAT (/2X,34HNUMBER OF FUNCTION EVALUATIONS L =,I6)
+  200 FORMAT(/7X,17HBAYES1 TERMINATED)
+  210 FORMAT (1X,34(2H -))
+      END
+      SUBROUTINE INWR11(A,B,N,NM,IPAR,IPA)
+      DIMENSION A(N),B(N)
+      DIMENSION IPAR(30)
+      COMMON /STATIS/IFAIL,IT,LM,LL
+      MN=20
+      MIM=1
+      MM=1000
+      MIP=30
+      NOUT=I1MACH(2)
+      K=3
+      IF (IPA.GE.0.AND.IPA+K.LE.MIP) GO TO 10
+      WRITE (NOUT,520) K,MIP
+      WRITE (NOUT,510) IPA
+    5 IFAIL=10
+      RETURN
+   10 CONTINUE
+      IPRINT=IPAR(IPA+1)
+      IF (IPRINT.LT.0) GO TO 110
+      WRITE (NOUT,610)
+      WRITE (NOUT,620)
+      WRITE (NOUT,630) N
+  110 IF (N.GT.0.AND.N.LE.MN) GO TO 20
+      WRITE (NOUT,500) MN
+      IF (IPRINT.LT.0) WRITE (NOUT,630) N
+      GO TO 5
+   20 CONTINUE
+      M=IPAR(IPA+2)
+      LT=IPAR(IPA+3)
+      IF (IPRINT.LT.0) GO TO 40
+      WRITE (NOUT,640) IPRINT
+      WRITE (NOUT,650) M
+      WRITE (NOUT,660) LT
+   40 IF (M.GT.0.AND.M.LE.MM) GO TO 50
+      WRITE (NOUT,525) MM
+      IF (IPRINT.LT.0) WRITE (NOUT,650) M
+      GO TO 5
+   50 IF (NM.GE.N*M) GO TO 60
+      WRITE (NOUT,540)
+      IF (IPRINT.GE.0)GO TO 55
+      WRITE (NOUT,630) N
+      WRITE (NOUT,650) M
+   55 WRITE (NOUT,635) NM
+      GO TO 5
+   60 CONTINUE
+      IF (LT.GE.MIM.AND.LT.LE.M) GO TO 80
+      WRITE (NOUT,550) MIM
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,660) LT
+      WRITE (NOUT,650) M
+      GO TO 5
+   80 CONTINUE
+      IF (IPRINT.LT.0) GO TO 200
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) (A(I),I=1,N)
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) (B(I),I=1,N)
+  200 NER=0
+      DO 90 I=1,N
+      IF (A(I).LE.B(I)) GO TO 90
+      IF (NER.NE.0) GO TO 86
+      WRITE (NOUT,600) I,I
+      GO TO 87
+   86 WRITE (NOUT,605) I,I
+   87 CONTINUE
+      NER=1
+   90 CONTINUE
+      IF (NER.NE.1) RETURN
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) A
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) B
+      GO TO 5
+  500 FORMAT (/2X,63H**E R R O R  I N  B A Y E S 1** N LESS THAN 1 OR N
+     CGREATER THAN,I3)
+  510 FORMAT (/2X,20HNUMBER OF PARAMETERS,11X,5HIPA =,I6)
+  520 FORMAT (/2X,47H**E R R O R  I N  B A Y E S 1** IPA LESS THAN 0/2X,
+     C7HOR IPA+,I2,13H GREATER THAN,I3)
+  525 FORMAT (/2X,45H**E R R O R  I N  B A Y E S 1** M LESS THAN 1/
+     C2X,17HOR M GREATER THAN,I6/)
+  540 FORMAT (/2X,48H**E R R O R  I N  B A Y E S 1** NM LESS THAN N*M)
+  550 FORMAT (/2X,44H**E R R O R  I N  B A Y E S 1** LT LESS THAN,I3/2X,
+     C20HOR LT GREATER THAN M/)
+  570 FORMAT ( /2X,32HVECTOR OF LOWER BOUNDS (A) FOR X)
+  580 FORMAT (4(2X,E15.8))
+  590 FORMAT (2X,32HVECTOR OF UPPER BOUNDS (B) FOR X)
+  600 FORMAT (/2X,34H**E R R O R  I N  B A Y E S 1** A(,I2,17H) GREATER
+     CTHAN B(,I2,1H))
+  605 FORMAT (34X,2HA(,I2,17H) GREATER THAN B(,I2,1H))
+  610 FORMAT (////12X,11HB A Y E S 1)
+  620 FORMAT (/2X,22HI N I T I A L  D A T A)
+  630 FORMAT (/2X,19HNUMBER OF VARIABLES,14X,3HN =,I6)
+  635 FORMAT (2X,26HDIMENSION OF WORKING ARRAY,6X,4HNM =,I6)
+  640 FORMAT (/2X,18HPRINTING PARAMETER,13X,5HIPR =,I6)
+  650 FORMAT (2X,30HNUMBER OF FUNCTION EVALUATIONS, 3X,3HM =,I6)
+  660 FORMAT (2X,24HNUMBER OF INITIAL POINTS, 8X,4HLT =,I6)
+      END

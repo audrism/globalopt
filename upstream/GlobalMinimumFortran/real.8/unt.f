@@ -1,0 +1,726 @@
+C MINIMUM Copyright (c) 1989, by Jonas Mockus
+C You may give out copies of this software; for conditions see the
+C file COPYING included with this distribution.                    
+
+      SUBROUTINE SMD(SM,DS,X,N,XN,NM)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C     AUXILIARY SUBROUTINE FOR UNT:
+C     CALCULATES EXPECTED VALUE AND CONDITIONAL UNCERTAINTY
+      COMMON /BL1/ZI,ZA,KT/BS1/Y(1000)/BL5/NH(5),LS(500)
+     C/BL6/A1,A2(5,20)/BL7/AM(20),NK/BL8/A,D,NB/BL10/AB(10),NL(10),
+     CNX(10,100),AF/BL11/AMS(20)/STATIS/IFAIL,IT,ITM,L
+      DIMENSION X(N),XN(NM),AN(5),AT(5)
+      NA=NK
+      EPS=1.E-3
+      IF (MOD(KT,2).NE.0) GO TO 20
+      DO 10 N1=1,NA
+      M=(NH(N1)-1)*N
+      R=0.
+      DO 5 N2=1,N
+      NM1=M+N2
+    5 R=R+AM(N2)*(X(N2)-XN(NM1))**2
+   10 AT(N1)=R
+      GO TO 150
+   20 RM=0.
+      IF (L.GT.70) GO TO 60
+      N2=1
+      NM1=0
+      DO 30 N1=1,NA
+      IF (N2.NE.NB) GO TO 22
+      N2=N2+1
+      NM1=NM1+N
+   22 CONTINUE
+      NH(N1)=N2
+      R=0.
+      DO 25 N3=1,N
+      NM2=NM1+N3
+   25 R=R+AM(N3)*(X(N3)-XN(NM2))**2
+      AT(N1)=R
+      IF (R.LE.RM) GO TO 26
+      RM=R
+      M=N1
+   26 NM1=NM1+N
+   30 N2=N2+1
+      DO 50 N3=N2,L
+      IF (N3.EQ.NB) GO TO 45
+      R=0.
+      DO 35 N1=1,N
+      NM2=NM1+N1
+   35 R=R+AM(N1)*(X(N1)-XN(NM2))**2
+      IF (R.GE.RM) GO TO 45
+      NH(M)=N3
+      AT(M)=R
+      RM=R
+      DO 40 N1=1,NA
+      R=AT(N1)
+      IF (R.LE.RM) GO TO 40
+      RM=R
+      M=N1
+   40 CONTINUE
+   45 NM1=NM1+N
+   50 CONTINUE
+      GO TO 150
+   60 R=X(1)
+      DO 70 N1=2,10
+      IF (R.LT.AB(N1)) GO TO 80
+   70 CONTINUE
+      K=9
+      GO TO 90
+   80 K=N1-1
+      IF (K.NE.1.AND.R.LT.AB(K)+AF) K=K-1
+   90 KN=NL(K)
+      KS=0
+      KR=1
+      DO 120 N1=1,NA
+  100 IF (KS.LT.KN) GO TO 110
+      KR=2
+      KS=0
+      K=K+1
+      KN=NL(K)
+  110 KS=KS+1
+      N2=NX(K,KS)
+      IF (N2.EQ.NB) GO TO 100
+      NH(N1)=N2
+      R=0.
+      NM1=(N2-1)*N
+      DO 115 N3=1,N
+      NM2=NM1+N3
+  115 R=R+AM(N3)*(X(N3)-XN(NM2))**2
+      AT(N1)=R
+      IF (R.LE.RM) GO TO 120
+      RM=R
+      M=N1
+  120 CONTINUE
+  130 IF (KR.EQ.2.AND.KS.EQ.KN) GO TO 150
+      IF (KS.LT.KN) GO TO 140
+      KR=2
+      KS=0
+      K=K+1
+      KN=NL(K)
+  140 KS=KS+1
+      N2=NX(K,KS)
+      IF (N2.EQ.NB) GO TO 130
+      R=0.
+      NM1=(N2-1)*N
+      DO 145 N3=1,N
+      NM2=NM1+N3
+  145 R=R+AM(N3)*(X(N3)-XN(NM2))**2
+      IF (R.GE.RM) GO TO 130
+      NH(M)=N2
+      AT(M)=R
+      RM=R
+      DO 147 N3=1,NA
+      R=AT(N3)
+      IF (R.LE.RM) GO TO 147
+      RM=R
+      M=N3
+  147 CONTINUE
+      GO TO 130
+  150 DO 160 N1=1,NA
+      R=AT(N1)
+      RM=SQRT(R)
+      AT(N1)=RM
+      R=EXP(-R/A)/(RM+EPS)
+      IF (R.LT.1.E-8) R=1.E-8
+  160 AN(N1)=R
+      IF (KT-3) 250,170,220
+  170 RM=1.E-8
+      DO 210 N1=1,NA
+      N2=NH(N1)
+      B1=0.
+      Z=Y(N2)
+      NM1=(N2-1)*N
+      DO 200 N4=1,N
+      S=0.
+      V=0.
+      NM2=NM1+N4
+      R2=XN(NM2)
+      R3=AMS(N4)
+      DO 190 K=1,NA
+      IF (K.EQ.N1) GO TO 190
+      K1=NH(K)
+      R=0.
+      NM3=(K1-1)*N
+      DO 180 K2=1,N
+      NM4=NM3+K2
+      NM5=NM1+K2
+  180 R=R+AM(K2)*(XN(NM4)-XN(NM5))**2
+      R1=AN(K)
+      NM4=NM3+N4
+      S=S+(Y(K1)-Z)*(XN(NM4)-R2)*R1*R3/R
+      V=V+R1
+  190 CONTINUE
+      A1=S/V
+      A2(N1,N4)=A1
+  200 B1=B1+A1*A1
+      IF (B1.GT.RM) RM=B1
+  210 CONTINUE
+      A1=0.5*(ZA-ZI)/SQRT(RM)
+  220 S=0.
+      V=0.
+      DO 240 N1=1,NA
+      N2=NH(N1)
+      B1=AN(N1)
+      DZ=0.
+      NM1=(N2-1)*N
+      DO 230 K=1,N
+      NM2=NM1+K
+  230 DZ=DZ+A2(N1,K)*(X(K)-XN(NM2))*AMS(K)
+      S=S+(Y(N2)+DZ*A1/(A1+AT(N1)))*B1
+  240 V=V+B1
+      SM=S/V
+      RETURN
+  250 S=0.
+      V=0.
+      V2=0.
+      V3=0.
+      DO 270 N1=1,NA
+      N2=NH(N1)
+      DS=0.
+      IF (NB.NE.0.AND.Y(N2).GT.ZA) RETURN
+      B1=AN(N1)
+      R=AT(N1)
+      S=S+B1*Y(N2)
+      IF (LS(N2).LT.7) GO TO 260
+      RM=R/5.
+      R1=EXP(-RM*RM/A)/(RM+EPS)
+      IF (R1.LT.1.E-8) R1=1.E-8
+      V3=V3+R1
+      V2=V2+RM*R1
+      GO TO 270
+  260 V3=V3+B1
+      V2=V2+R*B1
+  270 V=V+B1
+      SM=S/V
+      DS=D*V2/V3
+      RETURN
+      END
+      SUBROUTINE VERT(N,XN,NM)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C     AUXILIARY SUBROUTINE FOR UNT:
+C     ESTIMATION OF SCALE FACTORS
+      COMMON /BL1/ZI,ZA,KT/BS1/Y(1000)/BL7/AM(20),NA
+     C/BL8/A1,D,NB/BL11/AMS(20)/STATIS/IFAIL,IT,ITM,L
+      DIMENSION X(20),XN(NM)
+      A1=0.3
+      NA=5
+      KT=1
+      DO 30 K=1,N
+      F=0.
+      DO 10 M=1,L
+      NM1=(M-1)*N+K
+   10 F=F+XN(NM1)
+      F=F/FLOAT(L)
+      S=0.
+      DO 20 M=1,L
+      NM1=(M-1)*N+K
+   20 S=S+(XN(NM1)-F)**2
+      F=FLOAT(L)/S
+      AM(K)=F
+   30 AMS(K)=SQRT(F)
+      D=1.
+      S=0.
+      V=0.
+      NM1=0
+      DO 50 NB=1,L
+      F=Y(NB)
+      IF (F.GE.ZA) GO TO 50
+      DO 40 K=1,N
+      NM2=NM1+K
+   40 X(K)=XN(NM2)
+      CALL SMD(SM,DS,X,N,XN,NM)
+      S=S+DS*(SM-F)**2
+      V=V+DS*DS
+   50 NM1=NM1+N
+      NB=0
+      D=S/V
+      RETURN
+      END
+      FUNCTION FU(X,N,XN,NM)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C     AUXILIARY SUBROUTINE FOR UNT:
+C     FUNCTION WHICH TO BE MINIMIZED
+      COMMON /BL1/ZI,ZA,KT/BL3/ZM,YL/BL9/SM,DS
+      DIMENSION X(N),XN(NM)
+      IF (KT.LT.3) GO TO 20
+      CALL SMD(SM,DS,X,N,XN,NM)
+      FU=SM
+      RETURN
+   20 IF (ZM.LT.0.5) CALL SMD(SM,DS,X,N,XN,NM)
+      Z=ABS(ZM)
+      IF (DS.LT.1.E-10) DS=1.E-10
+      IF (Z.GT.0.5) GO TO 30
+      FU=(SM+YL-2.*ZI)/SQRT(DS)
+      RETURN
+   30 FU=(SM-ZI+(ZA-ZI)*Z)/SQRT(DS)
+      RETURN
+      END
+      FUNCTION FP(X,N,XN,NM)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      DIMENSION X(N),XN(NM)
+      COMMON/BS1/Y(1000)/BL10/AB(10),NL(10),NX(10,100),AF/STATIS/IFAIL,
+     CIT,ITM,L
+      F=FI(X,N)
+      NM1=L*N
+      L=L+1
+      Y(L)=F
+      DO 10 N1=1,N
+      NM2=NM1+N1
+   10 XN(NM2)=X(N1)
+      R=X(1)
+      DO 20 N1=2,10
+      IF (R.LT.AB(N1)) GO TO 30
+   20 CONTINUE
+      N1=11
+   30 K=N1-1
+      M=NL(K)+1
+      NL(K)=M
+      NX(K,M)=L
+      FP=F
+      RETURN
+      END
+      SUBROUTINE UNT(X,A,B,N,XN,NM,FM,IPAR,IPA)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C     MINIMIZATION OF MULTIMODAL FUNCTION FI(X,N)
+      COMMON /BL1/ZI,ZA,KT/BS1/Y(1000)/BL3/ZM,YL
+     1/BL5/NH(5),LS(500)/BL7/AM(20),NA/BL10/AB(10),NL(10),NX(10,100),AF
+     2/BL12/FS(20),XS(20,20),KAU/BL6/AUN1,AUN2(5,20)/GR1/DEL(20)
+     3/BL9/SMU,DSU/ATT/AT(15)/STATIS/IFAUL,IT,ITM,L
+      COMMON /INW/INW1
+      DIMENSION X(N),A(N),B(N),XN(NM)
+      DIMENSION KS(20),IPAR(30),AC(20),Z(20),X1(20),X2(20)
+C     INITIALIZATION OF PARAMETERS
+      IFAUL=0
+      CALL INWR18(A,B,N,NM,IPAR,IPA)
+      IF (IFAUL.EQ.10) RETURN
+      INW1=0
+      L=0
+      IPR=IPAR(IPA+1)
+      KAU=0
+      DO 10 K=1,500
+   10 LS(K)=0
+C     GENERATION OF RANDOM POINTS
+       S2=0.
+      DO 20 K=1,N
+      DEL(K)=(B(K)-A(K))*1.E-4
+      S2=S2+(B(K)-A(K))**2
+   20 AC(K)=B(K)-A(K)
+      S2=0.5*SQRT(S2)
+      AF=AC(1)/10.
+      DO 30 K=1,10
+      NL(K)=0
+   30 AB(K)=A(1)+FLOAT(K-1)*AF
+      LT=IPAR(IPA+3)
+      K5=IPAR(IPA+4)
+      DO 60 K=1,LT
+      M=MOD(K,10)
+      IF (M.EQ.0) M=10
+      Z(1)=ATS(1)*AF+AB(M)
+      DO 40 M=2,N
+   40 Z(M)=ATS(1)*AC(M)+A(M)
+      F=FP(Z,N,XN,NM)
+      IF (K.EQ.1) GO TO 45
+      IF (F.GE.ZI) GO TO 60
+   45 ZI=F
+      ITM=L
+      DO 50 M=1,N
+   50 X(M)=Z(M)
+   60 CONTINUE
+C     ESTIMATION OF K-TH MAXIMAL FUNCTION VALUE ZA
+      AF=AF/2.
+      K=MIN0(LT/5,10)
+      DO 70 M=1,K
+      F=Y(M)
+      FS(M)=F
+      IF (M.EQ.1) GO TO 65
+      IF (F.GE.ZA) GO TO 70
+   65 ZA=F
+      N1=M
+   70 CONTINUE
+      N2=K+1
+      DO 90 M=N2,LT
+      F=Y(M)
+      IF (F.LE.ZA) GO TO 90
+      ZA=F
+      FS(N1)=F
+      DO 80 N3=1,K
+      F=FS(N3)
+      IF (F.GE.ZA) GO TO 80
+      ZA=F
+      N1=N3
+   80 CONTINUE
+   90 CONTINUE
+      F=ABS(ZI-ZA)
+      IF (F.GT.1.E-8.AND.F.LT.SQRT(D1MACH(2))) GO TO 95
+      IFAUL=10
+      FM=ZI
+      IT=L
+      CALL INWR18(A,B,N,NM,IPAR,IPA)
+      RETURN
+   95 CONTINUE
+      CALL VERT(N,XN,NM)
+      YL=0.7*ZI+0.3*ZA
+      K1=LT+1
+      K2=(IPAR(IPA+2)+LT)/2
+      KX=0
+      K4=3
+      XL=0.
+C     MAIN LOOP OF GLOBAL MINIMIZATION
+      DO 390 K=K1,K2
+      KT=1
+      DO 140 M=1,40
+      DO 100 N1=1,N
+  100 Z(N1)=ATS(1)*AC(N1)+A(N1)
+      ZM=0.1
+      F1=FU(Z,N,XN,NM)
+      ZM=1.
+      F2=FU(Z,N,XN,NM)
+      IF (M.EQ.1) GO TO 105
+      IF (F1.GE.F3) GO TO 120
+  105 F3=F1
+      DO 110 N1=1,N
+  110 X2(N1)=Z(N1)
+  120 IF (M.EQ.1) GO TO 125
+      IF (F2.GE.F4) GO TO 140
+  125 F4=F2
+      DO 130 N1=1,N
+  130 X1(N1)=Z(N1)
+  140 CONTINUE
+      ZM=-1.
+      KT=1
+      S1=S2*EXP(-DLOG(DFLOAT(L))/DFLOAT(N))
+      CALL GRAUNT(X1,A,B,N,F,S1,XN,NM)
+      F1=FP(X1,N,XN,NM)
+      IF (F1.GE.ZI) GO TO 144
+      ITM=L
+      ZI=F1
+      DO 142 M=1,N
+  142 X(M)=X1(M)
+  144 IF (IPR.LE.0) GO TO 145
+      IF (MOD(L,IPR).EQ.0) CALL SPAU18(X,N,ZI,IPR)
+  145 CONTINUE
+      ZM=-0.1
+      KT=1
+      S1=S2*EXP(-DLOG(DFLOAT(L))/DFLOAT(N))
+      CALL GRAUNT(X2,A,B,N,F,S1,XN,NM)
+      D1=0.
+      DO 160 I=1,N
+  160 D1=D1+(X1(I)-X2(I))**2
+      KXL=0
+      IF (SQRT(D1).GT.0.01*S2) GO TO 170
+      KXL=1
+      DO 165 I=1,N
+  165 X2(I)=ATS(1)*AC(I)+A(I)
+  170 CONTINUE
+      F2=FP(X2,N,XN,NM)
+      IF (F2.GE.ZI)  GO TO 148
+      ITM=L
+      ZI=F2
+      DO 146 M=1,N
+  146 X(M)=X2(M)
+  148 IF (IPR.LE.0) GO TO 147
+      IF (MOD(L,IPR).EQ.0) CALL SPAU18(X,N,ZI,IPR)
+  147 IF (KXL.EQ.0) GO TO 180
+      F2=F1
+      DO 185 I=1,N
+  185 X2(I)=X1(I)
+  180 CONTINUE
+      KX=KX+1
+      XK=FLOAT(KX)
+      XL=((XK-1.)*XL+F2)/XK
+      IF (MOD(K,10).EQ.0) YL=XL
+      N4=0
+      DO 150 N1=1,NA
+      N2=NH(N1)
+      M=LS(N2)+1
+      IF (M.NE.7) GO TO 150
+      F=Y(N2)
+      IF(N4.EQ.0) GO TO 149
+      IF (F.GE.F3) GO TO 150
+  149 F3=F
+      N4=N2
+  150 LS(N2)=M
+      IF (N4.EQ.0) GO TO 390
+      IF (F2.GT.F3) GO TO 220
+      DO 210 M=1,N
+  210 Z(M)=X2(M)
+      GO TO 240
+  220 CONTINUE
+      NM1=(N4-1)*N
+      DO 230 M=1,N
+      NM2=NM1+M
+  230 Z(M)=XN(NM2)
+C     ESTIMATION OF LOCAL MINIMUM OF FU(X,N)
+  240 KT=3
+      CALL GRAUNT(Z,A,B,N,F,S1,XN,NM)
+      DO 250 M=1,NA
+      N1=NH(M)
+      R=Y(N1)
+      IF (M.EQ.1) GO TO 245
+      IF (R.GE.F) GO TO 250
+  245 N4=N1
+      F=R
+  250 LS(N1)=7
+      NM1=(N4-1)*N
+      DO 260 M=1,N
+      NM2=NM1+M
+  260 Z(M)=XN(NM2)
+  270 IF (KAU.EQ.0) GO TO 320
+      DO 310 N1=1,KAU
+      R=0.
+      DO 280 N2=1,N
+  280 R=R+AM(N2)*(XS(N2,N1)-Z(N2))**2
+      IF (SQRT(R).GE.0.2) GO TO 310
+      R=FS(N1)
+      IF (F.GE.R) GO TO 305
+      DO 300 N4=1,N
+  300 XS(N4,N1)=Z(N4)
+      FS(N1)=F
+  305 N4=KS(N1)
+      IF (N4.LT.K4) GO TO 290
+      IFAUL=1
+      GO TO 400
+  290 KS(N1)=N4+1
+      GO TO 390
+  310 CONTINUE
+  320 CONTINUE
+      KAU=KAU+1
+      KS(KAU)=1
+      FS(KAU)=F
+      DO 330 N1=1,N
+  330 XS(N1,KAU)=Z(N1)
+      IF (KAU.LT.K5) GO TO 390
+      IFAUL=0
+      GO TO 400
+  390 CONTINUE
+      IFAUL=2
+  400 CONTINUE
+      FM=ZI
+      INW1=2
+      IT=L
+      IF (IPR.GE.0) CALL SPAU18(X,N,FM,IPR)
+      RETURN
+      END
+      SUBROUTINE GRAUNT(X,A,B,N,F,S1,XN,NM)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      DIMENSION X(N),A(N),B(N),XN(NM),Z(20),FF(20)
+      COMMON /GR1/DEL(20)/BL1/ZI,ZA,KTIP
+       S=S1
+      EPS=0.03*S
+      F=FU(X,N,XN,NM)
+      KTIP=KTIP+1
+      DO 20 I=1,N
+   20 Z(I)=X(I)
+   30 SG=0.
+      DO 50 I=1,N
+      X1=X(I)
+      IF (X1.LE.B(I)-EPS.AND.X1.GE.A(I)+EPS) GO TO 40
+      FF(I)=0.
+      GO TO 50
+   40 D1=DEL(I)
+      Z(I)=X1+D1
+      F1=FU(Z,N,XN,NM)
+      Z(I)=X1-D1
+      F2=FU(Z,N,XN,NM)
+      FF(I)=(F1-F2)/(2.*D1)
+      SG=SG+FF(I)**2
+   50 Z(I)=X(I)
+      IF (SG.LT.1.E-8) GO TO 100
+      SG=SQRT(SG)
+   60 DO 70 I=1,N
+      X1=X(I)-S*FF(I)/SG
+      IF (X1.GT.B(I)) X1=B(I)
+      IF (X1.LT.A(I)) X1=A(I)
+   70 Z(I)=X1
+       KTIP=KTIP-1
+      F1=FU(Z,N,XN,NM)
+      KTIP=KTIP+1
+      IF (F1.GE.F) GO TO 90
+      F=F1
+      DO 80 I=1,N
+   80 X(I)=Z(I)
+      GO TO 30
+   90 S=S/2.
+      IF (S.GE.EPS) GO TO 60
+  100 CONTINUE
+      RETURN
+      END
+      SUBROUTINE INWR18(A,B,N,NM,IPAR,IPA)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      DIMENSION A(N),B(N),IPAR(30)
+      COMMON /STATIS/IFAIL,IT,ITM,NF
+      MN=20
+      MIM=30
+      MM=500
+      MIP=30
+      MAL=20
+      K=4
+      NOUT=I1MACH(2)
+      IF (IFAIL.EQ.0) GO TO 4
+      WRITE (NOUT,740)
+      RETURN
+    4 CONTINUE
+      IF (IPA.GE.0.AND.IPA+K.LE.MIP) GO TO 10
+      WRITE (NOUT,520) K,MIP
+      WRITE (NOUT,510) IPA
+    5 IFAIL=10
+      RETURN
+   10 CONTINUE
+      IPRINT=IPAR(IPA+1)
+      IF (IPRINT.LT.0) GO TO 110
+      WRITE (NOUT,610)
+      WRITE (NOUT,620)
+      WRITE (NOUT,630) N
+  110 IF (N.GT.0.AND.N.LE.MN) GO TO 20
+      WRITE (NOUT,500) MN
+      IF (IPRINT.LT.0) WRITE (NOUT,630) N
+      GO TO 5
+   20 CONTINUE
+      M=IPAR(IPA+2)
+      LT=IPAR(IPA+3)
+      ML=IPAR(IPA+4)
+      IF (IPRINT.LT.0) GO TO 40
+      WRITE (NOUT,640) IPRINT
+      WRITE (NOUT,650) M
+      WRITE (NOUT,660) LT
+      WRITE (NOUT,670) ML
+   40 IF (M.GT.0.AND.M.LE.MM) GO TO 47
+      WRITE (NOUT,530) MM
+      IF (IPRINT.LT.0) WRITE (NOUT,650) M
+      GO TO 5
+   47 IF (NM.GE.N*M) GO TO 50
+      WRITE (NOUT,730)
+      IF (IPRINT.GE.0) GO TO 55
+      WRITE (NOUT,630) N
+      WRITE (NOUT,650) M
+   55 WRITE (NOUT,635) NM
+      GO TO 5
+   50 CONTINUE
+      IF (LT.EQ.0) LT=MAX0(15*N,6*ML)
+      IPAR(IPA+3)=LT
+      IF (LT.GE.MIM.AND.LT.LE.M) GO TO 80
+      WRITE (NOUT,550) MIM
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,650) M
+      WRITE (NOUT,660) LT
+      GO TO 5
+   80 CONTINUE
+      IF (ML.GT.0.AND.ML.LE.MAL) GO TO 100
+      WRITE (NOUT,680) MAL
+      IF (IPRINT.LT.0) WRITE (NOUT,670) ML
+      GO TO 5
+  100 CONTINUE
+      IF (IPRINT.LT.0) GO TO 200
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) (A(I),I=1,N)
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) (B(I),I=1,N)
+  200 NER=0
+      DO 90 I=1,N
+      IF (A(I).LT.B(I)) GO TO 90
+      IF (NER.NE.0) GO TO 86
+      WRITE (NOUT,600) I,I
+      GO TO 87
+   86 WRITE (NOUT,605) I,I
+   87 CONTINUE
+      NER=1
+   90 CONTINUE
+      IF (NER.NE.1) RETURN
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) A
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) B
+      GO TO 5
+  500 FORMAT (/2X,57H**E R R O R  I N  U N T** N LESS THAN 1 OR N GREATE
+     CR THAN,I3)
+  510 FORMAT (/2X,20HNUMBER OF PARAMETERS,11X,5HIPA =,I6)
+  520 FORMAT (/2X,41H**E R R O R  I N  U N T** IPA LESS THAN 02X,
+     C7HOR IPA+,I2,13H GREATER THAN,I3)
+  530 FORMAT (/2X,57H**E R R O R  I N  U N T** M LESS THAN 1 OR M GREATE
+     CR THAN,I6/)
+  550 FORMAT (/2X,38H**E R R O R  I N  U N T** LT LESS THAN,I3,
+     C21H OR LT GREATER THAN M/)
+  570 FORMAT ( /2X,32HVECTOR OF LOWER BOUNDS (A) FOR X)
+  580 FORMAT (4(2X,E15.8))
+  590 FORMAT (2X,32HVECTOR OF UPPER BOUNDS (B) FOR X)
+  600 FORMAT (/2X,28H**E R R O R  I N  U N T** A(,I3,17H) GREATER THAN B
+     C(,I3,1H))
+  605 FORMAT (28X,2HA(,I3,17H) GREATER THAN B(,I3,1H))
+  610 FORMAT (////12X,5HU N T)
+  620 FORMAT (/2X,22HI N I T I A L  D A T A)
+  630 FORMAT (/2X,19HNUMBER OF VARIABLES,22X,3HN =,I6)
+  635 FORMAT (2X,26HDIMENSION OF WORKING ARRAY,14X,4HNM =,I6)
+  640 FORMAT (/2X,18HPRINTING PARAMETER,21X,5HIPR =,I6)
+  650 FORMAT (2X,44HMAXIMUM NUMBER OF FUNCTION EVALUATIONS   M =,I6)
+  660 FORMAT (2X,24HNUMBER OF INITIAL POINTS,16X,4HLT =,I6)
+  670 FORMAT (2X,30HMAXIMUM NUMBER OF LOCAL MINIMA,10X,4HML =,I6)
+  680 FORMAT (/2X,59H**E R R O R  I N  U N T** ML LESS THAN 1 OR ML GREA
+     CTER THAN,I3/)
+  730 FORMAT (/2X,42H**E R R O R  I N  U N T** NM LESS THAN N*M)
+  740 FORMAT (/2X,57H**E R R O R  I N  U N T** VARIATION OF OBJECTIVE FU
+     CNCTION/2X,25HIS TOO SMALL OR TOO LARGE)
+       END
+       SUBROUTINE SPAU18(X,N,FF,IPR)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      DIMENSION X(N)
+      COMMON /INW/IN/BL12/FS(20),XS(20,20),KAU
+     C/STATIS/IFAIL,IT,ITM,L
+      NOUT=I1MACH(2)
+      IF (IN.EQ.2) GO TO 10
+      WRITE(NOUT,100)
+      IF (L.EQ.IPR) WRITE(NOUT,210)
+      WRITE(NOUT,110) L
+      WRITE(NOUT,120) FF
+      WRITE(NOUT,160)
+      WRITE(NOUT,130) (X(I),I=1,N)
+      RETURN
+   10 WRITE(NOUT,170)
+      WRITE(NOUT,180)
+      WRITE (NOUT,120) FF
+      WRITE(NOUT,160)
+      WRITE(NOUT,130) (X(I),I=1,N)
+      IF (KAU.EQ.0) GO TO 40
+      WRITE (NOUT,250)
+      DO 30 I=1,KAU
+      IF (N.GT.3) GO TO 20
+      WRITE (NOUT,130) FS(I),(XS(J,I),J=1,N)
+      GO TO 30
+   20 N1=N-3
+      WRITE (NOUT,130) FS(I),(XS(J,I),J=1,3)
+      WRITE (NOUT,220) (XS(J,I),J=4,N)
+   30 CONTINUE
+   40 WRITE (NOUT,260) L
+      IF (IFAIL.EQ.0) WRITE (NOUT,270)
+      IF (IFAIL.EQ.1) WRITE (NOUT,280)
+      IF (IFAIL.EQ.2) WRITE (NOUT,290)
+      WRITE (NOUT,200)
+      WRITE(NOUT,170)
+      RETURN
+  100 FORMAT (/1X,34(2H -))
+  110 FORMAT (2X,34HNUMBER OF FUNCTION EVALUATIONS L =,I6)
+  120 FORMAT (/2X,27HOPTIMAL FUNCTION VALUE FM =,E15.8)
+  130 FORMAT(4(2X,E15.8))
+  160 FORMAT(2X,13HOPTIMAL POINT)
+  170 FORMAT (/1X,34(2H *)/1X,34(2H *))
+  180 FORMAT (/2X,13HR E S U L T S)
+  200 FORMAT (/7X,14HUNT TERMINATED)
+  210 FORMAT (1X,34(2H -))
+  220 FORMAT ((17X,3(2X,E15.8)))
+  250 FORMAT (/12X,12HLOCAL OPTIMA/3X,14HFUNCTION VALUE,8X,5HPOINT)
+  260 FORMAT (/2X,34HNUMBER OF FUNCTION EVALUATIONS L =,I6)
+  270 FORMAT (/2X,66HIFAIL = 0. TERMINATION CRITERION: NUMBER OF LOCAL M
+     CINIMA EQUALS ML)
+  280 FORMAT (/2X,51HIFAIL = 1. TERMINATION CRITERION: DENSITY OF POINTS
+     C/2X,30HIN LOCAL MINIMUM AREA EQUALS 3)
+  290 FORMAT (/2X,52HIFAIL = 2. TERMINATION CRITERION: NUMBER OF FUNCTIO
+     CN/2X,20HEVALUATIONS EQUALS M)
+      END

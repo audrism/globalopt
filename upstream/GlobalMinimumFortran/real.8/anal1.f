@@ -1,0 +1,476 @@
+C MINIMUM Copyright (c) 1989, by Jonas Mockus
+C You may give out copies of this software; for conditions see the
+C file COPYING included with this distribution.                    
+
+      SUBROUTINE ANAL1(XP,XG,N,XX,X,NM,IPAR,IPA)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C******************************************
+C PROGRAM OF SELECTING OF MAIN VARIABLES
+C IN PROBLEMS OF OPTIMIZATION AND EXPERIMET DESIGN.
+C XP,XG- INPUT ARRAYS FOR BEGININGS AND ENDS OF
+C	 INTERVALS,
+C N- DIMENSIONALITY,
+C IPAR(IPA+1) - PRINTING PARAMETER
+C IPAR(IPA+2) - NUMBER OF FUNCTION EVALUATIONS
+C IPAR(IPA+3) - NUMBER OF HARMONICS INVESTIGATED IG
+C IPAR(IPA+4) - MAXIMAL NUMBER OF SELECTED VARIABLES
+C		OR INTERACTIONS ICK
+C IPAR(IPA+5) - SIGN OF INVESTIGATION OF INTERACTIONS IV
+C****************************************
+      COMMON /HREZ1/DDD(30)/INW/INW1/HREZ/III,MB1(2,30)
+      COMMON /BS1/Y(1000)/STATIS/IFAIL,IT,ITM,NF
+      DIMENSION XX(NM),X(NM),XP(20),XG(20),K(20),R(300),
+     *RA(300),Y1(300),Y2(300),KA(20),IPAR(30),
+     *AK1(8),AK2(8),AK3(8)
+     *,Y3(300),MB(2),KAKA(30,20)
+      DATA AK1/3*0.,.5,0.,.25,.5,.75/, AK2/1.,.5,.25,.75,
+     *.125,.375,.625,.875/, AK3/1.,1.,.5,1.,.25,.5,.75,1./
+      IFAIL=0
+      CALL INWR21(XP,XG,N,XX,NM,IPAR,IPA)
+      IF (IFAIL.EQ.10) RETURN
+      DMAX=D1MACH(2)
+      IPRINT=IPAR(IPA+1)
+      M=IPAR(IPA+2)
+      IG=IPAR(IPA+3)
+      ICK=IPAR(IPA+4)
+      IV=IPAR(IPA+5)
+      INW1=0
+      NF=M
+C--------------------------------
+C SCALING OF POINT COORDINATS
+C TO THE SCALE 0 - 1. RESULT - IN ARRAY X (20,300)
+C------------------------------------------------
+      DO 1 I=1,N
+      AIN=XG(I)-XP(I)
+      DO 1 J=1,M
+      I6=(J-1)*N+I
+    1 X(I6)=(XX(I6)-XP(I))/AIN
+C--------------------------
+      CALL DISP(Y,M,V,D)
+      IF (D.LT.DMAX/100.AND.D.GT.D1MACH(1)*100.) GO TO 70
+      INW1=2
+      CALL INWR21(XP,XG,N,XX,NM,IPAR,IPA)
+      RETURN
+   70 CONTINUE
+      DIS=D
+C---------------------------------
+C THE BEGINING OF MAIN LOOP
+C ICK - MAXIMAL NUMBER OF
+C SELECTED VARIABLES
+C-------------------------------
+      DO 60 IL=1,ICK
+      IT=IL
+      ITM=IT
+C---------------------------------
+C ZEROS - TO ARRAY OF VARIANTS K
+C-----------------------------------
+      DO 7 I2=1,N
+    7 K(I2)=0
+      D0=DMAX
+      IU=0
+C----------------------------------
+C GENERATING OF VARIANT
+C--------------------------------
+    8 CALL VAR (IG,IU,IV,N,K,IS,IJ)
+      IF(IS.EQ.N) GO TO 32
+C------------------------------------------
+C LK AND LD - NUMBER OF POINTS IN
+C DOMAINS 1 AND 2
+C----------------------------------
+      LK=0
+      LD=0
+C---------------------------------------------
+C R - ARRAY OF SIGNS, IN WHICH DOMAIN
+C	     POINT IS.
+C IF R=0 , TO ANY DOMAIN,
+C IF R=-1 , TO DOMAIN 1,
+C IF R=1 , TO DOMAIN 2
+C-----------------------------------
+      NM1=0
+      DO 28 J=1,M
+      R(J)=0.
+      IP=1
+      DO 27 I=1,N
+      I1=K(I)+1
+      NM2=NM1+I
+      AR=X(NM2)
+      IF(AR.LT.AK1(I1)) GO TO 28
+      IF(AR.GE.AK3(I1)) GO TO 28
+      IF(AR.LT.AK2(I1)) GO TO 27
+      IP=-IP
+   27 CONTINUE
+      IF(IP.LT.0) GO TO 24
+      LK=LK+1
+C------------------------------------------
+C Y1 AND Y2 - ARRAYS WITH VALUES OF GOAL FUNCTION
+C	    IN POINTS OF DOMAINS 1 AND 2
+C---------------------------------------
+      Y1(LK)=Y(J)
+      R(J)=-1.
+      GO TO 28
+   24 LD=LD+1
+      Y2(LD)=Y(J)
+      R(J)=1.
+   28 NM1=NM1+N
+      IF((LK.LT.5).OR.(LD.LT.5)) GO TO 8
+      CALL DISP (Y1,LK,VK,DK)
+      CALL DISP (Y2,LD,VD,DD)
+      DELV=VK-VD
+      DO 33 J=1,M
+   33 Y3(J)=Y(J)+R(J)*(DELV/2.)
+      CALL DISP(Y3,M,VM,DM)
+      IF(D0-DM)8,8,35
+C---------------------------------------
+C INFORMATION ABOUT THE BEST VARIANT - TO MEMORY
+C----------------------------------------
+   35 VMA=VM
+      DELVA=DELV
+      D0=DM
+      DO 36 I=1,N
+   36 KA(I)=K(I)
+      DO 37 J=1,M
+   37 RA(J)=R(J)
+      GO TO 8
+C----------------------------------
+C ALL VARIANTS ARE INVESTIGATED
+C---------------------------
+   32 III=IL
+      IF (D0.LE.DIS) GO TO 34
+      IF (IL.NE.1) GO TO 22
+      INW1=1
+      CALL INWR21(XP,XG,N,XX,NM,IPAR,IPA)
+      RETURN
+   34 DO 56 J=1,M
+   56 Y(J)=Y(J)+RA(J)*(DELVA/2.)
+      DELD=D-D0
+      D=D0
+C--------------------------------
+C RESULTS ARE OBTAINED
+C----------------------------
+      DDD(IL)=DELD/DIS
+      DO 52 J=1,N
+   52 KAKA(IL,J)=KA(J)
+      IF (IPRINT.GT.0) CALL SPAU21(IPRINT,IL,KA,N,V,DIS)
+      IF(D/DIS.LT.0.05) GO TO 22
+C----------------------
+C THE END OF MAIN LOOP
+C----------------------
+   60 CONTINUE
+   22 CALL REDRES(N,KAKA)
+      INW1=1
+      IF (IPRINT.GE.0) CALL SPAU21(IPRINT,III,KA,N,V,DIS)
+      RETURN
+      END
+      SUBROUTINE DISP(Y,M,V,D)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C************************************
+C AUXILARY SUBROUTINE FOR SUBR-NE HARM
+C RESULT - MEAN VALUE V AND DISPERSION D
+C OF DATA ARRAY  Y (FROM M ELEMENTS)
+C************************************
+      DIMENSION Y(M)
+      AM=FLOAT(M)
+      V=0.
+      D=0.
+      DO 30 I1=1,M
+      Y1=Y(I1)
+      V=V+Y1
+   30 D=D+Y1*Y1
+      V=V/AM
+      D=(D-AM*V*V)/(AM-1.)
+      RETURN
+      END
+      SUBROUTINE VAR (IG,IU,IV,N,K,IS,IJ)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+C********************************
+C AUXILARY FOR SUBROUTINE HARM
+C THE GENERATOR OF VARIANTS IN ARRAY K
+C IV - HOW MANY VARIABLES ARE INVESTIGATED IN TNE VARIANT
+C IS - OUTPUT PARAMETER - INFORMATION ABOUT THE END OF GENER.
+C      IS=0 - GENERATING IS CONTINUEING
+C IJ - NUMBER OF FIRST VARIABLE, FOR WHITCH NUMBER
+C      OF HARMONIC IS NOT EQUAL TO ZERO
+C******************************
+      DIMENSION K(N)
+      IS=0
+      IF(IU.EQ.IV)GO TO 61
+C-----------------------------------------------------
+C I - NUMBER OF VARIABLE FOR WHICH NUMBER OF HARMONIC CHANGES
+C-- ---------------------------------------------------
+      I=0
+    9 I=I+1
+      GO TO 62
+   61 I=IJ
+   62 IF(K(I)-IG)11,10,10
+   10 K(I)=0
+      IF(I.NE.N) GO TO 9
+C----------------------------------
+C THE LAST VARIANT IS GENERATED
+C----------------------------------
+      IS=N
+      GO TO 15
+   11 K(I)=K(I)+1
+      IU=0
+      J=1
+C------------------------------------
+C THE BEGINING OF LOOP FOR DETERMINING OF IU AND IJ
+C--------------------------------
+   13 IF(K(J).EQ.0) GO TO 14
+      IU=IU+1
+      IF(IU.EQ.1)IJ=J
+   14 IF((J.EQ.N).OR.(IU.EQ.IV))GO TO 15
+      J=J+1
+      GO TO 13
+   15 RETURN
+      END
+      SUBROUTINE REDRES(N,KAKA)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      COMMON /HREZ/III,MB(2,30)/HREZ1/DDD(30)
+      DIMENSION KAKA(30,20)
+C-------------------------------
+C REDUCING OF RESULTS
+C------------------------------
+      DO 19 I=1,III
+      MB (2,I)=0
+      K=0
+      DO 19 J=1,N
+      IF (KAKA(I,J).EQ.0) GO TO 19
+      K=K+1
+      MB (K,I)=J
+   19 CONTINUE
+   24 I2=III-1
+      DO 21 I=1,I2
+      J1=I+1
+      IIII=III
+      DO 21 J=J1,IIII
+      IF (MB(1,I).NE.MB(1,J).OR.MB(2,I).NE.MB(2,J)) GO TO 21
+      DDD(I)=DDD(I)+DDD(J)
+      III=III-1
+      DO 23 K=J,III
+      DDD(K)=DDD(K+1)
+      MB(1,K)=MB(1,K+1)
+   23 MB (2,K)=MB (2,K+1)
+      GO TO 24
+   21 CONTINUE
+      I2=III-1
+   26 DO 25 I=1,I2
+      J1=I+1
+   75 DO 25 J=J1,III
+      IF (DDD(I).GE.DDD(J)) GO TO 25
+      BB=DDD(I)
+      DDD(I)=DDD(J)
+      DDD(J)=BB
+      L1=MB(1,I)
+      L2=MB(2,I)
+      MB (1,I)=MB(1,J)
+      MB(2,I)=MB(2,J)
+      MB(1,J)=L1
+      MB(2,J)=L2
+      GO TO 75
+   25 CONTINUE
+      RETURN
+      END
+       SUBROUTINE INWR21(A,B,N,X,NM,IPAR,IPA)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      DIMENSION A(N),B(N),IPAR(30),X(NM)
+      COMMON /INW/IN/STATIS/IFAIL,IT,ITM,NF
+      MN=20
+      MIP=30
+      MM=300
+      MIM=10
+      K=5
+      NOUT=I1MACH(2)
+      IF(IN.EQ.1) GOTO 300
+      IF (IN.EQ.2) GO TO 310
+      IF (IPA.GE.0.AND.IPA+K.LE.MIP) GO TO 10
+      WRITE (NOUT,520) K,MIP
+      WRITE (NOUT,510) IPA
+   5  IFAIL=10
+      RETURN
+   10 CONTINUE
+      IPRINT=IPAR(IPA+1)
+      IF (IPRINT.LT.0) GO TO 110
+      WRITE(NOUT,960)
+      WRITE (NOUT,620)
+      WRITE (NOUT,630) N
+  110 IF (N.GT.0.AND.N.LE.MN) GO TO 20
+      WRITE (NOUT,500) MN
+      IF (IPRINT.LT.0) WRITE (NOUT,630) N
+      GO TO 5
+   20 CONTINUE
+      M=IPAR(IPA+2)
+      NH=IPAR(IPA+3)
+      NSF=IPAR(IPA+4)
+      INP=IPAR(IPA+5)
+      IF (IPRINT.LT.0) GO TO 40
+      WRITE (NOUT,640) IPRINT
+      WRITE (NOUT,650) M
+      WRITE(NOUT,970)NH
+      WRITE(NOUT,980) NSF
+      WRITE(NOUT,990) INP
+   40 IF (M.GE.MIM.AND.M.LE.MM) GO TO 47
+      WRITE(NOUT,530) MIM,MM
+      IF (IPRINT.LT.0) WRITE (NOUT,650) M
+      GO TO 5
+   47 IF (NM.GE.N*M) GO TO  50
+      WRITE (NOUT,730)
+      IF (IPRINT.GE.0) GO TO 48
+      WRITE (NOUT,630) N
+      WRITE (NOUT,650) M
+   48 WRITE (NOUT,635) NM
+      GO TO 5
+   50 IF(NH.GE.1.AND.NH.LE.7) GOTO 60
+      WRITE(NOUT,1000)
+      IF (IPRINT.LT.0) WRITE (NOUT,970) NH
+      GO TO 5
+   60 IF(NSF.GE.1.AND.NSF.LE.30) GOTO 70
+      WRITE(NOUT,1010)
+      IF (IPRINT.LT.0) WRITE (NOUT,980) NSF
+      GO TO 5
+   70 IF(INP.EQ.1.OR.INP.EQ.2) GOTO 250
+      WRITE(NOUT,1020)
+      IF (IPRINT.LT.0) WRITE (NOUT,990) INP
+      GO TO 5
+  250 CONTINUE
+      IF (IPRINT.LT.0) GO TO 200
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) (A(I),I=1,N)
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) (B(I),I=1,N)
+  200 NER=0
+      DO 90 I=1,N
+      IF (A(I).LT.B(I)) GO TO 90
+      IF (NER.NE.0) GO TO 86
+      WRITE (NOUT,600) I,I
+      GO TO 87
+   86 WRITE (NOUT,605) I,I
+   87 CONTINUE
+      NER=1
+   90 CONTINUE
+      IF (NER.NE.1) GO TO 260
+      IF (IPRINT.GE.0) GO TO 5
+      WRITE (NOUT,570)
+      WRITE (NOUT,580) A
+      WRITE (NOUT,590)
+      WRITE (NOUT,580) B
+      GO TO 5
+  260 NER=0
+      DO 270 I=1,M
+      DO 285 J=1,N
+      J1=(I-1)*N+J
+      IF(X(J1).LE.B(J).AND.X(J1).GE.A(J)) GOTO 285
+      IF (NER.NE.0) GO TO 280
+      WRITE(NOUT,830) I
+      GO TO 290
+  280 WRITE(NOUT,840) I
+  290 NER=1
+      GO TO 270
+  285 CONTINUE
+  270 CONTINUE
+      IF (NER.EQ.1) GO TO 5
+      RETURN
+  300 WRITE(NOUT,1030)
+      GO TO 5
+  310 WRITE (NOUT,1040)
+      GO TO 5
+  500 FORMAT (/2X,61H**E R R O R  I N  A N A L 1** N LESS THAN 1 OR N GR
+     CEATER THAN,I3)
+  510 FORMAT (/2X,20HNUMBER OF PARAMETERS,11X,5HIPA =,I6)
+  520 FORMAT (/2X,45H**E R R O R  I N  A N A L 1** IPA LESS THAN 0/2X,
+     C7HOR IPA+,I2,13H GREATER THAN,I3)
+  530 FORMAT(/2X,41H**E R R O R  I N  A N A L 1** M LESS THAN,I3/2X,
+     C17HOR M GREATER THAN,I6/)
+  570 FORMAT ( /2X,32HVECTOR OF LOWER BOUNDS (A) FOR X)
+  580 FORMAT (4(2X,E15.8))
+  590 FORMAT (2X,32HVECTOR OF UPPER BOUNDS (B) FOR X)
+  600 FORMAT (/2X,32H**E R R O R  I N  A N A L 1** A(,I2,22H) GREATER OR
+     C EQUALS B(,I2,1H))
+  605 FORMAT (32X,2HA(,I2,22H) GREATER OR EQUALS B(,I2,1H))
+  620 FORMAT (/2X,22HI N I T I A L  D A T A)
+  630 FORMAT(/2X,19HNUMBER OF VARIABLES,14X,3HN =,I6)
+  635 FORMAT (2X,26HDIMENSION OF WORKING ARRAY,6X,4HNM =,I6)
+  640 FORMAT(/2X,18HPRINTING PARAMETER,13X,5HIPR =,I6)
+  650 FORMAT(2X,36HNUMBER OF FUNCTION EVALUATIONS   M =,I6)
+  730 FORMAT (/2X,46H**E R R O R  I N  A N A L 1** NM LESS THAN N*M)
+  830 FORMAT(/2X,42H**E R R O R  I N  A N A L 1** POINT NUMBER,I4,
+     C14H OUT OF BOUNDS)
+  840 FORMAT(32X,12HPOINT NUMBER,I4,14H OUT OF BOUNDS)
+  960 FORMAT(////12X,9HA N A L 1)
+  970 FORMAT(2X,19HNUMBER OF HARMONICS,13X,4HNH =,I6)
+  980 FORMAT(2X,26HNUMBER OF SELECTED FACTORS,5X,5HNSF =,I6)
+  990 FORMAT(2X,21HINTERACTION PARAMETER,10X,5HINP =,I6)
+ 1000 FORMAT (/2X,65H**E R R O R  I N  A N A L 1** NH LESS THAN 1 OR NH
+     CGREATER THAN 7/)
+ 1010 FORMAT(/2X,45H**E R R O R  I N  A N A L 1** NSF LESS THAN 1/2X,
+     C22HOR NSF GREATER THAN 30/)
+ 1020 FORMAT(/2X,45H**E R R O R  I N  A N A L 1** INP LESS THAN 1/2X,
+     C21HOR INP GREATER THAN 2/)
+ 1030 FORMAT (/2X,47H**E R R O R  I N  A N A L 1** TOO LITTLE NUMBER/2X,
+     C23HOF FUNCTION EVALUATIONS/)
+ 1040 FORMAT (/2X,61H**E R R O R  I N  A N A L 1** VARIATION OF OBJECTIV
+     CE FUNCTION/2X,25HIS TOO SMALL OR TOO LARGE)
+      END
+      SUBROUTINE SPAU21(IPR,IL,KA,N,V,DIS)
+      IMPLICIT INTEGER*4 (I - N)
+      IMPLICIT REAL*8    (A - H, O - Z)
+      COMMON /HREZ1/DDD(30)/INW/IN/HREZ/IMB,MB(2,30)
+      DIMENSION KA(20)
+      NOUT=I1MACH(2)
+      IF(IN.EQ.1) GOTO 20
+      WRITE(NOUT,100)
+      IF (IL.EQ.1) WRITE (NOUT,210) V,DIS
+      WRITE(NOUT,110) IL
+      WRITE(NOUT,400) DDD(IL)
+      WRITE(NOUT,410)
+      WRITE(NOUT,420) (KA(J),J=1,N)
+      RETURN
+   20 WRITE(NOUT,170)
+      WRITE(NOUT,180)
+      WRITE(NOUT,250)
+      DO 40 I=1,IL
+      J=MB(2,I)
+      K=MB(1,I)
+      IF(J.EQ.0) GOTO 30
+      IF (K.GE.10) GO TO 60
+      IF (J.GE.10) GO TO 50
+      WRITE (NOUT,430) K,J,DDD(I)
+      GO TO 40
+   50 WRITE (NOUT,460) K,J,DDD(I)
+      GO TO 40
+   60 IF (J.GE.10) GO TO 70
+      WRITE (NOUT,470) K,J,DDD(I)
+      GO TO 40
+   70 WRITE (NOUT,480) K,J,DDD(I)
+      GOTO 40
+   30 IF (K.GE.10) GO TO 80
+      WRITE (NOUT,440) K,DDD(I)
+      GO TO 40
+   80 WRITE (NOUT,490) K,DDD(I)
+   40 CONTINUE
+      WRITE(NOUT,450)
+      WRITE(NOUT,170)
+  100 FORMAT (/1X,34(2H -))
+  110 FORMAT(2X,23HI T E R A T I O N  NR =,I6)
+  170 FORMAT (/1X,34(2H *)/1X,34(2H *))
+  180 FORMAT (/2X,13HR E S U L T S)
+  210 FORMAT (/2X,16HMEAN VALUE MV = ,E15.8,3X,16HDISPERSION DS = ,E15.8
+     C/2(/1X,34(2H -)))
+  250  FORMAT (/2X,31HVARIABLES OR PAIRS OF VARIABLES,7X,
+     C19HDEGREE OF INFLUENCE)
+  400 FORMAT(/2X,24HDEGREE OF INFLUENCE SD =,E15.8)
+  410 FORMAT(2X,46HNUMBERS OF SELECTED HARMONIC FOR EACH VARIABLE)
+  420 FORMAT(2X,10I6)
+  430 FORMAT (14X,1HX,I1,3X,1HX,I1,22X,E15.8)
+  440 FORMAT (16X,1HX,I1,25X,E15.8)
+  450 FORMAT(/7X,16HANAL1 TERMINATED)
+  460 FORMAT (14X,1HX,I1,3X,1HX,I2,21X,E15.8)
+  470 FORMAT (13X,1HX,I2,3X,1HX,I1,22X,E15.8)
+  480 FORMAT (13X,1HX,I2,3X,1HX,I2,21X,E15.8)
+  490 FORMAT (16X,1HX,I2,24X,E15.8)
+      RETURN
+      END

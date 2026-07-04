@@ -1,0 +1,57 @@
+  This contains the portable FORTRAN code for global and constrained
+optimization as described in (1).
+  Makefile to create library 'libgm.a' is for the unix systems, but it
+can be easily modified for MS-DOS, or VMS. Additional compiler
+optimization switches may be added for better performance.
+
+  The files i1mach?.f contain machine dependent constants, and utility
+functions.  The rest of the files implement optimization  methods.
+
+Meaning of the constants that are in files i1mach?.f:
+
+I1MACH(1) - stdin
+I1MACH(2) - stdout
+I1MACH(4) - stderr
+
+I1MACH(5) - number of bits per integer
+I1MACH(6) - number of bytes per integer
+
+             Integers:
+I1MACH(7) - is the base
+I1MACH(8) - number of base digits
+I1MACH(9) - the largest magnitude
+
+             Floating Point Numbers:
+I1MACH(10) - is the base
+             
+             Single Precision:
+I1MACH(11) - is the number of base digits
+I1MACH(12) - is the smallest exponent
+I1MACH(13) - is the largest exponent
+
+             Double Precision:
+I1MACH(14) - is the number of base digits
+I1MACH(15) - is the smallest exponent
+I1MACH(16) - is the largest exponent
+
+    Single Precision Machine Constants:
+R1MACH(1) is the smallest positive magnitude
+R1MACH(2) is the largest magnitude
+R1MACH(3) is the smallest relative spacing 
+R1MACH(4) is the largest  relative spacing 
+R1MACH(5) LOG10(base)
+
+    Double Precision Machine Constants:
+D1MACH(1) is the smallest positive magnitude
+D1MACH(2) is the largest magnitude
+D1MACH(3) is the smallest relative spacing 
+D1MACH(4) is the largest  relative spacing 
+D1MACH(5) LOG10(base)
+
+
+
+  
+(1)  J. Mockus, Bayesian Approach to Global Optimization,
+Kluwer Academic Publishers, Dordrecht-Boston-London, 1989.
+ISBN 0-7923-0115-3, order: P.O.Box 322, 3300 AH Dordrecht,
+The Netherlands.
