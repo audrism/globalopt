@@ -2,6 +2,22 @@
 
 This package is released as an R source tarball.
 
+## Install From GitHub (Before CRAN Release)
+
+Because this repository is a monorepo, install from subdirectory `r/globalopt`:
+
+```r
+install.packages("remotes")
+remotes::install_github("audrism/globalopt", subdir = "r/globalopt")
+```
+
+Alternative with `pak`:
+
+```r
+install.packages("pak")
+pak::pak("audrism/globalopt/r/globalopt")
+```
+
 ## 1) Prerequisites
 
 - R (current stable)

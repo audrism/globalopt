@@ -1,6 +1,13 @@
 \name{globalopt-package}
 \alias{globalopt-package}
 \alias{furasn}
+\alias{fush5}
+\alias{fush7}
+\alias{fush10}
+\alias{fuhar3}
+\alias{fuhar6}
+\alias{fubran}
+\alias{fugold}
 \alias{lp_tau_point}
 \alias{mig2}
 \alias{bayes1}
@@ -23,6 +30,8 @@
 \alias{benchmark_functions}
 \alias{benchmark_optimizers}
 \alias{benchmark_deoptim}
+\alias{benchmark_ga}
+\alias{benchmark_gensa}
 \alias{run_benchmarks}
 \alias{write_benchmark_csv}
 \alias{write_benchmark_markdown}

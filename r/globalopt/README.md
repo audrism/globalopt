@@ -2,9 +2,32 @@
 
 This directory contains a CRAN-style R package scaffold implemented directly for the R ecosystem.
 
+## Installation
+
+From CRAN (after release):
+
+```r
+install.packages("globalopt")
+```
+
+From GitHub (this monorepo, package in subdirectory `r/globalopt`):
+
+```r
+install.packages("remotes")
+remotes::install_github("audrism/globalopt", subdir = "r/globalopt")
+```
+
+Alternative with `pak`:
+
+```r
+install.packages("pak")
+pak::pak("audrism/globalopt/r/globalopt")
+```
+
 Included:
 
 - `furasn()` benchmark objective
+- translated objective set: `fush5()`, `fush7()`, `fush10()`, `fuhar3()`, `fuhar6()`, `fubran()`, `fugold()`
 - `lp_tau_point()` low-discrepancy sampler
 - global methods: `mig2()`, `bayes1()`, `lpmin()`, `glopt()`, `lbayes()`
 - additional methods: `unt()`, `exkor()`, `extr()`, `mivar4()`, `flexi()`, `reqp()`
@@ -17,8 +40,6 @@ Benchmark example:
 ```r
 library(globalopt)
 tbl <- run_benchmarks(dimensions = c(2L, 10L), budgets = c(1000L), seeds = 1:5)
-write_benchmark_csv(tbl, "benchmark_results.csv")
-write_benchmark_markdown(tbl, "benchmark_results.md")
 print(head(tbl))
 ```
 
@@ -58,7 +79,7 @@ tbl <- run_benchmarks(
     dimensions = c(2L, 5L),
     budgets = c(200L),
     seeds = 1:5,
-    optimizers = benchmark_optimizers()[c("globalopt_mig2")],
+    optimizers = benchmark_optimizers(),
     include_deoptim = TRUE,
     include_ga = TRUE,
     include_gensa = TRUE
@@ -72,9 +93,7 @@ Generated reports:
 
 - `r/globalopt/examples/output/benchmark_external_comparison.csv`
 - `r/globalopt/examples/output/benchmark_external_comparison.md`
+- `r/globalopt/examples/output/benchmark_narrative.md`
 
-Sample outcomes from this run (median best objective, lower is better):
-
-- Sphere (2D): `globalopt_mig2 = 0.000134`, `DEoptim = 0.003589`, `GA = 0.000739`, `GenSA = 0.0`
-- Rosenbrock (2D): `globalopt_mig2 = 0.000402`, `DEoptim = 0.0223`, `GA = 0.2147`, `GenSA ~= 4.12e-18`
-- Ackley (2D): `globalopt_mig2 = 0.3509`, `DEoptim = 2.684`, `GA = 3.229`, `GenSA ~= 4.44e-16`
+For interpreted benchmark results (best/worst by dimension with gap, runtime, and
+memory footprint), see `docs/benchmarks/COMPARISON_NARRATIVE.md`.

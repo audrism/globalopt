@@ -10,13 +10,17 @@ The extracted upstream code is kept in `upstream/GlobalMinimumFortran` for trace
 
 ## What Was Ported
 
-This repository currently ports the following key routines and support code:
+This repository currently ports the following primary routines and support code:
 
-- `MIG2` (Monte Carlo global search) -> `mig2`
-- `BAYES1` (one-step Bayesian-style global search loop) -> `bayes1`
-- `LPTAU` LP-sequence generator -> `lp_tau_point`
+- `MIG1`, `MIG2`
+- `BAYES1`, `LBAYES`
+- `LPMIN`, `GLOPT`
+- `UNT`, `EXKOR`, `EXTR`
+- `MIVAR4`, `FLEXI`, `REQP`
+- `ANAL1`, `ANAL2`
+- `LPTAU` -> `lp_tau_point`
 - `ATS` pseudo-random generator -> `AtsGenerator`
-- `FURASN` benchmark objective -> `furasn`
+- benchmark objectives: `FURASN`, `FUSH5`, `FUSH7`, `FUSH10`, `FUHAR3`, `FUHAR6`, `FUBRAN`, `FUGOLD`
 
 Both Rust and Python APIs return rich optimization results (best point, value, all sampled points, and values).
 
@@ -80,8 +84,21 @@ Benchmark extra is provided in `globalopt.benchmarks` (problem set + runner + su
 External benchmark comparisons are included with statistical summaries across multiple seeds
 (`median_best`, `best_of_runs`, `success_rate`, `median_seconds`) and example reports in:
 
-- `python/examples/output/benchmark_external_comparison.csv`
+- `python/examples/output/benchmark_globalopt_vs_external.csv`
+- `python/examples/output/benchmark_globalopt_vs_external.md`
 - `r/globalopt/examples/output/benchmark_external_comparison.csv`
+- `r/globalopt/examples/output/benchmark_external_comparison.md`
+
+Narrative analysis (best/worst by dimension, using gap-to-optimum, runtime, and memory)
+is documented in `docs/benchmarks/COMPARISON_NARRATIVE.md`.
+
+Matched Python-vs-R apples-to-apples results under the same translated method set
+are documented in `docs/benchmarks/APPLES_TO_APPLES.md`.
+
+Implementation coverage and remaining porting gaps are documented in
+`docs/benchmarks/GAP_ASSESSMENT.md`.
+
+Benchmark document index is in `docs/benchmarks/README.md`.
 
 ## R Package Sketch
 

@@ -13,6 +13,13 @@ BibTeX entries are available in the repository root file `REFERENCES.bib`.
 
 The module `globalopt.local_minimizers` exposes optional adapters for custom local refinement, including a SciPy-backed helper when SciPy is installed.
 
+Translated objective functions exposed by the package include:
+
+- `furasn`
+- `fush5`, `fush7`, `fush10`
+- `fuhar3`, `fuhar6`
+- `fubran`, `fugold`
+
 ## Benchmark Extra
 
 The module `globalopt.benchmarks` provides:
@@ -44,6 +51,21 @@ External packages used:
 - `deap` (genetic algorithm)
 - `optuna` (`TPESampler`)
 
+Globalopt methods compared in the same table:
+
+- `globalopt_mig1`
+- `globalopt_mig2`
+- `globalopt_bayes1`
+- `globalopt_lpmin`
+- `globalopt_glopt`
+- `globalopt_unt`
+- `globalopt_exkor`
+- `globalopt_extr`
+- `globalopt_mivar4`
+- `globalopt_flexi`
+- `globalopt_reqp`
+- `globalopt_lbayes`
+
 Because these optimizers are stochastic, comparisons should use multiple runs and summary statistics.
 The benchmark runner already reports statistical summaries across seeds: `median_best`, `best_of_runs`,
 `success_rate`, and `median_seconds`.
@@ -53,31 +75,28 @@ Run used for documentation:
 ```bash
 PYTHONPATH=python python3 - <<'PY'
 from pathlib import Path
-from globalopt.benchmarks import run_benchmarks, write_benchmark_csv, write_benchmark_markdown, random_search_optimizer
+from globalopt.benchmarks import run_benchmarks, write_benchmark_csv, write_benchmark_markdown
 
 summaries = run_benchmarks(
-	dimensions=(2, 5),
+	dimensions=(2,),
 	budgets=(200,),
 	seeds=tuple(range(1, 6)),
-	optimizers={"random_search": random_search_optimizer},
 	include_scipy_de=True,
 	include_nevergrad=True,
 	include_deap=True,
 	include_optuna=True,
 )
 out = Path("python/examples/output")
-write_benchmark_csv(out / "benchmark_external_comparison.csv", summaries)
-write_benchmark_markdown(out / "benchmark_external_comparison.md", summaries)
+write_benchmark_csv(out / "benchmark_globalopt_vs_external.csv", summaries)
+write_benchmark_markdown(out / "benchmark_globalopt_vs_external.md", summaries)
 PY
 ```
 
 Generated reports:
 
-- `python/examples/output/benchmark_external_comparison.csv`
-- `python/examples/output/benchmark_external_comparison.md`
+- `python/examples/output/benchmark_globalopt_vs_external.csv`
+- `python/examples/output/benchmark_globalopt_vs_external.md`
+- `python/examples/output/benchmark_narrative.md`
 
-Sample outcomes from this run (median best objective, lower is better):
-
-- Sphere (2D): random `0.1248`, SciPy DE `0.00149`, Nevergrad `0.0`, DEAP `0.00518`, Optuna `0.00246`
-- Rosenbrock (2D): random `0.1781`, SciPy DE `0.0364`, Nevergrad `0.1628`, DEAP `0.1143`, Optuna `0.0103`
-- Ackley (2D): random `4.96`, SciPy DE `0.523`, Nevergrad `0.232`, DEAP `1.31`, Optuna `0.351`
+For interpreted benchmark results (best/worst by dimension with gap, runtime, and
+memory footprint), see `docs/benchmarks/COMPARISON_NARRATIVE.md`.
