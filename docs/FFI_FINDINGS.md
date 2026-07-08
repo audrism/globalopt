@@ -20,7 +20,8 @@ benchmarks/results/ffi_python_before_fix.csv, ffi_python.csv, ffi_r.csv).
    backend equally; calling back into R adds ~2-4 us/eval.
 2. **The real gap was algorithmic, in the translated planner.** BAYES1
    before the fix: Rust 0.32 s (d=2), 3.4 s (d=10), 13.9 s (d=20) vs
-   Fortran 0.11-1.16 s -- a 3x to 12x dimension-dependent penalty
+   Fortran 0.18/1.02/1.16 s in the same session -- a 1.7x/3.4x/12x
+   dimension-dependent penalty
    (the historical "4x" corresponds to mid dimensions). The Rust port of
    the FIAP1 surrogate score had dropped two upstream prunings:
    - the partial-distance early exit inside the history scan
@@ -42,9 +43,11 @@ benchmarks/results/ffi_python_before_fix.csv, ffi_python.csv, ffi_r.csv).
 
 ## Related timings
 
-- Pure-R reference implementation of BAYES1: 300-500x slower than the
-  wrapped Fortran (55 s at d=2 to ~200 s at d=20 per 1000-eval run) --
-  interpreter cost on the O(evals^2 d) planner, not FFI.
+- Pure-R reference implementation of BAYES1: 84x (d=10; linearly
+  extrapolated from 300-eval runs, so understated) to 465x (d=2,
+  measured directly) slower than the wrapped Fortran (55 s at d=2 to
+  ~200 s at d=20 per 1000-eval run) -- interpreter cost on the
+  O(evals^2 d) planner, not FFI.
 - Raw objective evaluation (furasn): pure Python 1.0-3.0 us, pyo3 native
   0.2-0.8 us; pure R 2.1-2.8 us, .Call round trip 3.9-4.6 us.
 

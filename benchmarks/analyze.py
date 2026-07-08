@@ -64,12 +64,12 @@ STYLE = {
 
 PY_PROFILE_METHODS = [
     "globalopt_bayes1_fortran", "globalopt_exkor_fortran",
-    "globalopt_glopt_fortran", "scipy_dual_annealing", "nlopt_direct_l",
-    "nlopt_crs2", "cma", "random_search",
+    "globalopt_lbayes_fortran", "scipy_dual_annealing", "nlopt_direct_l",
+    "cma", "random_search",
 ]
 R_PROFILE_METHODS = [
     "globalopt_bayes1_fortran", "globalopt_exkor_fortran",
-    "globalopt_glopt_fortran", "gensa", "deoptim", "ga",
+    "globalopt_lbayes_fortran", "gensa", "deoptim",
     "nloptr_direct_l", "random_search",
 ]
 
@@ -107,7 +107,8 @@ def perf_profile(df: pd.DataFrame, methods: list[str], tol: float,
                         aggfunc="min")
     best = piv.min(axis=1)
     ratios = piv.div(best, axis=0)
-    n_prob = len(piv)
+    # denominator: every problem instance, including those no method solved
+    n_prob = len(d[key].drop_duplicates())
     taus = np.logspace(0, math.log10(rmax), 200)
     for m in methods:
         if m not in ratios:
@@ -134,7 +135,7 @@ def data_profile(df: pd.DataFrame, methods: list[str], tol: float,
     key = ["problem", "dim", "instance"]
     piv = d.pivot_table(index=key, columns="method", values="units",
                         aggfunc="min")
-    n_prob = len(piv)
+    n_prob = len(d[key].drop_duplicates())
     xs = np.linspace(0, budget_mult, 200)
     for m in methods:
         if m not in piv:
@@ -156,7 +157,7 @@ def fig_profiles(py: pd.DataFrame, r: pd.DataFrame, tol: float,
                               ("r", r, R_PROFILE_METHODS)):
         fig, ax = plt.subplots(figsize=(4.2, 3.1))
         n = perf_profile(df, methods, tol, budget_mult, ax)
-        ax.legend(loc="lower right", fontsize=7)
+        ax.legend(loc="upper left", fontsize=7)
         ax.set_title(
             f"{lang.capitalize()} methods, gap $\\leq {tol:g}$, "
             f"budget ${budget_mult}n$ ({n} problems)", fontsize=9)
@@ -166,7 +167,7 @@ def fig_profiles(py: pd.DataFrame, r: pd.DataFrame, tol: float,
 
     fig, ax = plt.subplots(figsize=(4.2, 3.1))
     n = data_profile(py, PY_PROFILE_METHODS, tol, budget_mult, ax)
-    ax.legend(loc="lower right", fontsize=7)
+    ax.legend(loc="upper left", fontsize=7)
     ax.set_title(f"Python methods, gap $\\leq {tol:g}$ ({n} problems)",
                  fontsize=9)
     fig.tight_layout()
@@ -178,15 +179,15 @@ def fig_ffi():
     before = pd.read_csv(RES / "ffi_python_before_fix.csv")
     after = pd.read_csv(RES / "ffi_python.csv")
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(4.6, 2.9),
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5.4, 2.9),
                                    gridspec_kw={"width_ratios": [1.1, 1]})
 
     # Left: per-eval overhead, MIG2 (overhead-dominated), d=10
     m = after[(after.method == "mig2") & (after.dim == 10)]
     order = ["fortran+compiled-obj", "rust+native-obj",
              "fortran+py-callback", "rust+py-callback"]
-    labels = ["Fortran\ncompiled", "Rust\nnative", "Fortran\nPy callback",
-              "Rust\nPy callback"]
+    labels = ["Fortran\ncompiled", "Rust\nnative", "Fortran\nPy cb",
+              "Rust\nPy cb"]
     vals = [m[m.variant == v].per_eval_us.iloc[0] for v in order]
     colors = [OKABE["blue"], OKABE["orange"], OKABE["blue"], OKABE["orange"]]
     bars = ax1.bar(labels, vals, color=colors, width=0.62)
@@ -195,7 +196,7 @@ def fig_ffi():
                  ha="center", fontsize=7)
     ax1.set_ylabel(r"$\mu$s per evaluation")
     ax1.set_title("MIG2 call overhead ($n{=}10$)", fontsize=8.5)
-    ax1.tick_params(axis="x", labelsize=7)
+    ax1.tick_params(axis="x", labelsize=6.5)
 
     # Right: BAYES1 runtime, before vs after the pruning repair
     dims = [2, 10, 20]
@@ -245,7 +246,7 @@ def tab_median_gap(py: pd.DataFrame, r: pd.DataFrame):
     t = pd.DataFrame(rows)
 
     def fmt(v):
-        if pd.isna(v):
+        if pd.isna(v) or not np.isfinite(v):
             return "--"
         if v <= 0:
             return "0"

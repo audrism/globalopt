@@ -15,8 +15,6 @@
 
 \newcommand{\pkg}[1]{\textsf{#1}}
 \newcommand{\code}[1]{\texttt{#1}}
-% numbers pending the full benchmark sweep are marked:
-\newcommand{\TBD}[1]{\textcolor{red}{[#1]}}
 
 \title{Wrap or Rewrite? Reviving the 1989 \emph{GlobalMinimum} Bayesian
 Global-Optimization Library for R and Python}
@@ -57,11 +55,13 @@ functions---quiet correctness bugs of the rewrite route. Third, we
 benchmark the 1989 methods against modern global optimizers in both
 ecosystems (SciPy, NLopt, CMA-ES, GenSA, DEoptim, GA) on a COCO-style
 shifted-instance suite of 16~test families at dimensions 2--10 under
-matched evaluation budgets, using performance and data profiles. The
-one-step Bayesian method and the coordinate Wiener-model search remain
-competitive at small budgets, while modern annealing and
-restart-based methods dominate at larger budgets. All code, data, and
-scripts are available for replication.
+matched evaluation budgets, using performance and data profiles. At the larger budget
+the coordinate Wiener-model search EXKOR is competitive with the best
+modern methods (solving 56\% of Python instances to gap $10^{-2}$,
+versus 55\% for dual annealing and 47\% for CMA-ES and DIRECT-L),
+though its strength is concentrated on separable landscapes; at tight
+budgets modern annealing dominates. All code, data, and scripts are
+available for replication.
 \end{abstract}
 
 \section{Introduction}
@@ -90,7 +90,7 @@ This library is scientifically interesting today for two reasons. As
 \emph{methods}, its algorithms are extremely cheap
 surrogate-based optimizers: the \code{BAYES1} planner selects each new
 point by maximizing a closed-form acquisition over the full evaluation
-history at $O(\ell)$ cost per candidate, in contrast to the $O(\ell^3)$
+history at $O(\ell n)$ cost per candidate, in contrast to the $O(\ell^3)$
 Gaussian-process algebra of modern Bayesian optimization. How such methods
 fare against contemporary default choices (differential evolution,
 generalized simulated annealing, DIRECT, CMA-ES) under matched budgets is
@@ -105,9 +105,11 @@ question: \textbf{wrap the original, or rewrite it in a modern language?}
 We did both, and instrumented the difference. This paper reports:
 
 \begin{itemize}
-\item \textbf{Packages} (Section~\ref{sec:packages}). CRAN-style R and
-  PyPI-style Python packages in which all fourteen routines run the
-  \emph{original} compiled Fortran. A small trampoline (the upstream
+\item \textbf{Packages} (Section~\ref{sec:packages}). A CRAN-style R
+  package in which all fourteen routines run the \emph{original}
+  compiled Fortran, and a PyPI-style Python package wrapping the twelve
+  optimization routines (the two screening procedures remain
+  translation-backed in Python). A small trampoline (the upstream
   objective \code{FI(X,N)} is a link-time symbol, not an argument) and a
   language-agnostic C shim provide interpreter callbacks, compiled
   built-in objectives, evaluation tracing, deterministic seeding of the
@@ -122,18 +124,19 @@ We did both, and instrumented the difference. This paper reports:
   the obvious explanation. By separating foreign-function call overhead,
   interpreter-callback cost, and algorithm-internal cost, we show the
   overheads are microseconds and nearly backend-independent, while the
-  translated \code{BAYES1} planner was $3\times$ (dimension 2) to
-  $12\times$ (dimension 20) slower because the port dropped two pruning
+  translated \code{BAYES1} planner was $1.7\times$ ($n{=}2$) to
+  $12\times$ ($n{=}20$) slower because the port dropped two pruning
   rules of the original acquisition scan. Restoring them yields bitwise
   trajectory agreement with the 1989 binary and runtime parity. We also
   document independent correctness bugs found only because the original
   was executable: re-implemented Shekel and Hartmann test matrices were
-  transposed relative to the Fortran \code{DATA} statements in two of
-  three prior re-implementations.
+  transposed relative to the Fortran \code{DATA} statements in both
+  prior re-implementations (all five coefficient families in the pure-R
+  port, two of five in the Rust port).
 \item \textbf{A cross-ecosystem benchmark} (Sections~\ref{sec:bench}
   and~\ref{sec:results}). A COCO-style~\cite{hansen2021coco} suite (16
   test families, dimensions 2--10, 15 shifted instances each, budgets of
-  $25d$ and $100d$ evaluations, identical bit-level instances in R and
+  $25n$ and $100n$ evaluations, identical bit-level instances in R and
   Python) comparing seven wrapped 1989 methods against SciPy
   (differential evolution~\cite{storn1997differential}, dual
   annealing~\cite{tsallis1996generalized,xiang1997generalized},
@@ -352,13 +355,15 @@ host (all scripts and raw data ship with the repository):
   closure adds 2--4\,$\mu$s. No $4\times$ lives here.
 \item \textbf{Algorithm-dominated runs}: \code{BAYES1}, 1000
   evaluations. Before our fix the Rust translation took 0.32\,s,
-  3.4\,s, and 13.9\,s at $n=2,10,20$ against 0.11--1.2\,s for the
-  wrapped Fortran---a \emph{dimension-dependent} $3\times$ to $12\times$
+  3.4\,s, and 13.9\,s at $n=2,10,20$ against 0.18\,s, 1.02\,s, and
+  1.16\,s for the wrapped Fortran measured in the same session---a
+  \emph{dimension-dependent} $1.7\times$, $3.4\times$, $12\times$
   gap, incompatible with constant-per-call overhead.
 \item \textbf{Interpreter base case}: the pure-R reference
   implementation of the same algorithm takes 55--200\,s, i.e.\
-  $300$--$500\times$ the wrapped Fortran, dwarfing every
-  wrapping-related effect.
+  $84\times$ ($n{=}10$, linearly extrapolated and therefore
+  understated) to $465\times$ ($n{=}2$, measured directly) the wrapped
+  Fortran, dwarfing every wrapping-related effect.
 \end{enumerate}
 
 \subsection{Diagnosis and repair}
@@ -445,16 +450,22 @@ and the FFI microbenchmarks of Section~\ref{sec:fidelity}.
 \section{Results}
 \label{sec:results}
 
-\TBD{This section is completed from benchmarks/results/ by
-benchmarks/analyze.py; figures and numbers below are placeholders until
-the full sweep finishes.}
+The sweep comprises 18{,}240 Python runs and 13{,}440 R runs (480
+problem instances per language and budget tier); no run failed except
+the 270 intentional SHGO exclusions above $n=5$ --- where its simplicial
+machinery takes minutes and gigabytes per run --- which are recorded as
+failures and count against it.
+Raw CSVs, the analysis script, and the exact numbers below ship with the
+repository.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.49\textwidth]{fig/perf_profile_python.pdf}%
 \includegraphics[width=0.49\textwidth]{fig/perf_profile_r.pdf}
-\caption{Performance profiles (evaluations to reach gap $10^{-2}$),
-budget $100n$: Python methods (left), R methods (right).}
+\caption{Dolan--Mor\'e performance profiles on evaluations to reach gap
+$10^{-2}$ within the $100n$ budget (480 problem instances; unsolved
+instances count in the denominator). Solid lines: wrapped 1989 methods;
+dashed: modern competitors; dotted: random search.}
 \label{fig:perf}
 \end{figure}
 
@@ -462,22 +473,81 @@ budget $100n$: Python methods (left), R methods (right).}
 \centering
 \includegraphics[width=0.49\textwidth]{fig/data_profile_python.pdf}%
 \includegraphics[width=0.49\textwidth]{fig/ffi_decomposition.pdf}
-\caption{Left: data profiles (fraction of problems solved to gap
-$10^{-2}$ versus evaluations$/(n{+}1)$). Right: decomposition of
-per-evaluation overhead and the BAYES1 translation gap before/after the
-pruning repair.}
+\caption{Left: Mor\'e--Wild data profiles (fraction of instances solved
+to gap $10^{-2}$ versus evaluations$/(n{+}1)$), Python methods. Right:
+the overhead/fidelity decomposition of Section~\ref{sec:fidelity} ---
+per-evaluation cost of the overhead-dominated \code{MIG2}
+($n{=}10$), and \code{BAYES1} runtime before/after the pruning repair.}
 \label{fig:data}
 \end{figure}
 
 \subsection{Where the 1989 methods stand}
-\TBD{filled from analysis: per-family winners, profile crossings,
-small-budget vs large-budget regimes, EXKOR on separable problems,
-BAYES1 at 25n, caps limiting 100n performance at n=10.}
+
+Figure~\ref{fig:perf} shows performance profiles at gap $10^{-2}$ under
+the $100n$ budget; Figure~\ref{fig:data} (left) the corresponding data
+profile. Three regimes are visible.
+
+\paragraph{Generous budgets ($100n$).} The coordinate Wiener-model
+search \code{EXKOR} is the strongest 1989 method and is competitive
+with everything we ran: it solves 56.0\% of Python instances within
+budget---nominally ahead of dual annealing (55.4\%), CMA-ES (47.3\%),
+and DIRECT-L (47.1\%)---and 39.0\% in R, tied with DIRECT-L and behind
+only GenSA (49.4\%). Tightening the tolerance to $10^{-4}$ preserves
+this picture (dual annealing 52.9\%, \code{EXKOR} 50.2\%, GenSA
+47.9\%). Its profile is sharply bimodal across problem families,
+exactly as its structure predicts: on separable or
+coordinate-aligned landscapes it is essentially perfect (100\% of
+Hartmann-6, L\'evy, Schwefel, six-hump camel, and sphere instances;
+91\% Rastrigin; 82\% Ackley), while on coupled valleys it solves
+nothing (0\% on Rosenbrock, Branin, Goldstein--Price, and Zakharov), and
+on Hartmann-3 its coordinate-wise moves descend into the secondary
+basin on every instance (a constant terminal gap of 0.773).
+Averaged ranks over all problem groups therefore place it sixth of
+nineteen in Python (mean rank 6.1 versus 4.2 for DIRECT-L) and third
+of fourteen in R (4.2, behind GenSA at 2.3 and DIRECT-L at 3.0), ahead
+of CRS2, ISRES, DEoptim, and GA in both ecosystems.
+
+\paragraph{Tight budgets ($25n$).} Small-budget behavior reverses the
+order: dual annealing (31.0\%) and GenSA (25.4\%) dominate, the
+multistart \code{LBAYES} is the best 1989 method (12.7\% Python,
+16.9\% R---second overall in R at this budget), and \code{EXKOR}
+(4.4\%) has not yet completed its first coordinate cycles. The one-step
+Bayesian \code{BAYES1} sits mid-field at both budgets (15.8\% at
+$100n$); its fixed candidate-sampling acquisition is dominated by
+modern annealing schedules on these landscapes, though it beats CRS2,
+ISRES, and the differential-evolution and genetic-algorithm packages
+--- implementations published one to two decades later --- under the
+same protocol.
+
+\paragraph{Deployed fidelity check.} The repaired Rust translation of
+\code{BAYES1} is statistically indistinguishable from the wrapped
+original across the sweep (solve rates 15.6\% versus 15.8\%; mean
+ranks 9.6 versus 9.5)---the benchmark-scale confirmation of the
+trace-level parity of Section~\ref{sec:fidelity}.
+
+\paragraph{Baselines and sanity checks.} Random search solves 0.6\% of
+instances at $100n$; every method clears it decisively. Differential
+evolution and GA suffer from population sizing at these budgets
+($10n$--$50$ individuals leave few generations); we report them under
+the same budget-scaled defaults as everything else rather than tuning
+per problem.
 
 \subsection{Overheads and throughput}
-\TBD{filled from analysis: time-per-run distributions; wrapped Fortran
-methods fastest per evaluation; comparison to GenSA/DEoptim internals;
-callback-dominated regime.}
+
+With cheap analytic objectives, wall time exposes solver internals.
+The wrapped 1989 methods occupy the fastest tier: median time per
+$100n$-budget run is 1.9\,ms for \code{EXKOR}, 2.6--2.7\,ms for
+\code{MIG2} and \code{GLOPT}---at or below the 2.8\,ms of a bare
+random-search loop in Python, i.e.\ below the interpreter cost of the
+objective itself. NLopt methods run at 5.6--7.0\,ms, SciPy DIRECT at
+6.9\,ms, while dual annealing (39\,ms) and differential evolution
+(42\,ms) pay SciPy-internal overheads, and \code{BAYES1} (80\,ms) pays
+its $O(\ell^2 n)$ acquisition scan. The R ordering is analogous
+(globalopt methods 4--8\,ms, GenSA and DEoptim 7\,ms, GA 22\,ms,
+\code{BAYES1} 90\,ms). Combined with Section~\ref{sec:fidelity}: for
+objectives costing under a microsecond the callback into the host
+language dominates everything else, and the built-in compiled-objective
+path of our packages removes even that.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -495,10 +565,19 @@ executable original can arbitrate the translation's fidelity.
 
 \paragraph{Legacy algorithms, modern context.} The acquisition
 criterion~\eqref{eq:fiap1} costs $O(\ell n)$ per candidate against the
-$O(\ell^3)$ of GP-based acquisition; at budgets of a few hundred
-evaluations of cheap-to-moderate objectives, this regime still exists
-(hyperparameter sweeps with cheap proxies, per-instance solver tuning).
-\TBD{tie to measured results.}
+$O(\ell^3)$ of GP-based acquisition, and the measured throughput
+reflects it: the wrapped methods run at or below the cost of a bare
+interpreter loop over the objective. The benchmark places the 1989
+methods squarely in the modern mid-field---\code{EXKOR} at the top on
+separable landscapes and even overall at the $100n$ budget,
+\code{LBAYES} respectable at tight budgets, \code{BAYES1} ahead of
+several methods a generation younger---while GenSA and dual annealing,
+which postdate the library by a decade or more, are the consistent
+overall winners. For practitioners the packages are thus more than a
+museum: on separable or near-separable problems \code{EXKOR} is a
+legitimately strong, extremely cheap choice, and the library's
+LP-$\tau$ designs and screening routines remain useful building
+blocks.
 
 \paragraph{Threats to validity.} Single host, cheap analytic
 objectives (time comparisons expose overheads, not expensive-objective
@@ -537,6 +616,22 @@ reproducibility.
 
 \paragraph{Acknowledgments.} The original MINIMUM/GlobalMinimum library
 is the work of Jonas Mockus (1931--2021).
+
+\appendix
+\section{Median terminal gaps}
+\label{app:gaps}
+
+Table~\ref{tab:gaps} lists median terminal gaps at the $100n$ budget by
+method: over the scalable families at each dimension, and over the
+fixed-dimension classics. ``--'' marks methods not run in that setting
+(SHGO above $n=5$).
+
+\begin{table}[h]
+\centering\small
+\input{tab/median_gap}
+\caption{Median gap to the global optimum at budget $100n$.}
+\label{tab:gaps}
+\end{table}
 
 \bibliographystyle{unsrtnat}
 \bibliography{refs}

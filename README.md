@@ -64,7 +64,7 @@ r2 = globalopt.bayes1([-1, -1], [1, 1], 200, 20, lambda x: sum(v*v for v in x),
   and nearly identical for the Fortran and Rust backends.
 - The historical "4x" gap was a *translation-fidelity* defect: the Rust
   port of the BAYES1 acquisition scan had dropped two upstream pruning
-  rules, costing 3x (n=2) to 12x (n=20). Restoring them gives bitwise
+  rules, costing 1.7x (n=2) to 12x (n=20). Restoring them gives bitwise
   trajectory agreement with the 1989 code and runtime parity.
 - Re-implemented Shekel/Hartmann test functions in earlier R and Rust
   ports had transposed coefficient matrices — caught only by running the
