@@ -180,8 +180,13 @@ def _opt_extr(a: Sequence[float], b: Sequence[float], budget: int, objective: Ob
     if extr is None:
         raise RuntimeError("globalopt native module is unavailable; cannot run globalopt_extr")
     del seed
+    # The public extr() is 1-D as of 0.2.0; this benchmark keeps using the
+    # n-D Rust variant through the native module directly.
+    import globalopt_native as _native
+
     x0 = _midpoint(a, b)
-    return float(extr(x0, a, b, max(1, budget), objective).best_f)
+    result = _native.extr_py(x0, list(a), list(b), max(1, budget), objective)
+    return float(result["best_f"])
 
 
 def _opt_mivar4(a: Sequence[float], b: Sequence[float], budget: int, objective: Objective, seed: int) -> float:

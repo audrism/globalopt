@@ -1,0 +1,5 @@
+# The upstream real.8 sources assume an f77 -r8 style build: the algorithm
+# files are hand-converted to REAL*8, while shared utilities and a few
+# constants rely on default-real promotion (see gm_util.f header and
+# docs/FORTRAN_INTERFACES.md in the source repository).
+PKG_FFLAGS = -std=legacy -fdefault-real-8 -fdefault-double-8

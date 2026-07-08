@@ -2,10 +2,19 @@ pub mod benchmarks;
 pub mod lptau;
 pub mod optimizers;
 
-#[cfg(feature = "python-bindings")]
+#[cfg(feature = "fortran")]
+pub mod fortran;
+
+#[cfg(feature = "python")]
 pub mod python_bindings;
 
 pub use benchmarks::{fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7};
+#[cfg(feature = "fortran")]
+pub use fortran::{
+	fortran_bayes1, fortran_exkor, fortran_extr, fortran_flexi, fortran_glopt, fortran_lbayes,
+	fortran_lpmin, fortran_lptau, fortran_mig1, fortran_mig2, fortran_mivar4, fortran_reqp,
+	fortran_unt, FortranObjective,
+};
 pub use lptau::{lp_tau_point, AtsGenerator};
 pub use optimizers::{
 	anal1, anal2, bayes1, exkor, extr, flexi, glopt, lbayes, lpmin, mig1, mig2, mivar4, reqp,

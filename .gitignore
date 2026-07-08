@@ -15,3 +15,14 @@ r/r/
 # OS/editor noise
 .DS_Store
 .vscode/
+
+# R package compiled objects
+r/globalopt/src/*.o
+r/globalopt/src/*.so
+
+# Paper build
+paper/main.pdf
+paper/_minted*
+
+# Benchmark logs (CSVs are committed; logs are not)
+benchmarks/results/*.log

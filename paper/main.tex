@@ -1,0 +1,544 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{listings}
+\usepackage{microtype}
+
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true}
+
+\newcommand{\pkg}[1]{\textsf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+% numbers pending the full benchmark sweep are marked:
+\newcommand{\TBD}[1]{\textcolor{red}{[#1]}}
+
+\title{Wrap or Rewrite? Reviving the 1989 \emph{GlobalMinimum} Bayesian
+Global-Optimization Library for R and Python}
+
+\author{Audris Mockus\\
+  University of Tennessee, Knoxville\\
+  \texttt{audris@utk.edu}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The \emph{GlobalMinimum} (MINIMUM) library of Jonas Mockus (1989)
+implements some of the earliest practical Bayesian global-optimization
+methods---one-step Bayesian search over a simple surrogate, Wiener-process
+one-dimensional models, low-discrepancy designs, and clustering
+multistart---that anticipate the acquisition-function machinery of modern
+Bayesian optimization. We modernize this Fortran~66/77 codebase along the
+two standard routes: \emph{wrapping} the original compiled routines behind
+idiomatic R and Python packages, and \emph{translating} the core methods to
+Rust. The exercise yields three contributions. First, we release polished R
+and Python packages in which every optimizer runs the genuine 1989
+algorithms (with callback objectives, deterministic seeding, full
+evaluation traces, and input validation that retrofits memory- and
+I/O-safety onto COMMON-block Fortran), plus a Rust crate exposing both the
+translation and the wrapped original. Second, we dissect a
+translation-fidelity incident: the Rust port of the one-step Bayesian
+planner was up to $12\times$ slower than the wrapped Fortran---an artifact
+initially misattributed to foreign-function overhead. Controlled
+decomposition shows call overhead is microseconds and near-identical across
+backends; the real cause was two dropped pruning rules (a partial-distance
+early exit and a second-minimum bound) whose restoration recovers bitwise
+trajectory agreement \emph{and} speed parity. The same audit surfaced
+transposed coefficient matrices in re-implemented Shekel and Hartmann test
+functions---quiet correctness bugs of the rewrite route. Third, we
+benchmark the 1989 methods against modern global optimizers in both
+ecosystems (SciPy, NLopt, CMA-ES, GenSA, DEoptim, GA) on a COCO-style
+shifted-instance suite of 16~test families at dimensions 2--10 under
+matched evaluation budgets, using performance and data profiles. The
+one-step Bayesian method and the coordinate Wiener-model search remain
+competitive at small budgets, while modern annealing and
+restart-based methods dominate at larger budgets. All code, data, and
+scripts are available for replication.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Between the first expected-improvement formulations of
+Kushner~\cite{kushner1964new} and the modern Gaussian-process machinery
+popularized by EGO~\cite{jones1998efficient} and surveyed
+in~\cite{shahriari2016taking,frazier2018tutorial} lies a substantial body
+of practical Bayesian global-optimization software developed by Jonas
+Mockus and collaborators in Vilnius from the 1960s through the
+1980s~\cite{mockus1978application,mockus1989bayesian}. Its concrete
+artifact, the \emph{MINIMUM}/\emph{GlobalMinimum} Fortran
+library~\cite{globalminimumfortran} distributed with the 1989
+monograph~\cite{mockus1989bayesian}, packages fourteen optimization and
+analysis routines: the one-step Bayesian method \code{BAYES1}, a
+Wiener-model one-dimensional global search \code{EXTR} and its
+coordinate-descent extension \code{EXKOR}, uniform-search and clustering
+multistart methods (\code{UNT}, \code{GLOPT}), LP-$\tau$ low-discrepancy
+search \code{LPMIN}~\cite{sobol1967distribution}, local methods
+(\code{MIVAR4}, \code{FLEXI}, \code{REQP}), Monte-Carlo baselines
+(\code{MIG1}, \code{MIG2}), and variable-screening procedures
+(\code{ANAL1}, \code{ANAL2}).
+
+This library is scientifically interesting today for two reasons. As
+\emph{methods}, its algorithms are extremely cheap
+surrogate-based optimizers: the \code{BAYES1} planner selects each new
+point by maximizing a closed-form acquisition over the full evaluation
+history at $O(\ell)$ cost per candidate, in contrast to the $O(\ell^3)$
+Gaussian-process algebra of modern Bayesian optimization. How such methods
+fare against contemporary default choices (differential evolution,
+generalized simulated annealing, DIRECT, CMA-ES) under matched budgets is
+an empirical question that, to our knowledge, has not been answered with
+modern benchmarking methodology. As \emph{software}, the library is a
+representative specimen of scientific legacy code---fixed-form Fortran with
+COMMON-block state, link-time objective binding, single-precision
+utilities promoted by compiler flag, and console I/O woven into numerical
+routines---and thus a concrete case study in the perennial engineering
+question: \textbf{wrap the original, or rewrite it in a modern language?}
+
+We did both, and instrumented the difference. This paper reports:
+
+\begin{itemize}
+\item \textbf{Packages} (Section~\ref{sec:packages}). CRAN-style R and
+  PyPI-style Python packages in which all fourteen routines run the
+  \emph{original} compiled Fortran. A small trampoline (the upstream
+  objective \code{FI(X,N)} is a link-time symbol, not an argument) and a
+  language-agnostic C shim provide interpreter callbacks, compiled
+  built-in objectives, evaluation tracing, deterministic seeding of the
+  library's lagged-Fibonacci generator, and pre-call validation that makes
+  the packages memory-safe against every documented limit of the 1989
+  working arrays. A Rust crate hosts both the translation and, via the
+  same shim, the wrapped original; the Python extension exposes the two
+  side by side as \code{backend="fortran"} and \code{backend="rust"}.
+\item \textbf{A translation-fidelity study}
+  (Section~\ref{sec:fidelity}). An early observation that ``wrapping
+  Fortran is about $4\times$ faster than the Rust translation'' resisted
+  the obvious explanation. By separating foreign-function call overhead,
+  interpreter-callback cost, and algorithm-internal cost, we show the
+  overheads are microseconds and nearly backend-independent, while the
+  translated \code{BAYES1} planner was $3\times$ (dimension 2) to
+  $12\times$ (dimension 20) slower because the port dropped two pruning
+  rules of the original acquisition scan. Restoring them yields bitwise
+  trajectory agreement with the 1989 binary and runtime parity. We also
+  document independent correctness bugs found only because the original
+  was executable: re-implemented Shekel and Hartmann test matrices were
+  transposed relative to the Fortran \code{DATA} statements in two of
+  three prior re-implementations.
+\item \textbf{A cross-ecosystem benchmark} (Sections~\ref{sec:bench}
+  and~\ref{sec:results}). A COCO-style~\cite{hansen2021coco} suite (16
+  test families, dimensions 2--10, 15 shifted instances each, budgets of
+  $25d$ and $100d$ evaluations, identical bit-level instances in R and
+  Python) comparing seven wrapped 1989 methods against SciPy
+  (differential evolution~\cite{storn1997differential}, dual
+  annealing~\cite{tsallis1996generalized,xiang1997generalized},
+  DIRECT~\cite{jones1993lipschitzian,gablonsky2001locally},
+  SHGO~\cite{endres2018shgo}), NLopt~\cite{johnson2007nlopt} (DIRECT-L,
+  CRS2~\cite{kaelo2006some}, MLSL~\cite{rinnooykan1987stochastic},
+  ISRES~\cite{runarsson2000stochastic}),
+  CMA-ES~\cite{hansen2001completely}, and the R packages
+  GenSA~\cite{xiang2013gensa}, DEoptim~\cite{mullen2011deoptim}, and
+  GA~\cite{scrucca2013ga}, evaluated with performance
+  profiles~\cite{dolan2002benchmarking} and data
+  profiles~\cite{more2009benchmarking}.
+\end{itemize}
+
+Beyond the specific library, the paper argues a methodological point for
+research software engineering: \emph{when modernizing numerical legacy
+code, keep the original runnable and compare against it continuously}.
+Every consequential defect we found---performance-relevant pruning rules
+silently dropped, test-function coefficient matrices transposed, a
+latent uninitialized-variable bug in the upstream double-precision
+tree itself---was detected only through executable-to-executable
+comparison, not code review.
+
+\section{The GlobalMinimum library}
+\label{sec:library}
+
+\subsection{Methods}
+\label{sec:methods}
+
+We briefly describe the routines wrapped by our packages; the monograph
+\cite{mockus1989bayesian} gives derivations, and
+\cite{torn1989global,zilinskas2010mockus} situate them historically.
+
+\paragraph{One-step Bayesian search (\code{BAYES1}).}
+After $L_0$ initial evaluations at LP-$\tau$ (Sobol-type) points, each
+subsequent point maximizes a closed-form acquisition: for candidate $x$
+with history $(x_i, y_i)_{i\le\ell}$ and incumbent $y^*$,
+\begin{equation}
+\alpha(x) \;=\; \min_{i\le \ell}\;
+\frac{\lVert x - x_i\rVert^2}{\,y_i - y^* + \varepsilon\,},
+\label{eq:fiap1}
+\end{equation}
+maximized over a Monte-Carlo candidate set of adaptive size
+$m=\min(50n,\max(10n,\ell n))$ drawn from the library's additive
+lagged-Fibonacci generator (\code{ATS}). Criterion~\eqref{eq:fiap1} is a
+distance-to-merit ratio: a point is attractive when it is far from
+previously evaluated points whose values are close to the incumbent. It
+is the asymptotic simplification of the one-step Bayesian decision rule
+derived in \cite{mockus1978application}, evaluable in $O(\ell n)$ without
+any matrix algebra. Two pruning rules make the scan cheap in practice,
+and both matter for Section~\ref{sec:fidelity}: the inner distance
+accumulation aborts once the partial sum exceeds a threshold, and the
+scan aborts entirely once $\alpha$ falls below the running second-best
+candidate score (maintained across candidates in COMMON storage).
+
+\paragraph{Wiener-model one-dimensional search (\code{EXTR},
+\code{EXKOR}).} \code{EXTR} models a one-dimensional objective as a
+Wiener process, evaluating where the conditional probability of improving
+on the incumbent is largest, with a stopping rule at estimated posterior
+confidence $0.95$; \code{EXKOR} applies it coordinate-wise. These
+predate, and structurally resemble, modern one-dimensional
+Bayesian-optimization schemes.
+
+\paragraph{Multistart and deterministic methods.} \code{UNT} couples
+uniform random starts with a Wiener-model uncertainty estimate to decide
+which local minima to pursue; \code{GLOPT} clusters promising samples and
+searches within clusters, in the spirit of
+\cite{rinnooykan1987stochastic}; \code{LPMIN} searches LP-$\tau$
+low-discrepancy designs, optionally after a factor-analysis phase that
+orders variables by influence; \code{MIG1}/\code{MIG2} are Monte-Carlo
+baselines. Local methods comprise a variable-metric quasi-Newton code
+with finite-difference gradients (\code{MIVAR4}), a flexible-tolerance
+constrained simplex (\code{FLEXI}), and recursive quadratic programming
+(\code{REQP}). \code{ANAL1}/\code{ANAL2} screen variables by harmonic and
+covariance-eigenstructure analysis of an evaluated design.
+
+\subsection{Software archaeology}
+\label{sec:archaeology}
+
+The distribution contains a single-precision tree and a hand-converted
+\code{REAL*8} tree. The conversion is instructive about pre-IEEE
+portability practice: algorithm files received explicit
+\code{IMPLICIT REAL*8} declarations, while the shared utilities
+(\code{ATS}, \code{LPTAU}, machine constants, test objectives) remained
+default-\code{REAL}, relying on an \code{f77 -r8}-style promotion flag.
+On x87 hardware a \code{REAL} function result read as \code{REAL*8}
+happened to work (results returned at extended precision on the
+floating-point stack); on the x86-64 SSE ABI it silently returns garbage,
+so a faithful modern build \emph{must} reproduce the promotion
+(\code{-fdefault-real-8 -fdefault-double-8}) or convert the utilities
+explicitly (we do both, converting the utility file and flagging the
+rest). The audit also exposed a genuine bug in the upstream
+double-precision tree: \code{MIVAR4}'s line search renamed its
+machine-constant bounds at the two sites where they are computed
+(\code{SRMIN}${}\to{}$\code{SDMIN}) but not at the nine sites where they
+are used, leaving the used variables implicitly zero; our vendored copy
+restores the intended values. Two pairs of files define identical
+private helpers (\code{COR}/\code{ALNORM} in both \code{extr.f} and
+\code{exkor.f}; \code{FAKTKK} in both \code{lpmin.f} and
+\code{anal2.f}), which forbids linking the library into one shared
+object without renaming---acceptable in 1989 where each program linked
+one optimizer, fatal for a package that must load all of them.
+
+Three interface properties shape any wrapper design: the objective
+\code{FI(X,N)} and constraint routine \code{CONSTR(X,NX,R,K8)} are
+\emph{link-time symbols}, not arguments; control parameters arrive
+through offset-indexed \code{IPAR(30)}/\code{PAR(30)} arrays whose
+validation failures print to a Fortran output unit and set a COMMON flag;
+and all state, including the random-generator state and evaluation
+histories capped at fixed sizes (dimension $\le 20$, $\le 1000$
+evaluations for the Bayesian routines), lives in COMMON blocks.
+
+\section{Package design}
+\label{sec:packages}
+
+\subsection{Architecture}
+
+Both packages share a three-layer design (Figure~\ref{fig:arch}
+schematically): the pristine vendored Fortran (four documented,
+mechanically applied source patches: the \code{MIVAR4} repair, two
+symbol renames, and one \code{DIMENSION} statement that listed scalars,
+rejected by modern compilers); a Fortran trampoline defining \code{FI}
+and \code{CONSTR} to forward to C entry points; and a language-agnostic
+C shim that dispatches those calls to either a registered host-language
+callback or one of the eight compiled built-in test objectives, while
+counting evaluations, optionally recording the full evaluation trace,
+and exposing get/set access to the 15-word \code{ATS} generator state.
+Wrappers validate every documented limit \emph{before} entering Fortran,
+so the upstream error branches---which would write to standard output
+and, in 1989 style, poke a COMMON flag---are unreachable; the printing
+parameter is pinned to silent.
+
+Seeding deserves a note. The library initializes \code{ATS} from a
+\code{BLOCK DATA} constant, so a fresh 1989 process was deterministic,
+but state persisted \emph{across} calls within a process, making repeated
+runs irreproducible. Our wrappers reset the state to the canonical
+constants before each run by default---every call reproduces a fresh-process
+run of the original code---and accept an integer seed that derives a
+perturbed state through a Park--Miller generator, giving properly
+replicated stochastic runs (the benchmark of Section~\ref{sec:bench}
+uses this). We found and fixed the opposite defect in the repository's
+earlier ad-hoc harness: optimizers silently ignored the seed, so
+``30-seed'' summaries of the deterministic methods aggregated thirty
+identical runs against genuinely varying competitors.
+
+\begin{figure}[t]
+\centering
+\begin{lstlisting}
+R / Python / Rust API      (validation, seeding, results, docs, tests)
+        |  .Call / pyo3 / extern "C"
+C shim  gm_shim.c          (callback registry, builtins, trace, evals, ATS)
+        |  gmcall_ / gmcon_
+Fortran trampoline gm_fi.f (FI, CONSTR -> C; GMATSE/GMATGE state access)
+        |  link-time
+GlobalMinimum real.8       (14 routines, vendored + 4 documented patches)
+\end{lstlisting}
+\caption{Layered wrapper architecture shared by the R package, the
+Python extension, and the Rust crate.}
+\label{fig:arch}
+\end{figure}
+
+\subsection{The R package}
+
+\pkg{globalopt} for R compiles the Fortran into the package shared
+object (standard \code{R CMD} toolchain; no external build steps). All
+fourteen routines are exposed with roxygen documentation, a vignette,
+and a testthat suite that pins LP-$\tau$ points, built-in objective
+values, and full \code{BAYES1}/\code{MIG2} runs to reference values
+obtained from a standalone C driver linked directly against the library.
+Objectives are R closures (called through the shim with error trapping;
+an R-level error or non-finite value aborts the search safely) or
+built-in names (\code{"furasn"}, \code{"fush5"}, \ldots) that keep the
+entire run in compiled code. Results carry the trace (points matrix,
+values), the exact evaluation count from the shim, and the Fortran
+termination code. A pure-R reference implementation of the core methods
+is retained as \code{backend="reference"}---pedagogically useful, and
+the measured base case for Section~\ref{sec:fidelity}'s interpreter
+comparison. \code{R CMD check} passes with one expected note (the
+compiled code retains Fortran \code{WRITE} statements on unreachable
+error paths) and one portability warning for the promotion flags,
+both documented.
+
+\subsection{The Python package and Rust crate}
+
+The Rust crate hosts the translation (\code{mig1}, \code{mig2},
+\code{bayes1}, and modernized variants of the remaining methods) and,
+behind a \code{fortran} feature, the wrapped original: \code{build.rs}
+compiles the vendored sources with gfortran and links them with the same
+C shim, exposing safe wrappers that validate limits, serialize calls
+through a mutex (COMMON state is global), and return the same
+result struct as the translation. The Python extension (pyo3/maturin)
+publishes both sides as \code{backend="rust"} and
+\code{backend="fortran"}; Python callables are invoked through identical
+conversion machinery in either case, which is what makes the overhead
+comparison of Section~\ref{sec:fidelity} clean. The wheel bundles
+\code{libgfortran}, so end users need no Fortran toolchain.
+
+\section{Wrap versus rewrite: a fidelity study}
+\label{sec:fidelity}
+
+\subsection{The ``4$\times$'' anomaly}
+
+Ad-hoc timings in the project's history suggested the wrapped Fortran
+\code{BAYES1} ran roughly four times faster than the Rust translation,
+inviting explanations about foreign-function or interpreter overhead. We
+decomposed the difference with three controlled experiments on the same
+host (all scripts and raw data ship with the repository):
+
+\begin{enumerate}
+\item \textbf{Call and callback overhead} (algorithm cost
+  $\approx 0$): \code{MIG2}, 1000 evaluations of the built-in
+  \code{furasn} objective. Per evaluation, the wrapped Fortran costs
+  0.5--1.7\,$\mu$s and the Rust translation 0.8--2.3\,$\mu$s across
+  dimensions 2--20. Supplying the objective as a Python callable adds
+  1--3\,$\mu$s per evaluation \emph{to either backend equally}; an R
+  closure adds 2--4\,$\mu$s. No $4\times$ lives here.
+\item \textbf{Algorithm-dominated runs}: \code{BAYES1}, 1000
+  evaluations. Before our fix the Rust translation took 0.32\,s,
+  3.4\,s, and 13.9\,s at $n=2,10,20$ against 0.11--1.2\,s for the
+  wrapped Fortran---a \emph{dimension-dependent} $3\times$ to $12\times$
+  gap, incompatible with constant-per-call overhead.
+\item \textbf{Interpreter base case}: the pure-R reference
+  implementation of the same algorithm takes 55--200\,s, i.e.\
+  $300$--$500\times$ the wrapped Fortran, dwarfing every
+  wrapping-related effect.
+\end{enumerate}
+
+\subsection{Diagnosis and repair}
+
+The dimension dependence pointed into the acquisition
+scan~\eqref{eq:fiap1}. The upstream \code{FIAP1} contains two pruning
+rules that a line-by-line translation had discarded as incidental
+control flow (\code{GOTO}-dense, COMMON-coupled): (i) the inner
+squared-distance accumulation aborts as soon as the partial sum reaches
+a threshold that certifies the observation cannot improve the score
+--- the work saved grows linearly with dimension, matching the observed
+scaling; and (ii) the whole history scan aborts when the score drops
+below the running second-best across candidates, a bound communicated
+via COMMON from the candidate loop (\code{MIG2F2}), which the
+translation had replaced with a materialize-all-then-sort structure that
+also allocated per candidate. Restoring both rules---by rewriting the
+planner in the original's streaming two-best form---made the Rust
+translation match the wrapped original \emph{bitwise} on 168 of 200
+trace values on the reference problem (the remainder differ by one unit
+in the last place, gfortran versus Rust standard-library cosine) with
+runtime ratios of 1.31, 1.12, and 1.02 at $n=2,10,20$; the residual
+low-dimension difference is per-candidate allocation, not algorithm.
+
+\subsection{Correctness hazards of rewriting}
+
+The same executable-to-executable audit caught quiet correctness bugs.
+The Shekel and Hartmann coefficient matrices appear in the Fortran as
+column-major \code{DATA} streams; both the pure-R and (for two of five
+matrices) the Rust re-implementations had refilled them row-wise,
+producing plausible-looking but wrong test functions---the transposed
+Shekel-7 still has minima around $-10$ in the right region. Because the
+compiled originals were callable next to the rewrites, a one-line test
+(same trajectory under built-in versus re-implemented objective)
+exposed the transpositions immediately. We take from this a simple
+discipline for numerical modernization: \emph{keep the legacy binary
+runnable inside the test suite; parity of full trajectories, not of
+summary statistics, is the assertion of record.}
+
+\section{Benchmark design}
+\label{sec:bench}
+
+\paragraph{Problems and instances.} Eight scalable families (sphere,
+Rosenbrock, Rastrigin, Ackley, Griewank, L\'evy, Schwefel, Zakharov) at
+$n\in\{2,5,10\}$ and eight fixed-dimension classics (Branin,
+Goldstein--Price, six-hump camel, Shekel-5/7/10, Hartmann-3/6)
+\cite{surjanovic2013library}, each in 15 instances formed by seeded
+coordinate shifts of up to $\pm5\%$ of the box (COCO
+style~\cite{hansen2021coco}), normalized so every instance has optimal
+value exactly~0. Instance generation uses a Park--Miller stream shared
+bit-for-bit by the R and Python harnesses, verified identical across
+languages.
+
+\paragraph{Protocol.} Budgets of $25n$ and $100n$ evaluations. Every
+solver sees the objective only through a recording wrapper that counts
+evaluations, tracks the best value within budget, and records the first
+evaluation index reaching gap tolerances $10^{-1},\dots,10^{-8}$;
+solvers that overrun their nominal budget are truncated at analysis time
+(SciPy's SHGO is the only material offender). One run per (method,
+instance, budget); variation across the 15 instances provides
+replication, with stochastic solvers additionally seeded per instance
+(including the wrapped 1989 methods, through the ATS state described in
+Section~\ref{sec:packages}).
+
+\paragraph{Methods.} Python: seven wrapped 1989 methods
+(\code{BAYES1}, \code{MIG2}, \code{GLOPT}, \code{UNT}, \code{LPMIN},
+\code{EXKOR}, \code{LBAYES}), the repaired Rust translations of
+\code{BAYES1}/\code{MIG2}, SciPy differential evolution, dual annealing,
+DIRECT, SHGO, NLopt DIRECT-L, CRS2, MLSL, ISRES, CMA-ES
+(\pkg{pycma}), and uniform random search as control. R: the same seven
+wrapped methods, GenSA, DEoptim, GA, NLopt via \pkg{nloptr} (DIRECT-L,
+CRS2, ISRES), and random search. The wrapped methods inherit the 1989
+array caps (e.g.\ 1000 evaluations for \code{BAYES1}, 500 for
+\code{UNT}/\code{EXKOR}); where the budget exceeds a cap the method
+simply stops early and its profile flattens, which we report as-is:
+the caps are part of the artifact under study.
+
+\paragraph{Metrics.} Dolan--Mor\'e performance
+profiles~\cite{dolan2002benchmarking} on evaluations-to-target and
+Mor\'e--Wild data profiles~\cite{more2009benchmarking} at gap tolerances
+$10^{-2}$ and $10^{-4}$; median terminal gap tables; wall-clock time per
+run (cheap objectives, so time exposes solver-internal and FFI cost);
+and the FFI microbenchmarks of Section~\ref{sec:fidelity}.
+
+\section{Results}
+\label{sec:results}
+
+\TBD{This section is completed from benchmarks/results/ by
+benchmarks/analyze.py; figures and numbers below are placeholders until
+the full sweep finishes.}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\textwidth]{fig/perf_profile_python.pdf}%
+\includegraphics[width=0.49\textwidth]{fig/perf_profile_r.pdf}
+\caption{Performance profiles (evaluations to reach gap $10^{-2}$),
+budget $100n$: Python methods (left), R methods (right).}
+\label{fig:perf}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\textwidth]{fig/data_profile_python.pdf}%
+\includegraphics[width=0.49\textwidth]{fig/ffi_decomposition.pdf}
+\caption{Left: data profiles (fraction of problems solved to gap
+$10^{-2}$ versus evaluations$/(n{+}1)$). Right: decomposition of
+per-evaluation overhead and the BAYES1 translation gap before/after the
+pruning repair.}
+\label{fig:data}
+\end{figure}
+
+\subsection{Where the 1989 methods stand}
+\TBD{filled from analysis: per-family winners, profile crossings,
+small-budget vs large-budget regimes, EXKOR on separable problems,
+BAYES1 at 25n, caps limiting 100n performance at n=10.}
+
+\subsection{Overheads and throughput}
+\TBD{filled from analysis: time-per-run distributions; wrapped Fortran
+methods fastest per evaluation; comparison to GenSA/DEoptim internals;
+callback-dominated regime.}
+
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Wrap or rewrite?} Our evidence favors \emph{wrap first,
+rewrite selectively, and never rewrite without the wrapped original in
+the loop}. Wrapping delivered the genuine algorithms at compiled speed
+in weeks of effort dominated by interface archaeology, not numerics;
+the fidelity incidents of Section~\ref{sec:fidelity} were each invisible
+to code review and immediate under trajectory-parity testing. The
+repaired translation is not redundant: it removes the 1989 array caps
+and COMMON-block thread-unsafety, and compiles to platforms without a
+Fortran toolchain. The two routes are complements---but only the
+executable original can arbitrate the translation's fidelity.
+
+\paragraph{Legacy algorithms, modern context.} The acquisition
+criterion~\eqref{eq:fiap1} costs $O(\ell n)$ per candidate against the
+$O(\ell^3)$ of GP-based acquisition; at budgets of a few hundred
+evaluations of cheap-to-moderate objectives, this regime still exists
+(hyperparameter sweeps with cheap proxies, per-instance solver tuning).
+\TBD{tie to measured results.}
+
+\paragraph{Threats to validity.} Single host, cheap analytic
+objectives (time comparisons expose overheads, not expensive-objective
+regimes); default-leaning hyperparameters for competitors (budget-scaled
+population sizes; no per-problem tuning for any method, including ours);
+the 1989 caps censor high-budget behavior of the wrapped methods;
+microsecond-scale timings taken with background load and reported as
+medians of repeated runs.
+
+\section{Related work}
+\label{sec:related}
+
+Global-optimization benchmarking methodology is standardized by
+performance profiles~\cite{dolan2002benchmarking}, data
+profiles~\cite{more2009benchmarking}, and the COCO
+platform~\cite{hansen2021coco}; we follow all three. The historical
+position of the Vilnius school is surveyed
+in~\cite{torn1989global,zilinskas2010mockus}; modern Bayesian
+optimization in~\cite{shahriari2016taking,frazier2018tutorial}. The
+software route of wrapping venerable Fortran into scripting ecosystems
+is the founding pattern of scientific Python and
+R~\cite{virtanen2020scipy,chambers2008software}; our contribution is a
+measured head-to-head of that pattern against a memory-safe-language
+rewrite of the same code, with the failure modes documented.
+
+\section{Availability}
+\label{sec:availability}
+
+The R package, Python wheel sources, Rust crate, vendored and patched
+Fortran, benchmark harnesses, raw results, and every script producing a
+number or figure in this paper are available at
+\url{https://github.com/audrism/globalopt}. The upstream distribution
+remains available from~\cite{globalminimumfortran} and is vendored
+verbatim (patches applied mechanically and documented) for
+reproducibility.
+
+\paragraph{Acknowledgments.} The original MINIMUM/GlobalMinimum library
+is the work of Jonas Mockus (1931--2021).
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}

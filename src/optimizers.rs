@@ -1426,6 +1426,9 @@ impl BayesPlanner {
         }
     }
 
+    // Streaming two-best candidate scan, mirroring the upstream MIG2F2:
+    // candidates are scored one at a time while FMIN (the running
+    // second-best score) tightens the FIAP1 early-exit bound.
     fn next_candidate(
         &mut self,
         a: &[f64],
@@ -1438,31 +1441,56 @@ impl BayesPlanner {
         let l = points.len();
         let m = (50 * n).min((10 * n).max(l * n)).max(2);
 
-        let mut candidates: Vec<Vec<f64>> = Vec::with_capacity(m + 1);
-        if let Some(x2) = &self.x2 {
-            candidates.push(x2.clone());
-        } else {
-            candidates.push(sample_with_ats(&mut self.ats, a, b));
-        }
-        for _ in 0..m {
-            candidates.push(sample_with_ats(&mut self.ats, a, b));
+        let mut fmin = 0.0; // COMMON /BAYFM/: second-best score bound
+        // Upstream: a fresh X2 consumes one of the M candidate draws.
+        let (mut x2, m) = match self.x2.take() {
+            Some(x2) => (x2, m),
+            None => (sample_with_ats(&mut self.ats, a, b), m - 1),
+        };
+        let mut f2 = fiap1(&x2, points, values, ym, fmin);
+
+        let mut best_x = x2.clone();
+        let mut best_f = f64::INFINITY;
+
+        for k in 0..m {
+            let z = sample_with_ats(&mut self.ats, a, b);
+            let ff = fiap1(&z, points, values, ym, fmin);
+
+            if k == 0 {
+                if ff < f2 {
+                    best_x = z;
+                    best_f = ff;
+                    fmin = f2;
+                } else {
+                    best_x = x2.clone();
+                    best_f = f2;
+                    x2 = z;
+                    f2 = ff;
+                    fmin = ff;
+                }
+                continue;
+            }
+            if ff >= f2 {
+                continue;
+            }
+            if ff >= best_f {
+                x2 = z;
+                f2 = ff;
+                fmin = ff;
+                continue;
+            }
+            f2 = best_f;
+            x2 = std::mem::replace(&mut best_x, z);
+            best_f = ff;
+            fmin = f2;
         }
 
-        let mut scored: Vec<(f64, Vec<f64>)> = candidates
-            .into_iter()
-            .map(|x| (fiap1(&x, points, values, ym), x))
-            .collect();
-
-        scored.sort_by(|(fa, _), (fb, _)| fa.partial_cmp(fb).unwrap_or(std::cmp::Ordering::Equal));
-
-        if scored.len() > 1 {
-            self.x2 = Some(scored[1].1.clone());
-        }
-        scored[0].1.clone()
+        self.x2 = Some(x2);
+        best_x
     }
 }
 
-fn fiap1(x: &[f64], points: &[Vec<f64>], values: &[f64], ym: f64) -> f64 {
+fn fiap1(x: &[f64], points: &[Vec<f64>], values: &[f64], ym: f64, fmin: f64) -> f64 {
     if points.is_empty() || values.is_empty() {
         return 0.0;
     }
@@ -1471,6 +1499,7 @@ fn fiap1(x: &[f64], points: &[Vec<f64>], values: &[f64], ym: f64) -> f64 {
     let rlrs = 100.0 * f64::EPSILON * ym.abs();
     let e = 1.0e-6_f64.max(rlrs);
     let yk = ym - e;
+    let fm = -fmin; // upstream FM = -FMIN early-termination bound
 
     let mut p = 1.0_f64.max(values[0] - yk);
     if p.abs() < 1.0e-12 {
@@ -1478,7 +1507,7 @@ fn fiap1(x: &[f64], points: &[Vec<f64>], values: &[f64], ym: f64) -> f64 {
     }
     let mut fii = rmax / p;
 
-    for (obs, &y) in points.iter().zip(values.iter()) {
+    'scan: for (obs, &y) in points.iter().zip(values.iter()) {
         let pp = y - yk;
         if pp.abs() < 1.0e-12 {
             continue;
@@ -1492,17 +1521,22 @@ fn fiap1(x: &[f64], points: &[Vec<f64>], values: &[f64], ym: f64) -> f64 {
             rmax
         };
 
-        let d: f64 = obs
-            .iter()
-            .zip(x.iter())
-            .map(|(xo, xi)| {
-                let diff = xo - xi;
-                diff * diff
-            })
-            .sum();
-
-        if d < threshold {
-            fii = d / pp;
+        // Accumulate the squared distance with the upstream early exit:
+        // once the partial sum reaches the threshold this observation
+        // cannot lower FII, so it is skipped (IF(D.GE.P) GOTO 20).
+        let mut d = 0.0;
+        for (xo, xi) in obs.iter().zip(x.iter()) {
+            let diff = xo - xi;
+            d += diff * diff;
+            if d >= threshold {
+                continue 'scan;
+            }
+        }
+        fii = d / pp;
+        // Upstream IF(FII.LE.FM) GOTO 30: the score already cannot beat
+        // the current two best candidates, stop scanning.
+        if fii <= fm {
+            break;
         }
     }
 

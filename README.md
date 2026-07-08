@@ -1,132 +1,87 @@
 # globalopt
 
-Rust translation of core routines from Jonas Mockus' GlobalMinimum Fortran package, plus a Python package API for the same optimization functions.
+Modernization of Jonas Mockus's **GlobalMinimum** (MINIMUM, 1989) Fortran
+library of Bayesian and other global-optimization methods:
 
-Upstream source archive downloaded from:
+- an **R package** (`r/globalopt`) and a **Python package** (`python/`,
+  wheel name `globalopt-py`) in which every optimizer runs the *original
+  compiled Fortran* — with R/Python callback objectives, compiled built-in
+  test objectives, deterministic seeding, full evaluation traces, and
+  pre-call validation of all 1989 array limits;
+- a **Rust crate** hosting both a faithful translation of the core methods
+  and (behind the default `fortran` feature) the wrapped original;
+- a **benchmark suite** comparing the 1989 methods with modern global
+  optimizers in both ecosystems, and an **FFI/fidelity study** that
+  resolves the "Fortran is 4x faster than Rust" observation;
+- an **arXiv paper** draft (`paper/`) reporting all of the above.
 
-- https://globaloptimum.org/global/download/GlobalMinimumFortran.tar.gz
+Upstream source (vendored in `upstream/GlobalMinimumFortran`, X11-style
+license): <https://globaloptimum.org/global/download/GlobalMinimumFortran.tar.gz>
 
-The extracted upstream code is kept in `upstream/GlobalMinimumFortran` for traceability.
+## Layout
 
-## What Was Ported
+| Path | Contents |
+| --- | --- |
+| `upstream/GlobalMinimumFortran/` | pristine 1989 distribution (single-precision and `real.8` trees) |
+| `fortran/` | bridge layer: `gm_util.f` (REAL*8 utility conversion), `gm_fi.f` (FI/CONSTR trampolines), `gm_shim.c` + `gm.h` (callback registry, builtins, trace, ATS state); `vendor/` = patched algorithm sources for the Rust build |
+| `tools/sync_fortran.sh` | copies + patches upstream sources into `r/globalopt/src` and `fortran/vendor` (4 documented patches) |
+| `r/globalopt/` | R package (Fortran compiled into the package; pure-R reference backend retained) |
+| `python/` | Python package: pyo3 extension with `backend="fortran"` and `backend="rust"` |
+| `src/`, `build.rs` | Rust crate: translation + Fortran backend + pyo3 bindings |
+| `benchmarks/` | cross-language benchmark harness (bit-identical problem instances in R and Python), FFI-overhead experiments, analysis producing the paper's figures/tables |
+| `docs/` | design notes: `DESIGN_WRAPPERS.md`, `FORTRAN_INTERFACES.md` (wrapper-ready interface spec), `FFI_FINDINGS.md` (the 4x resolution) |
+| `paper/` | LaTeX sources of the arXiv paper |
 
-This repository currently ports the following primary routines and support code:
+## Quick start
 
-- `MIG1`, `MIG2`
-- `BAYES1`, `LBAYES`
-- `LPMIN`, `GLOPT`
-- `UNT`, `EXKOR`, `EXTR`
-- `MIVAR4`, `FLEXI`, `REQP`
-- `ANAL1`, `ANAL2`
-- `LPTAU` -> `lp_tau_point`
-- `ATS` pseudo-random generator -> `AtsGenerator`
-- benchmark objectives: `FURASN`, `FUSH5`, `FUSH7`, `FUSH10`, `FUHAR3`, `FUHAR6`, `FUBRAN`, `FUGOLD`
+R (requires gfortran; builds like any source package):
 
-Both Rust and Python APIs return rich optimization results (best point, value, all sampled points, and values).
-
-## Rust API
-
-Main exports are in `src/lib.rs`:
-
-- `mig2(a, b, Mig2Config, objective)`
-- `bayes1(a, b, Bayes1Config, objective)`
-- `lp_tau_point(c, n)`
-- `AtsGenerator`
-- `furasn(x)`
-
-### Rust examples
-
-- `examples/mig2_furasn.rs`
-- `examples/bayes1_furasn.rs`
-
-Run examples:
-
-```bash
-cargo run --example mig2_furasn
-cargo run --example bayes1_furasn
+```r
+install.packages("r/globalopt", repos = NULL, type = "source")
+library(globalopt)
+bayes1(c(-1, -1), c(1, 1), evaluations = 200, initial_points = 20,
+       objective = "furasn")          # compiled objective, no callbacks
+bayes1(c(-1, -1), c(1, 1), 200, 20, function(x) sum(x^2))  # R objective
 ```
 
-## Python Package API
-
-Python package lives in `python/globalopt` and is a thin wrapper around the Rust extension module `globalopt_native`.
-
-Functions include:
-
-- `globalopt.mig1(...)`, `globalopt.mig2(...)`, `globalopt.bayes1(...)`
-- `globalopt.lpmin(...)`, `globalopt.glopt(...)`, `globalopt.lbayes(...)`
-- `globalopt.unt(...)`, `globalopt.exkor(...)`, `globalopt.extr(...)`
-- `globalopt.mivar4(...)`, `globalopt.flexi(...)`, `globalopt.reqp(...)`
-- `globalopt.anal1(...)`, `globalopt.anal2(...)`
-- `globalopt.lp_tau_point(c, n)`, `globalopt.furasn(x)`
-
-Examples:
-
-- `python/examples/mig2_example.py`
-- `python/examples/bayes1_example.py`
-
-Run examples directly:
+Python (requires Rust toolchain + gfortran to build; wheels bundle
+libgfortran):
 
 ```bash
-PYTHONPATH=python python3 python/examples/mig2_example.py
-PYTHONPATH=python python3 python/examples/bayes1_example.py
+cd python && maturin build --release && pip install ../target/wheels/*.whl
 ```
 
-Install package locally:
+```python
+import globalopt
+r = globalopt.bayes1([-1, -1], [1, 1], 200, 20, "furasn", backend="fortran")
+r2 = globalopt.bayes1([-1, -1], [1, 1], 200, 20, lambda x: sum(v*v for v in x),
+                      backend="rust")
+```
+
+## Key findings (details in `docs/FFI_FINDINGS.md` and the paper)
+
+- Foreign-function and callback overheads are microseconds per evaluation
+  and nearly identical for the Fortran and Rust backends.
+- The historical "4x" gap was a *translation-fidelity* defect: the Rust
+  port of the BAYES1 acquisition scan had dropped two upstream pruning
+  rules, costing 3x (n=2) to 12x (n=20). Restoring them gives bitwise
+  trajectory agreement with the 1989 code and runtime parity.
+- Re-implemented Shekel/Hartmann test functions in earlier R and Rust
+  ports had transposed coefficient matrices — caught only by running the
+  compiled original next to the rewrites.
+
+## Reproducing the benchmark
 
 ```bash
-python3 -m pip install -e python
+Rscript benchmarks/run_bench.R --out benchmarks/results/results_r.csv
+python benchmarks/run_bench.py --out benchmarks/results/results_python.csv
+Rscript benchmarks/ffi_overhead.R
+python benchmarks/ffi_overhead.py
+python benchmarks/analyze.py     # writes paper/fig + paper/tab + summary.json
 ```
 
-The Python API also exposes local minimizer adapters in `globalopt.local_minimizers`, and `bayes1(...)` can optionally refine its best point with a custom local minimizer callable.
+## License
 
-Benchmark extra is provided in `globalopt.benchmarks` (problem set + runner + summary table).
-
-External benchmark comparisons are included with statistical summaries across multiple seeds
-(`median_best`, `best_of_runs`, `success_rate`, `median_seconds`) and example reports in:
-
-- `python/examples/output/benchmark_globalopt_vs_external.csv`
-- `python/examples/output/benchmark_globalopt_vs_external.md`
-- `r/globalopt/examples/output/benchmark_external_comparison.csv`
-- `r/globalopt/examples/output/benchmark_external_comparison.md`
-
-Narrative analysis (best/worst by dimension, using gap-to-optimum, runtime, and memory)
-is documented in `docs/benchmarks/COMPARISON_NARRATIVE.md`.
-
-Matched Python-vs-R apples-to-apples results under the same translated method set
-are documented in `docs/benchmarks/APPLES_TO_APPLES.md`.
-
-Implementation coverage and remaining porting gaps are documented in
-`docs/benchmarks/GAP_ASSESSMENT.md`.
-
-Benchmark document index is in `docs/benchmarks/README.md`.
-
-## R Package Sketch
-
-A separate CRAN-style package skeleton lives in `r/globalopt` for the R ecosystem, with no runtime dependency on Python.
-
-It provides standalone R implementations for:
-
-- `mig2()`, `bayes1()`, `lpmin()`, `glopt()`, `lbayes()`
-- `unt()`, `exkor()`, `extr()`, `mivar4()`, `flexi()`, `reqp()`
-- `anal1()`, `anal2()`, `lp_tau_point()`, `furasn()`
-
-It also includes local minimizer adapters for `stats::optim`, `optimx`, `nloptr`, and `minqa`.
-
-Benchmark extra is provided via `benchmark_functions()`, `benchmark_optimizers()`, and `run_benchmarks()`.
-
-## Notes
-
-- The original Fortran package contains many more routines (`GLOPT`, `LPMIN`, constraints handling, etc.).
-- This initial port focuses on the core search routines that were easiest to validate quickly and expose consistently in Rust and Python.
-
-## References
-
-Original materials cited by the upstream Fortran distribution:
-
-1. J. Mockus, *Bayesian Approach to Global Optimization*, Kluwer Academic Publishers, Dordrecht-Boston-London, 1989. ISBN 0-7923-0115-3.
-2. GlobalMinimum Fortran source distribution README and routines by Jonas Mockus (archived from https://globaloptimum.org/global/download/GlobalMinimumFortran.tar.gz, extracted in `upstream/GlobalMinimumFortran`).
-
-Attribution note:
-
-- This repository is a Rust/Python translation of selected algorithms inspired by and traced to the original GlobalMinimum Fortran implementation and documentation.
-- BibTeX entries are provided in `REFERENCES.bib`.
+MIT for the new code; the vendored GlobalMinimum sources carry their
+original permissive (X11-style) notice — see
+`upstream/GlobalMinimumFortran/COPYNG`.

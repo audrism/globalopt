@@ -1,0 +1,142 @@
+---
+title: "globalopt: the GlobalMinimum library in R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{globalopt: the GlobalMinimum library in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+The `globalopt` package compiles the original *GlobalMinimum* Fortran
+library of Bayesian and other global optimization methods (Jonas Mockus,
+1989) directly into R.  The methods predate — and in several cases
+introduced — the ideas behind modern Bayesian optimization: surrogate
+models, expected-improvement-style acquisition, and low-discrepancy
+initial designs.
+
+```{r setup}
+library(globalopt)
+```
+
+## Quick start
+
+Minimize the built-in `furasn` objective (a Rastrigin-like separable
+function with global minimum $-2$ at the origin) over a box:
+
+```{r}
+a <- c(-1, -1)
+b <- c(1, 1)
+r <- bayes1(a, b, evaluations = 200, initial_points = 20, objective = "furasn")
+r
+```
+
+The result contains the full evaluation trace:
+
+```{r}
+head(r$points)
+plot(r$values, type = "l", xlab = "evaluation", ylab = "objective")
+```
+
+## R objectives and compiled objectives
+
+The `objective` argument accepts either an R function or the *name* of a
+compiled built-in test objective.  With a built-in name the optimization
+loop never re-enters R, which makes runs of cheap objectives many times
+faster — useful for benchmarking the methods themselves:
+
+```{r}
+f <- function(x) sum((x - 0.3)^2)
+bayes1(a, b, 100, 20, f)$best_f
+
+if (requireNamespace("microbenchmark", quietly = TRUE)) {
+  microbenchmark::microbenchmark(
+    r_callback = bayes1(a, b, 200, 20, furasn),
+    compiled   = bayes1(a, b, 200, 20, "furasn"),
+    times = 5
+  )
+}
+```
+
+## Methods
+
+| Function | Origin (1989 Fortran) | Type |
+| --- | --- | --- |
+| `bayes1()` | BAYES1 | One-step Bayesian global method |
+| `mig1()`, `mig2()` | MIG1, MIG2 | Monte-Carlo baselines |
+| `lbayes()` | LBAYES | Bayesian stochastic local search |
+| `unt()` | UNT | Multi-start with Wiener-model uncertainty |
+| `glopt()` | GLOPT | Clustering global method |
+| `extr()`, `exkor()` | EXTR, EXKOR | 1-D Wiener-model search and its coordinate version |
+| `lpmin()` | LPMIN | LP-tau (Sobol-type) deterministic search |
+| `mivar4()` | MIVAR4 | Variable-metric local method |
+| `flexi()` | FLEXI | Constrained flexible simplex |
+| `reqp()` | REQP | Recursive quadratic programming |
+| `anal1()`, `anal2()` | ANAL1, ANAL2 | Variable screening |
+
+Every function runs the original compiled Fortran by default
+(`backend = "fortran"`).  For the core methods a pure-R reference
+implementation is available via `backend = "reference"` — useful for
+understanding the algorithms and for validating the bindings:
+
+```{r}
+bayes1(a, b, 20, 20, "furasn")$values[1:5]
+bayes1(a, b, 20, 20, furasn, backend = "reference")$values[1:5]
+```
+
+## Determinism and seeding
+
+The library draws random points from a 15-word lagged-Fibonacci generator
+(`ATS`) whose state the package resets before every run, so results are
+deterministic by default and reproduce a fresh-process run of the 1989
+code.  Pass an integer `seed` to run perturbed replications:
+
+```{r}
+mig2(a, b, 100, "furasn")$best_f          # canonical run
+mig2(a, b, 100, "furasn", seed = 1)$best_f
+mig2(a, b, 100, "furasn", seed = 2)$best_f
+```
+
+## Constrained optimization
+
+`flexi()` and `reqp()` support equality and inequality constraints via a
+constraint function returning equalities first (feasible at 0), then
+inequalities (feasible when non-negative):
+
+```{r}
+# minimize furasn subject to x1 >= 0.05
+con <- function(x) x[1] - 0.05
+reqp(c(0.2, 0.2), imax = 50, constraints = con, n_ineq = 1,
+     objective = "furasn")$best_x
+```
+
+## Variable screening
+
+The analysis routines estimate which variables (or pairs) drive the
+objective, from any design of evaluated points:
+
+```{r}
+r <- mig2(c(-1, -1, -1), c(1, 1, 1), 100,
+          function(x) x[1]^2 + 0.1 * x[2]^2 + 0 * x[3])
+anal2(c(-1, -1, -1), c(1, 1, 1), r$points, r$values)$influence
+```
+
+## Limits inherited from the 1989 code
+
+The original working arrays impose limits that the package validates
+before calling Fortran: dimension at most 20 for most methods (100 for
+`mig1`, `lbayes`, `mivar4`, `reqp`), at most 1000 evaluations for
+`mig2`/`bayes1` and 500 for `unt`/`extr`/`exkor`.  The code keeps state in
+COMMON blocks, so calls are not thread-safe; do not call these functions
+concurrently within one process.
+
+## References
+
+Mockus, J. (1989). *Bayesian Approach to Global Optimization: Theory and
+Applications*. Kluwer Academic Publishers.
+
+Mockus, J., Tiesis, V., Zilinskas, A. (1978). The application of Bayesian
+methods for seeking the extremum. *Towards Global Optimization*, 2, 117-129.

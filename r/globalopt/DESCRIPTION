@@ -1,13 +1,34 @@
 Package: globalopt
 Type: Package
-Title: Global Optimization Routines from GlobalMinimum
-Version: 0.1.0
-Authors@R: person("Audrism", "", email = "audrism@example.com", role = c("aut", "cre"))
-Description: Global optimization routines translated from the GlobalMinimum Fortran package, with adapters for common local minimization packages from CRAN and Bioconductor ecosystems.
+Title: Bayesian Global Optimization Methods from the 'GlobalMinimum' Library
+Version: 0.2.0
+Authors@R: c(
+    person("Jonas", "Mockus", role = "aut",
+           comment = "author of the original MINIMUM/GlobalMinimum Fortran library (1989)"),
+    person("Audris", "Mockus", email = "audris@utk.edu", role = c("aut", "cre")))
+Description: Bindings to the 'GlobalMinimum' Fortran library of Bayesian and
+    other global optimization methods by Jonas Mockus (1989), including the
+    one-step Bayesian method ('BAYES1'), Monte-Carlo baselines ('MIG1',
+    'MIG2'), Bayesian search with local refinement ('LBAYES'), clustering
+    ('GLOPT'), uniform deterministic search ('UNT'), one-dimensional and
+    coordinate-wise Wiener-model search ('EXTR', 'EXKOR'), LP-tau
+    deterministic search ('LPMIN'), a variable-metric local method
+    ('MIVAR4'), a flexible-tolerance constrained simplex ('FLEXI'),
+    recursive quadratic programming ('REQP'), and variable-screening
+    procedures ('ANAL1', 'ANAL2').  The original Fortran code is compiled
+    into the package; objectives can be supplied as R functions or chosen
+    from the built-in compiled test objectives.  A pure-R reference
+    implementation of the core methods is included for comparison.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Imports: stats
-Suggests: optimx, nloptr, minqa, DEoptim, GA, GenSA, pso, cmaes, smoof, testthat
 URL: https://github.com/audrism/globalopt
 BugReports: https://github.com/audrism/globalopt/issues
+Encoding: UTF-8
+NeedsCompilation: yes
+Depends: R (>= 3.5)
+Imports: stats
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown, GenSA, DEoptim, GA, nloptr,
+    microbenchmark, optimx, minqa
+VignetteBuilder: knitr
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0

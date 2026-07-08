@@ -1,6 +1,51 @@
 # globalopt-py
 
-Python package that wraps the Rust extension module `globalopt_native` and exposes the optimization APIs translated from the GlobalMinimum Fortran routines.
+Python package that wraps the native extension module `globalopt_native` and exposes the GlobalMinimum optimization routines through two backends:
+
+- `backend="rust"` — the Rust translation of the routines (default for the pre-0.2 signatures).
+- `backend="fortran"` — the **original 1989 Fortran routines** (Mockus, GlobalMinimum), compiled into the extension. This is the genuine algorithm for every method.
+
+## Backends
+
+Fidelity of the Rust translation relative to the upstream Fortran (from the port-fidelity audit in `docs/DESIGN_WRAPPERS.md`). For every method, `backend="fortran"` runs the original algorithm; where the Rust column says "modernized variant", results from the two backends are *not* comparable.
+
+| Method | `backend="fortran"` | `backend="rust"` |
+| --- | --- | --- |
+| `mig1` | original | faithful translation |
+| `mig2` | original | faithful translation |
+| `bayes1` | original | faithful translation |
+| `lp_tau_point` | original | faithful translation |
+| `lbayes` | original | loose port (bayes1 + coordinate descent) |
+| `lpmin` | original | loose port (correlation-based ordering) |
+| `unt` | original | modernized variant |
+| `extr` | original (1-D Wiener model) | modernized variant |
+| `exkor` | original | modernized variant (+/- step coordinate descent) |
+| `mivar4` | original | modernized variant (BFGS-style) |
+| `flexi` | original (constrained flexible tolerance) | modernized variant (simple Nelder-Mead) |
+| `reqp` | original (recursive QP, constrained) | modernized variant (quadratic penalty) |
+| `glopt` | original (clustering method) | modernized variant (random restarts) |
+| `anal1` / `anal2` | not wrapped | loose port (correlation screening) |
+
+Backend usage notes:
+
+- `objective` may be a Python callable or, with `backend="fortran"`, the name of a compiled builtin (`"furasn"`, `"fush5"`, `"fush7"`, `"fush10"`, `"fuhar3"`, `"fuhar6"`, `"fubran"`, `"fugold"`); builtins skip Python-callback overhead entirely.
+- `ats_state` (a sequence of 15 floats) seeds the ATS random generator for reproducible runs; omitted, each call starts from the canonical fresh-process state.
+- The Fortran backend enforces the original limits (e.g. dimension <= 20 for most methods, evaluation budgets bounded by the /BS1/ workspace) and raises `ValueError` before any Fortran code runs.
+- `flexi` and `reqp` with `backend="fortran"` are the genuinely *constrained* methods: pass `n_eq`/`n_ineq` and a `constraints(x)` callable returning equality values (=0 feasible) followed by inequality values (>=0 feasible). They take no bounds.
+- `extr` **changed signature in 0.2.0**: it is one-dimensional, `extr(bp, ep, evaluations, ...)`, as in the original library, and defaults to `backend="fortran"`.
+- Bounds/points accept any numeric sequence, including numpy arrays.
+
+```python
+import globalopt as go
+
+# Original Fortran BAYES1, compiled builtin objective (no Python callbacks):
+res = go.bayes1([-0.25, -0.125], [0.5, 0.625], 200, 20,
+                objective="furasn", backend="fortran")
+
+# Same but with a Python callable:
+res = go.bayes1([-0.25, -0.125], [0.5, 0.625], 200, 20,
+                objective=lambda x: sum(v * v for v in x), backend="fortran")
+```
 
 ## References
 

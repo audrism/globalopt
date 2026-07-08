@@ -1,7 +1,9 @@
 try:
-    from .api import AnalResult, OptResult, bayes1, fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7, glopt, lbayes, lp_tau_point, lpmin, mig1, mig2, mivar4, anal1, anal2, exkor, extr, reqp, unt
+    from .api import AnalResult, BUILTIN_OBJECTIVES, HAS_FORTRAN, OptResult, bayes1, fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7, glopt, lbayes, lp_tau_point, lpmin, mig1, mig2, mivar4, anal1, anal2, exkor, extr, flexi, reqp, unt
 except Exception:  # pragma: no cover - allows utility modules to be imported without compiled native extension
     AnalResult = None  # type: ignore[assignment]
+    BUILTIN_OBJECTIVES = ()  # type: ignore[assignment]
+    HAS_FORTRAN = False
     OptResult = None  # type: ignore[assignment]
     bayes1 = None  # type: ignore[assignment]
     fubran = None  # type: ignore[assignment]
@@ -23,6 +25,7 @@ except Exception:  # pragma: no cover - allows utility modules to be imported wi
     anal2 = None  # type: ignore[assignment]
     exkor = None  # type: ignore[assignment]
     extr = None  # type: ignore[assignment]
+    flexi = None  # type: ignore[assignment]
     reqp = None  # type: ignore[assignment]
     unt = None  # type: ignore[assignment]
 from .local_minimizers import (
@@ -48,6 +51,8 @@ from .benchmarks import (
 
 __all__ = [
     "AnalResult",
+    "BUILTIN_OBJECTIVES",
+    "HAS_FORTRAN",
     "LocalMinimizeResult",
     "LocalMinimizer",
     "OptResult",
@@ -70,6 +75,7 @@ __all__ = [
     "local_minimize",
     "exkor",
     "extr",
+    "flexi",
     "glopt",
     "lbayes",
     "lp_tau_point",

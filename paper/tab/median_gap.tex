@@ -1,0 +1,41 @@
+\begin{tabular}{llrrrr}
+\toprule
+Ecosystem & Method & \multicolumn{3}{c}{scalable, median gap at $100n$} & classics \\
+ & & $n{=}2$ & $n{=}5$ & $n{=}10$ & \\
+\midrule
+Python & EXKOR (1989) & 0 & 3.3e-33 & -- & -- \\
+Python & MLSL & 3.1e-32 & 0 & -- & -- \\
+Python & SHGO & 4.1e-17 & 9.3e-16 & -- & -- \\
+Python & dual annealing & 5.0e-17 & 7.3e-16 & -- & -- \\
+Python & LBAYES (1989) & 1.6e-15 & 1.9e-16 & -- & -- \\
+Python & DIRECT-L & 7.1e-9 & 2.0e-6 & -- & -- \\
+Python & DIRECT (SciPy) & 2.7e-8 & 9.5e-6 & -- & -- \\
+Python & CMA-ES & 5.9e-8 & 2.2e-6 & -- & -- \\
+Python & BAYES1 (1989) & 2.6e-3 & 3.0e-1 & -- & -- \\
+Python & BAYES1 (Rust) & 2.7e-3 & 3.3e-1 & -- & -- \\
+Python & CRS2 & 3.6e-3 & 1.2e-1 & -- & -- \\
+Python & diff. evolution & 7.7e-3 & 7.2e-1 & -- & -- \\
+Python & GLOPT (1989) & 1.3e-2 & 4.0e-1 & -- & -- \\
+Python & UNT (1989) & 3.9e-2 & 2.2e+00 & -- & -- \\
+Python & ISRES & 6.0e-2 & 4.9e-1 & -- & -- \\
+Python & MIG2 (1989) & 9.3e-2 & 4.2e+00 & -- & -- \\
+Python & LPMIN (1989) & 1.3e-1 & 4.9e-1 & -- & -- \\
+Python & MIG2 (Rust) & 1.7e-1 & 5.7e+00 & -- & -- \\
+Python & random search & 2.0e-1 & 3.9e+00 & -- & -- \\
+\midrule
+R & GenSA & 2.7e-14 & 2.6e-1 & 9.8e-1 & 3.6e-15 \\
+R & DIRECT-L & 3.2e-5 & 5.7e-1 & 4.3e+00 & 1.0e-6 \\
+R & EXKOR (1989) & 2.7e-3 & 4.6e-1 & 6.3e-1 & 4.6e-4 \\
+R & GLOPT (1989) & 6.9e-2 & 4.1e+00 & 1.3e+01 & 2.6e-1 \\
+R & CRS2 & 7.4e-2 & 3.3e+00 & 9.3e+00 & 1.4e-1 \\
+R & DEoptim & 8.4e-2 & 1.0e+01 & 4.5e+01 & 5.7e-1 \\
+R & BAYES1 (1989) & 1.5e-1 & 7.1e+00 & 1.2e+01 & 3.5e-1 \\
+R & GA & 2.3e-1 & 4.4e+00 & 8.7e+00 & 6.4e-1 \\
+R & LPMIN (1989) & 3.2e-1 & 7.2e+00 & 1.2e+01 & 1.0e+00 \\
+R & UNT (1989) & 3.2e-1 & 1.5e+01 & 8.0e+01 & 1.1e+00 \\
+R & LBAYES (1989) & 3.2e-1 & 1.9e+00 & 4.7e+00 & 3.2e-1 \\
+R & ISRES & 3.7e-1 & 6.9e+00 & 1.2e+01 & 7.2e-1 \\
+R & MIG2 (1989) & 5.6e-1 & 1.7e+01 & 7.7e+01 & 1.0e+00 \\
+R & random search & 6.9e-1 & 1.6e+01 & 8.0e+01 & 9.5e-1 \\
+\bottomrule
+\end{tabular}

@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "globalopt-py"
-version = "0.1.0"
+version = "0.2.0"
 description = "Python APIs for GlobalMinimum-style optimization routines"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -22,3 +22,8 @@ testpaths = ["tests"]
 module-name = "globalopt_native.globalopt_native"
 python-source = "."
 manifest-path = "../Cargo.toml"
+# "python" enables the pyo3 bindings; the default "fortran" feature stays on,
+# linking the original GlobalMinimum Fortran library (requires gfortran).
+features = ["python"]
+# Ship the pure-Python API package alongside the native module.
+include = [{ path = "globalopt/**/*.py", format = ["sdist", "wheel"] }]
