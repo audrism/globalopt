@@ -77,6 +77,7 @@ Rscript benchmarks/run_bench.R --out benchmarks/results/results_r.csv
 python benchmarks/run_bench.py --out benchmarks/results/results_python.csv
 Rscript benchmarks/ffi_overhead.R
 python benchmarks/ffi_overhead.py
+python benchmarks/run_bbob.py    # official BBOB/COCO validation (supports --shard i,j/N --pool K)
 python benchmarks/analyze.py     # writes paper/fig + paper/tab + summary.json
 ```
 

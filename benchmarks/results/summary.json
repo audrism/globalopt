@@ -283,5 +283,69 @@
   "ga": 9.61,
   "random_search": 11.2,
   "globalopt_mig2_fortran": 11.58
+ },
+ "bbob_solve_rate_tol2_25n_nle6": {
+  "cma": 0.0097,
+  "globalopt_bayes1_fortran": 0.025,
+  "globalopt_bayes1_rust": 0.0264,
+  "globalopt_exkor_fortran": 0.0514,
+  "globalopt_glopt_fortran": 0.0028,
+  "globalopt_lbayes_fortran": 0.05,
+  "globalopt_lpmin_fortran": 0.0069,
+  "globalopt_mig2_fortran": 0.0028,
+  "globalopt_mig2_rust": 0.0042,
+  "globalopt_unt_fortran": 0.0264,
+  "nlopt_crs2": 0.025,
+  "nlopt_direct_l": 0.0375,
+  "nlopt_isres": 0.0069,
+  "nlopt_mlsl": 0.05,
+  "random_search": 0.0042,
+  "scipy_de": 0.0042,
+  "scipy_direct": 0.0333,
+  "scipy_dual_annealing": 0.1458,
+  "scipy_shgo": 0.0153,
+  "skopt_gp": 0.0986
+ },
+ "bbob_solve_rate_tol2_100n": {
+  "cma": 0.1796,
+  "globalopt_bayes1_fortran": 0.0556,
+  "globalopt_bayes1_rust": 0.0491,
+  "globalopt_exkor_fortran": 0.1463,
+  "globalopt_glopt_fortran": 0.0306,
+  "globalopt_lbayes_fortran": 0.1213,
+  "globalopt_lpmin_fortran": 0.0102,
+  "globalopt_mig2_fortran": 0.0065,
+  "globalopt_mig2_rust": 0.012,
+  "globalopt_unt_fortran": 0.0259,
+  "nlopt_crs2": 0.0676,
+  "nlopt_direct_l": 0.1704,
+  "nlopt_isres": 0.012,
+  "nlopt_mlsl": 0.1287,
+  "random_search": 0.0056,
+  "scipy_de": 0.0231,
+  "scipy_direct": 0.1389,
+  "scipy_dual_annealing": 0.3546,
+  "scipy_shgo": 0.2991,
+  "skopt_gp": 0.0
+ },
+ "bbob_tests": {
+  "exkor_vs_dual_annealing_100n": {
+   "only_first": 27,
+   "only_second": 252,
+   "pairs": 1080,
+   "p_value": 0.0
+  },
+  "exkor_vs_direct_l_100n": {
+   "only_first": 65,
+   "only_second": 91,
+   "pairs": 1080,
+   "p_value": 0.04498
+  },
+  "bayes1_fortran_vs_rust_100n": {
+   "only_first": 15,
+   "only_second": 8,
+   "pairs": 1080,
+   "p_value": 0.21004
+  }
  }
 }

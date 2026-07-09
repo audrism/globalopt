@@ -361,6 +361,62 @@ def summarize(py: pd.DataFrame, r: pd.DataFrame, gaps: pd.DataFrame):
     return out
 
 
+def load_bbob() -> pd.DataFrame | None:
+    """Merge sharded BBOB results (produced by run_bbob.py across hosts)."""
+    parts = sorted(RES.glob("results_bbob_shard*.csv")) or [RES / "results_bbob.csv"]
+    frames = [pd.read_csv(p) for p in parts if p.exists()]
+    if not frames:
+        return None
+    df = pd.concat(frames, ignore_index=True)
+    df["error"] = df["error"].fillna("")
+    return df
+
+
+def fig_bbob(bb: pd.DataFrame, tol: float = 1e-2):
+    fig, ax = plt.subplots(figsize=(4.2, 3.1))
+    n = perf_profile(bb, PY_PROFILE_METHODS, tol, 100, ax)
+    ax.legend(loc="upper left", fontsize=7)
+    ax.set_title(f"BBOB, gap $\leq {tol:g}$, budget $100n$ ({n} problems)",
+                 fontsize=9)
+    fig.tight_layout()
+    fig.savefig(FIG / "perf_profile_bbob.pdf")
+    plt.close(fig)
+
+    methods_25 = ["skopt_gp", "globalopt_bayes1_fortran",
+                  "globalopt_lbayes_fortran", "scipy_dual_annealing",
+                  "nlopt_direct_l", "cma", "random_search"]
+    fig, ax = plt.subplots(figsize=(4.2, 3.1))
+    n = data_profile(bb[bb.dim <= 6], methods_25, tol, 25, ax)
+    ax.legend(loc="upper left", fontsize=7)
+    ax.set_title(f"BBOB, budget $25n$, $n\leq 6$ ({n} problems)", fontsize=9)
+    fig.tight_layout()
+    fig.savefig(FIG / "data_profile_bbob_25n.pdf")
+    plt.close(fig)
+
+
+def summarize_bbob(bb: pd.DataFrame, out: dict):
+    d = bb.assign(solved=(bb.hit_tol2.notna()) & (bb.hit_tol2 <= bb.budget),
+                  tier=np.where(bb.budget == 25 * bb.dim, "25n", "100n"))
+    for tier in ("25n", "100n"):
+        t = d[d.tier == tier]
+        if tier == "25n":
+            t = t[t.dim <= 6]  # GP/SHGO comparable subset reported separately
+            out["bbob_solve_rate_tol2_25n_nle6"] = {
+                m: round(float(v), 4)
+                for m, v in t.groupby("method").solved.mean().items()
+            }
+        else:
+            out["bbob_solve_rate_tol2_100n"] = {
+                m: round(float(v), 4)
+                for m, v in d[d.tier == tier].groupby("method").solved.mean().items()
+            }
+    out["bbob_tests"] = {
+        "exkor_vs_dual_annealing_100n": paired_mcnemar(bb, "globalopt_exkor_fortran", "scipy_dual_annealing"),
+        "exkor_vs_direct_l_100n": paired_mcnemar(bb, "globalopt_exkor_fortran", "nlopt_direct_l"),
+        "bayes1_fortran_vs_rust_100n": paired_mcnemar(bb, "globalopt_bayes1_fortran", "globalopt_bayes1_rust"),
+    }
+
+
 def main():
     py = load("python")
     r = load("r")
@@ -368,6 +424,12 @@ def main():
     fig_ffi()
     gaps = tab_median_gap(py, r)
     out = summarize(py, r, gaps)
+    bb = load_bbob()
+    if bb is not None:
+        fig_bbob(bb)
+        summarize_bbob(bb, out)
+        (RES / "summary.json").write_text(json.dumps(out, indent=1))
+        print("bbob rows:", len(bb))
     print("mean ranks (python):")
     for m, v in list(out["python_mean_rank"].items())[:12]:
         print(f"  {m:32s} {v}")

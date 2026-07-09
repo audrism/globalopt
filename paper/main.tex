@@ -56,11 +56,14 @@ benchmark the 1989 methods against modern global optimizers in both
 ecosystems (SciPy, NLopt, CMA-ES, Gaussian-process Bayesian
 optimization, GenSA, DEoptim, GA) on a COCO-style
 shifted-instance suite of 16~test families at dimensions 2--10 under
-matched evaluation budgets, using performance and data profiles. At the larger budget
-the coordinate Wiener-model search EXKOR is competitive with the best
-modern methods (solving 56\% of Python instances to gap $10^{-2}$,
-versus 55\% for dual annealing and 47\% for CMA-ES and DIRECT-L),
-though its strength is concentrated on separable landscapes. At tight
+matched evaluation budgets, using performance and data profiles, with
+external validation on the official BBOB/COCO suite. On the classical
+test set the coordinate Wiener-model search EXKOR is competitive with
+the best modern methods (solving 56\% of Python instances to gap
+$10^{-2}$, statistically tied with dual annealing); on BBOB, whose
+functions are predominantly non-separable and ill-conditioned, it
+drops to mid-field (15\% versus 36\% for dual annealing), cleanly
+quantifying how much of that strength is separability. At tight
 budgets modern annealing and Gaussian-process expected improvement
 dominate the 1989 acquisition machinery decisively---the latter at
 three orders of magnitude more solver-internal time per run. All code,
@@ -153,7 +156,9 @@ We did both, and instrumented the difference. This paper reports:
   GenSA~\cite{xiang2013gensa}, DEoptim~\cite{mullen2011deoptim}, and
   GA~\cite{scrucca2013ga}, evaluated with performance
   profiles~\cite{dolan2002benchmarking} and data
-  profiles~\cite{more2009benchmarking}.
+  profiles~\cite{more2009benchmarking}, and externally validated on the
+  official BBOB suite of the COCO platform~\cite{hansen2021coco}
+  (24 functions, 43{,}200 additional runs).
 \end{itemize}
 
 Beyond the specific library, the paper argues a methodological point for
@@ -462,12 +467,23 @@ exact McNemar tests on the paired solved/unsolved outcomes over the 480
 instances (all quoted $p$-values remain significant, or not, under
 Holm--Bonferroni correction across the six planned tests).
 
+\paragraph{BBOB validation.} Because a fixed collection of classical
+test functions can encode unintended structure (four of our families
+even ship with the library), we replicate the Python-side experiment on
+the official BBOB suite via \pkg{cocoex}~\cite{hansen2021coco}: all 24
+functions, dimensions $\{2,5,10\}$, instances 1--15 (1{,}080 problem
+instances), the same recorder protocol, budget tiers, seeding, and
+method set. Instance optima are recovered from the suite's optimizer
+locations so the same gap-based analysis applies unchanged; runs were
+sharded across three hosts.
+
 \section{Results}
 \label{sec:results}
 
 The sweep comprises 18{,}600 Python runs (including a 360-run
-GP-Bayesian-optimization tier) and 13{,}440 R runs (480 problem
-instances per language and budget tier); no run failed except the 270
+GP-Bayesian-optimization tier) and 13{,}440 R runs on the classical
+suite (480 problem instances per language and budget tier), plus
+43{,}200 BBOB runs (Section~\ref{sec:bbob}); no run failed except the 270
 intentional SHGO exclusions above $n=5$ --- where its simplicial
 machinery takes minutes and gigabytes per run --- which are recorded as
 failures and count against it.
@@ -573,6 +589,41 @@ evolution and GA suffer from population sizing at these budgets
 the same budget-scaled defaults as everything else rather than tuning
 per problem.
 
+\subsection{External validation on BBOB}
+\label{sec:bbob}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\textwidth]{fig/perf_profile_bbob.pdf}%
+\includegraphics[width=0.49\textwidth]{fig/data_profile_bbob_25n.pdf}
+\caption{BBOB suite (24 functions, $n\in\{2,5,10\}$, 15 instances).
+Left: performance profiles at gap $10^{-2}$, budget $100n$. Right:
+tight-budget data profile ($25n$, $n\le6$) including the GP-EI
+baseline.}
+\label{fig:bbob}
+\end{figure}
+
+The BBOB replication (Figure~\ref{fig:bbob}) separates what
+generalizes from what was structure-specific. Three findings
+replicate. Dual annealing remains the overall winner (35.5\% of
+instances at $100n$; 14.6\% at $25n$, $n\le6$). GP-EI remains
+decisively ahead of its 1989 ancestors at tight budgets (9.9\% versus
+5.1\% for \code{EXKOR} and 5.0\% for \code{LBAYES}). And the
+repaired Rust translation of \code{BAYES1} remains statistically
+indistinguishable from the wrapped Fortran (23 of 1{,}080 instances
+discordant, $p=0.21$). One finding is properly cut down to size:
+\code{EXKOR}, statistically tied with dual annealing on the classical
+set, drops to fifth (14.6\%, versus 252--27 discordant instances in
+dual annealing's favor, $p<10^{-15}$) --- BBOB's deliberately
+non-separable, ill-conditioned function groups remove exactly the
+coordinate-aligned structure the classical test canon is rich in.
+\code{EXKOR} remains slightly behind DIRECT-L (65 versus 91 discordant,
+$p=0.045$) and ahead of CRS2, ISRES, and differential evolution;
+\code{BAYES1} solves 5.6\%. We read the pair of suites as bracketing
+practice: real engineering objectives fall between the classical
+canon's separability and BBOB's adversarial conditioning, and the 1989
+methods' standing moves accordingly.
+
 \subsection{Overheads and throughput}
 
 With cheap analytic objectives, wall time exposes solver internals.
@@ -631,16 +682,17 @@ population sizes; no per-problem tuning for any method, including
 ours---the wrapped methods use the upstream example parameters with
 budget-scaled evaluation counts); the 1989 caps censor high-budget
 behavior of the wrapped methods; microsecond-scale timings taken with
-background load and reported as medians of repeated runs. Four of the
-sixteen test families (the Shekel and Hartmann variants) also ship as
-demonstration objectives with the 1989 library, a potential
-selection bias in its favor; the seeded shifts perturb them away from
-the shipped coefficients, and the wrapped methods' strengths and
-failures are distributed across shipped and non-shipped families alike
-(\code{EXKOR} is perfect on Hartmann-6 but blind on Hartmann-3 and
-weak on Shekel). One run per instance follows COCO practice; the
-paired tests operate on the 480 instances rather than on within-instance
-replicates.
+background load and reported as medians of repeated runs (an
+idle-machine replication on a second host reproduced the post-repair
+Rust/Fortran ratios at 1.26/1.16/1.10 for $n=2/10/20$). Four of the
+sixteen classical test families (the Shekel and Hartmann variants)
+also ship as demonstration objectives with the 1989 library, a
+potential selection bias in its favor; the seeded shifts perturb them
+away from the shipped coefficients, and the BBOB replication
+(Section~\ref{sec:results}) quantifies exactly how the conclusions
+move on an independently designed suite. One run per instance follows
+COCO practice; the paired tests operate on the 480 (custom) and
+1{,}080 (BBOB) instances rather than on within-instance replicates.
 
 \section{Related work}
 \label{sec:related}
@@ -670,7 +722,10 @@ verbatim (patches applied mechanically and documented) for
 reproducibility.
 
 \paragraph{Acknowledgments.} The original MINIMUM/GlobalMinimum library
-is the work of Jonas Mockus (1931--2021).
+is the work of Jonas Mockus (1931--2021), the author's father; this
+paper is dedicated to his memory. The familial relationship is
+disclosed in the interest of transparency; all comparative results are
+produced by the scripted, seeded pipeline shipped with the repository.
 
 \appendix
 \section{Median terminal gaps}
