@@ -57,6 +57,7 @@ STYLE = {
     "nloptr_direct_l": ("DIRECT-L", OKABE["sky"], "--"),
     "nloptr_crs2": ("CRS2", OKABE["green"], "--"),
     "nloptr_isres": ("ISRES", OKABE["yellow"], "--"),
+    "skopt_gp": ("GP-EI (skopt)", OKABE["green"], ":"),
     "random_search": ("random search", OKABE["black"], ":"),
     "globalopt_bayes1_rust": ("BAYES1 (Rust)", OKABE["blue"], "-."),
     "globalopt_mig2_rust": ("MIG2 (Rust)", "#888888", "-."),
@@ -91,6 +92,10 @@ TOL_COL = {1e-1: "hit_tol1", 1e-2: "hit_tol2", 1e-4: "hit_tol4",
 
 def load(lang: str) -> pd.DataFrame:
     df = pd.read_csv(RES / f"results_{lang}.csv")
+    # expensive baselines run by separate sharded drivers (e.g. skopt_gp)
+    extra = RES / f"results_{lang}_gp.csv"
+    if extra.exists():
+        df = pd.concat([df, pd.read_csv(extra)], ignore_index=True)
     df["error"] = df["error"].fillna("")
     return df
 
@@ -173,6 +178,23 @@ def fig_profiles(py: pd.DataFrame, r: pd.DataFrame, tol: float,
     fig.tight_layout()
     fig.savefig(FIG / "data_profile_python.pdf")
     plt.close(fig)
+
+    # tight-budget (25n) data profile including the GP-BO baseline, which
+    # only runs on this tier (n <= 6; see run_bench.m_skopt_gp)
+    if "skopt_gp" in set(py.method):
+        methods_25 = ["skopt_gp", "globalopt_bayes1_fortran",
+                      "globalopt_lbayes_fortran", "scipy_dual_annealing",
+                      "nlopt_direct_l", "cma", "random_search"]
+        d25 = py[py.dim <= 6]
+        fig, ax = plt.subplots(figsize=(4.2, 3.1))
+        n = data_profile(d25, methods_25, tol, 25, ax)
+        ax.legend(loc="upper left", fontsize=7)
+        ax.set_title(
+            f"Python methods, budget $25n$, $n\\leq 6$ ({n} problems)",
+            fontsize=9)
+        fig.tight_layout()
+        fig.savefig(FIG / "data_profile_python_25n.pdf")
+        plt.close(fig)
 
 
 def fig_ffi():
@@ -271,22 +293,63 @@ def tab_median_gap(py: pd.DataFrame, r: pd.DataFrame):
     return t
 
 
+def paired_mcnemar(df: pd.DataFrame, m1: str, m2: str, tier_mult: int = 100):
+    """Exact McNemar (binomial) test on paired solved/unsolved outcomes at
+    gap 1e-2 within budget, over (problem, dim, instance) pairs."""
+    from scipy.stats import binomtest
+
+    d = df[df.budget == tier_mult * df.dim].copy()
+    d["solved"] = d.hit_tol2.notna() & (d.hit_tol2 <= d.budget)
+    key = ["problem", "dim", "instance"]
+    p = d[d.method.isin([m1, m2])].pivot_table(index=key, columns="method",
+                                               values="solved").dropna()
+    b = int(((p[m1] == 1) & (p[m2] == 0)).sum())
+    c = int(((p[m1] == 0) & (p[m2] == 1)).sum())
+    pv = binomtest(b, b + c, 0.5).pvalue if b + c > 0 else 1.0
+    return {"only_first": b, "only_second": c, "pairs": len(p),
+            "p_value": round(float(pv), 6)}
+
+
 def summarize(py: pd.DataFrame, r: pd.DataFrame, gaps: pd.DataFrame):
     out = {}
+    # planned pairwise tests for the headline claims (reported with
+    # Holm-Bonferroni in the paper)
+    out["tests"] = {
+        "py_exkor_vs_dual_annealing": paired_mcnemar(py, "globalopt_exkor_fortran", "scipy_dual_annealing"),
+        "py_exkor_vs_direct_l": paired_mcnemar(py, "globalopt_exkor_fortran", "nlopt_direct_l"),
+        "py_exkor_vs_cma": paired_mcnemar(py, "globalopt_exkor_fortran", "cma"),
+        "py_bayes1_fortran_vs_rust": paired_mcnemar(py, "globalopt_bayes1_fortran", "globalopt_bayes1_rust"),
+        "r_exkor_vs_direct_l": paired_mcnemar(r, "globalopt_exkor_fortran", "nloptr_direct_l"),
+        "r_gensa_vs_exkor": paired_mcnemar(r, "gensa", "globalopt_exkor_fortran"),
+    }
     for lang, df in (("python", py), ("r", r)):
         d = df[df.error == ""]
         out[f"{lang}_runs"] = int(len(df))
         out[f"{lang}_errors"] = int((df.error != "").sum())
-        # success rate at 1e-2 within budget
-        solved = (d.hit_tol2.notna()) & (d.hit_tol2 <= d.budget)
-        out[f"{lang}_solve_rate_tol2"] = {
-            m: round(float(s.mean()), 4)
-            for m, s in solved.groupby(d.method)
+        # success rate at 1e-2 within budget, per budget tier
+        d = d.assign(solved=(d.hit_tol2.notna()) & (d.hit_tol2 <= d.budget),
+                     solved4=(d.hit_tol4.notna()) & (d.hit_tol4 <= d.budget),
+                     tier=np.where(d.budget == 25 * d.dim, "25n", "100n"))
+        for tier in ("25n", "100n"):
+            t = d[d.tier == tier]
+            out[f"{lang}_solve_rate_tol2_{tier}"] = {
+                m: round(float(v), 4)
+                for m, v in t.groupby("method").solved.mean().items()
+            }
+            out[f"{lang}_median_time_{tier}"] = {
+                m: round(float(v), 5)
+                for m, v in t.groupby("method").time_s.median().items()
+            }
+        out[f"{lang}_solve_rate_tol4_100n"] = {
+            m: round(float(v), 4)
+            for m, v in d[d.tier == "100n"].groupby("method").solved4.mean().items()
         }
-        out[f"{lang}_median_time"] = {
-            m: round(float(v), 5)
-            for m, v in d.groupby("method").time_s.median().items()
-        }
+        if lang == "python":
+            e = d[(d.method == "globalopt_exkor_fortran") & (d.tier == "100n")]
+            out["exkor_by_problem_100n"] = {
+                p: round(float(v), 3)
+                for p, v in e.groupby("problem").solved.mean().items()
+            }
         # mean rank on median-gap per (problem, dim, budget)
         agg = d.groupby(["problem", "dim", "budget", "method"]).best_f.median().reset_index()
         agg["rank"] = agg.groupby(["problem", "dim", "budget"]).best_f.rank(method="min")

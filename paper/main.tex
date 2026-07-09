@@ -53,15 +53,18 @@ trajectory agreement \emph{and} speed parity. The same audit surfaced
 transposed coefficient matrices in re-implemented Shekel and Hartmann test
 functions---quiet correctness bugs of the rewrite route. Third, we
 benchmark the 1989 methods against modern global optimizers in both
-ecosystems (SciPy, NLopt, CMA-ES, GenSA, DEoptim, GA) on a COCO-style
+ecosystems (SciPy, NLopt, CMA-ES, Gaussian-process Bayesian
+optimization, GenSA, DEoptim, GA) on a COCO-style
 shifted-instance suite of 16~test families at dimensions 2--10 under
 matched evaluation budgets, using performance and data profiles. At the larger budget
 the coordinate Wiener-model search EXKOR is competitive with the best
 modern methods (solving 56\% of Python instances to gap $10^{-2}$,
 versus 55\% for dual annealing and 47\% for CMA-ES and DIRECT-L),
-though its strength is concentrated on separable landscapes; at tight
-budgets modern annealing dominates. All code, data, and scripts are
-available for replication.
+though its strength is concentrated on separable landscapes. At tight
+budgets modern annealing and Gaussian-process expected improvement
+dominate the 1989 acquisition machinery decisively---the latter at
+three orders of magnitude more solver-internal time per run. All code,
+data, and scripts are available for replication.
 \end{abstract}
 
 \section{Introduction}
@@ -144,7 +147,9 @@ We did both, and instrumented the difference. This paper reports:
   SHGO~\cite{endres2018shgo}), NLopt~\cite{johnson2007nlopt} (DIRECT-L,
   CRS2~\cite{kaelo2006some}, MLSL~\cite{rinnooykan1987stochastic},
   ISRES~\cite{runarsson2000stochastic}),
-  CMA-ES~\cite{hansen2001completely}, and the R packages
+  CMA-ES~\cite{hansen2001completely}, Gaussian-process expected
+  improvement (\pkg{scikit-optimize}~\cite{head2021skopt}), and the R
+  packages
   GenSA~\cite{xiang2013gensa}, DEoptim~\cite{mullen2011deoptim}, and
   GA~\cite{scrucca2013ga}, evaluated with performance
   profiles~\cite{dolan2002benchmarking} and data
@@ -168,7 +173,7 @@ comparison, not code review.
 
 We briefly describe the routines wrapped by our packages; the monograph
 \cite{mockus1989bayesian} gives derivations, and
-\cite{torn1989global,zilinskas2010mockus} situate them historically.
+\cite{torn1989global,zilinskas2016stochastic} situate them historically.
 
 \paragraph{One-step Bayesian search (\code{BAYES1}).}
 After $L_0$ initial evaluations at LP-$\tau$ (Sobol-type) points, each
@@ -432,7 +437,12 @@ Section~\ref{sec:packages}).
 \code{EXKOR}, \code{LBAYES}), the repaired Rust translations of
 \code{BAYES1}/\code{MIG2}, SciPy differential evolution, dual annealing,
 DIRECT, SHGO, NLopt DIRECT-L, CRS2, MLSL, ISRES, CMA-ES
-(\pkg{pycma}), and uniform random search as control. R: the same seven
+(\pkg{pycma}), Gaussian-process Bayesian optimization with expected
+improvement (\pkg{scikit-optimize}; the modern realization of the
+program \code{BAYES1} approximates), and uniform random search as
+control. The GP baseline runs only on the $25n$ tier at $n\le 6$: its
+cubic-cost model refits already average tens of seconds per run there,
+which is also its natural operating regime. R: the same seven
 wrapped methods, GenSA, DEoptim, GA, NLopt via \pkg{nloptr} (DIRECT-L,
 CRS2, ISRES), and random search. The wrapped methods inherit the 1989
 array caps (e.g.\ 1000 evaluations for \code{BAYES1}, 500 for
@@ -445,14 +455,20 @@ profiles~\cite{dolan2002benchmarking} on evaluations-to-target and
 Mor\'e--Wild data profiles~\cite{more2009benchmarking} at gap tolerances
 $10^{-2}$ and $10^{-4}$; median terminal gap tables; wall-clock time per
 run (cheap objectives, so time exposes solver-internal and FFI cost);
-and the FFI microbenchmarks of Section~\ref{sec:fidelity}.
+and the FFI microbenchmarks of Section~\ref{sec:fidelity}. Profiles and
+rank summaries are descriptive; for the six headline pairwise
+comparisons quoted in Section~\ref{sec:results} we additionally run
+exact McNemar tests on the paired solved/unsolved outcomes over the 480
+instances (all quoted $p$-values remain significant, or not, under
+Holm--Bonferroni correction across the six planned tests).
 
 \section{Results}
 \label{sec:results}
 
-The sweep comprises 18{,}240 Python runs and 13{,}440 R runs (480
-problem instances per language and budget tier); no run failed except
-the 270 intentional SHGO exclusions above $n=5$ --- where its simplicial
+The sweep comprises 18{,}600 Python runs (including a 360-run
+GP-Bayesian-optimization tier) and 13{,}440 R runs (480 problem
+instances per language and budget tier); no run failed except the 270
+intentional SHGO exclusions above $n=5$ --- where its simplicial
 machinery takes minutes and gigabytes per run --- which are recorded as
 failures and count against it.
 Raw CSVs, the analysis script, and the exact numbers below ship with the
@@ -472,13 +488,22 @@ dashed: modern competitors; dotted: random search.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.49\textwidth]{fig/data_profile_python.pdf}%
-\includegraphics[width=0.49\textwidth]{fig/ffi_decomposition.pdf}
-\caption{Left: Mor\'e--Wild data profiles (fraction of instances solved
-to gap $10^{-2}$ versus evaluations$/(n{+}1)$), Python methods. Right:
-the overhead/fidelity decomposition of Section~\ref{sec:fidelity} ---
-per-evaluation cost of the overhead-dominated \code{MIG2}
-($n{=}10$), and \code{BAYES1} runtime before/after the pruning repair.}
+\includegraphics[width=0.49\textwidth]{fig/data_profile_python_25n.pdf}
+\caption{Mor\'e--Wild data profiles (fraction of instances solved to
+gap $10^{-2}$ versus evaluations$/(n{+}1)$), Python methods. Left: the
+$100n$ budget. Right: the $25n$ budget restricted to $n\le 6$, the
+tier on which the GP-EI baseline runs.}
 \label{fig:data}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\textwidth]{fig/ffi_decomposition.pdf}
+\caption{The overhead/fidelity decomposition of
+Section~\ref{sec:fidelity}: per-evaluation cost of the
+overhead-dominated \code{MIG2} ($n{=}10$), and \code{BAYES1} runtime
+before/after the pruning repair.}
+\label{fig:ffi}
 \end{figure}
 
 \subsection{Where the 1989 methods stand}
@@ -490,9 +515,11 @@ profile. Three regimes are visible.
 \paragraph{Generous budgets ($100n$).} The coordinate Wiener-model
 search \code{EXKOR} is the strongest 1989 method and is competitive
 with everything we ran: it solves 56.0\% of Python instances within
-budget---nominally ahead of dual annealing (55.4\%), CMA-ES (47.3\%),
-and DIRECT-L (47.1\%)---and 39.0\% in R, tied with DIRECT-L and behind
-only GenSA (49.4\%). Tightening the tolerance to $10^{-4}$ preserves
+budget---statistically tied with dual annealing (55.4\%; 140 versus 137
+discordant instances, McNemar $p=0.90$) and ahead of CMA-ES (47.3\%,
+$p=0.006$) and DIRECT-L (47.1\%, $p=0.003$)---and 39.0\% in R, exactly
+tied with DIRECT-L (70 discordant instances each way) and behind
+GenSA (49.4\%, $p=2\times10^{-4}$). Tightening the tolerance to $10^{-4}$ preserves
 this picture (dual annealing 52.9\%, \code{EXKOR} 50.2\%, GenSA
 47.9\%). Its profile is sharply bimodal across problem families,
 exactly as its structure predicts: on separable or
@@ -519,10 +546,24 @@ ISRES, and the differential-evolution and genetic-algorithm packages
 --- implementations published one to two decades later --- under the
 same protocol.
 
+\paragraph{Against modern Bayesian optimization.} On the tier where
+GP-based expected improvement is computationally feasible ($25n$
+budget, $n\le 6$; 360 instances), it solves 27.5\% of instances ---
+decisively ahead of its 1989 ancestors \code{BAYES1} (4.2\%, McNemar
+$p<10^{-21}$) and \code{LBAYES} (12.8\%, $p<10^{-10}$), and behind
+only dual annealing (35.8\%, $p=8\times10^{-4}$). Figure~\ref{fig:data}
+(right) shows the full data profile. The quality gap is what
+thirty-five years of surrogate and acquisition development bought; the
+price is solver-internal cost: median 77\,s per $25n$-budget run for
+GP-EI versus 9\,ms for \code{BAYES1} on the same tier --- nearly four
+orders of magnitude --- which is exactly the
+cheap-acquisition/many-evaluations trade the 1989 design targeted.
+
 \paragraph{Deployed fidelity check.} The repaired Rust translation of
 \code{BAYES1} is statistically indistinguishable from the wrapped
-original across the sweep (solve rates 15.6\% versus 15.8\%; mean
-ranks 9.6 versus 9.5)---the benchmark-scale confirmation of the
+original across the sweep: solve rates 15.6\% versus 15.8\%, mean
+ranks 9.6 versus 9.5, and only 7 of 480 instances with discordant
+outcomes (McNemar $p=1$)---the benchmark-scale confirmation of the
 trace-level parity of Section~\ref{sec:fidelity}.
 
 \paragraph{Baselines and sanity checks.} Random search solves 0.6\% of
@@ -577,15 +618,29 @@ overall winners. For practitioners the packages are thus more than a
 museum: on separable or near-separable problems \code{EXKOR} is a
 legitimately strong, extremely cheap choice, and the library's
 LP-$\tau$ designs and screening routines remain useful building
-blocks.
+blocks. Against its direct descendant, GP-based expected improvement,
+the comparison quantifies the field's progress cleanly: the modern
+acquisition solves $6.5\times$ as many tight-budget instances as
+\code{BAYES1} while spending nearly four orders of magnitude more time
+per run---each side of that trade still has its regime.
 
 \paragraph{Threats to validity.} Single host, cheap analytic
 objectives (time comparisons expose overheads, not expensive-objective
 regimes); default-leaning hyperparameters for competitors (budget-scaled
-population sizes; no per-problem tuning for any method, including ours);
-the 1989 caps censor high-budget behavior of the wrapped methods;
-microsecond-scale timings taken with background load and reported as
-medians of repeated runs.
+population sizes; no per-problem tuning for any method, including
+ours---the wrapped methods use the upstream example parameters with
+budget-scaled evaluation counts); the 1989 caps censor high-budget
+behavior of the wrapped methods; microsecond-scale timings taken with
+background load and reported as medians of repeated runs. Four of the
+sixteen test families (the Shekel and Hartmann variants) also ship as
+demonstration objectives with the 1989 library, a potential
+selection bias in its favor; the seeded shifts perturb them away from
+the shipped coefficients, and the wrapped methods' strengths and
+failures are distributed across shipped and non-shipped families alike
+(\code{EXKOR} is perfect on Hartmann-6 but blind on Hartmann-3 and
+weak on Shekel). One run per instance follows COCO practice; the
+paired tests operate on the 480 instances rather than on within-instance
+replicates.
 
 \section{Related work}
 \label{sec:related}
@@ -595,7 +650,7 @@ performance profiles~\cite{dolan2002benchmarking}, data
 profiles~\cite{more2009benchmarking}, and the COCO
 platform~\cite{hansen2021coco}; we follow all three. The historical
 position of the Vilnius school is surveyed
-in~\cite{torn1989global,zilinskas2010mockus}; modern Bayesian
+in~\cite{torn1989global,zilinskas2016stochastic}; modern Bayesian
 optimization in~\cite{shahriari2016taking,frazier2018tutorial}. The
 software route of wrapping venerable Fortran into scripting ecosystems
 is the founding pattern of scientific Python and

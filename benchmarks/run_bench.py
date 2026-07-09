@@ -200,8 +200,28 @@ def m_cma(rec, lo, hi, budget, seed):
         pass  # small-budget edge cases; recorder already has the data
 
 
+def m_skopt_gp(rec, lo, hi, budget, seed):
+    """GP-based Bayesian optimization (scikit-optimize, EI acquisition).
+    Cubic-cost GP refits make budgets beyond ~150 evaluations and
+    dimensions beyond ~6 impractical; run on the 25n tier, n <= 6."""
+    import warnings
+
+    if len(lo) > 6:
+        raise RuntimeError("skopt_gp skipped for dim > 6")
+    if budget > 25 * len(lo):
+        raise RuntimeError("skopt_gp run only on the 25n budget tier")
+    from skopt import gp_minimize
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        gp_minimize(rec, list(zip(lo, hi)), n_calls=budget,
+                    n_initial_points=max(5, 2 * len(lo)),
+                    random_state=seed, verbose=False)
+
+
 METHODS = {
     "random_search": m_random_search,
+    "skopt_gp": m_skopt_gp,
     "globalopt_bayes1_fortran": _globalopt("bayes1", "fortran"),
     "globalopt_mig2_fortran": _globalopt("mig2", "fortran"),
     "globalopt_glopt_fortran": _globalopt("glopt", "fortran"),
