@@ -1,0 +1,12 @@
+Title: Wrap or Rewrite? Reviving the 1989 GlobalMinimum Bayesian Global-Optimization Library for R and Python
+
+Authors: Audris Mockus (University of Tennessee, Knoxville)
+
+Categories: math.OC (primary); cross-list: cs.MS, stat.CO
+
+Comments: 15 pages, 5 figures. Code and data: https://github.com/audrism/globalopt
+
+License suggestion: arXiv non-exclusive license (or CC BY 4.0)
+
+Abstract (1833 chars, limit 1920):
+The GlobalMinimum library of Jonas Mockus (1989) implements some of the earliest practical Bayesian global-optimization methods -- one-step Bayesian search over a simple surrogate, Wiener-process one-dimensional models, low-discrepancy designs, and clustering multistart. We modernize this Fortran 66/77 codebase along both standard routes: wrapping the original compiled routines behind R and Python packages, and translating the core methods to Rust. First, we release packages in which every optimizer runs the genuine 1989 algorithms, with callback objectives, deterministic seeding, full evaluation traces, and validation that retrofits memory- and I/O-safety onto COMMON-block Fortran. Second, we dissect a translation-fidelity incident: the Rust port of the one-step Bayesian planner ran up to 12x slower than the wrapped Fortran -- initially misattributed to foreign-function overhead. Controlled decomposition shows call overhead is microseconds and backend-neutral; the cause was two dropped pruning rules whose restoration recovers bitwise trajectory agreement and speed parity. The same audit found transposed coefficient matrices in re-implemented Shekel and Hartmann test functions -- quiet correctness bugs of the rewrite route. Third, we benchmark the 1989 methods against modern optimizers in both ecosystems (SciPy, NLopt, CMA-ES, GP-based Bayesian optimization, GenSA, DEoptim, GA) on a COCO-style shifted-instance suite with external validation on BBOB. On classical test functions the coordinate Wiener-model search EXKOR statistically ties dual annealing at the larger budget; on BBOB's non-separable, ill-conditioned functions it drops to mid-field, quantifying the separability dependence. At tight budgets modern annealing and GP expected improvement dominate the 1989 machinery. Code and data are available.

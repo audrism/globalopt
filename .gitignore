@@ -26,3 +26,9 @@ paper/_minted*
 
 # Benchmark logs (CSVs are committed; logs are not)
 benchmarks/results/*.log
+paper/arxiv_bundle/
+paper/main.bbl
+paper/main.aux
+paper/main.log
+paper/main.blg
+paper/main.out
