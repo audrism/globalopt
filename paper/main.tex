@@ -168,7 +168,15 @@ Every consequential defect we found---performance-relevant pruning rules
 silently dropped, test-function coefficient matrices transposed, a
 latent uninitialized-variable bug in the upstream double-precision
 tree itself---was detected only through executable-to-executable
-comparison, not code review.
+comparison, not code review. The lesson is timely rather than
+antiquarian: large-language-model--assisted translation is currently
+industrializing exactly the rewrite route studied here, at a scale
+where nobody will hand-audit the output. Our failure taxonomy
+(complexity-relevant control flow discarded as incidental; array
+layouts transposed across language conventions; both invisible to
+review and to unit tests of summary values) and the discipline that
+catches it (full-trajectory parity against the executable original)
+transfer directly to that setting.
 
 \section{The GlobalMinimum library}
 \label{sec:library}
@@ -674,6 +682,57 @@ the comparison quantifies the field's progress cleanly: the modern
 acquisition solves $6.5\times$ as many tight-budget instances as
 \code{BAYES1} while spending nearly four orders of magnitude more time
 per run---each side of that trade still has its regime.
+
+\paragraph{Scope: what the 1989 artifact cannot address.} Our
+experiments stop at $n=10$ continuous box-constrained problems because
+the artifact does: the working arrays cap most methods at $n\le 20$
+and around $10^3$ evaluations, and the interfaces know nothing of
+categorical, conditional, or batch-parallel evaluation. The dominant
+global-optimization workload of the past decade---configuration and
+hyperparameter search for deep networks---is high-dimensional, mixed
+discrete-continuous, conditional, and noisy, and is served by purpose-built
+machinery such as TPE and SMAC~\cite{bergstra2011algorithms,hutter2011smac};
+wrapping a 1989 library cannot and should not compete there, and we
+make no such claim. Two historical footnotes are worth recording,
+though: \code{LBAYES} already supports leading integer variables
+(handled by interpolation between adjacent integer points), and its
+stochastic-approximation step schedule was designed for noisy
+objectives---the concerns of modern configuration search were visible
+in 1989, at 1989 scale.
+
+\paragraph{Recommendations.} The measured evidence supports concrete
+guidance. (1)~Under generous budgets on cheap continuous problems,
+dual annealing (Python) and GenSA (R) are the strongest defaults we
+measured; DIRECT-L is the strongest deterministic choice. (2)~Under
+tight budgets with expensive objectives, GP-based expected improvement
+is worth its solver cost as long as one solver step is cheaper than
+one objective evaluation; below that, dual annealing again.
+(3)~On problems known or suspected to be separable or coordinate-aligned,
+\code{EXKOR} delivers top-tier quality at the lowest solver cost we
+measured (below a bare interpreter loop)---and its failure mode is
+legible: it loses exactly when the landscape couples coordinates.
+(4)~For modernizers: wrap first; translate only with the original in
+the test loop asserting full-trajectory parity; treat every branch of
+legacy control flow as load-bearing until proven otherwise.
+
+\paragraph{Toward compound algorithms.} The components measured here
+compose, and the library itself supplies the parts. As a
+proof-of-concept we combined \code{ANAL2} with \code{EXKOR}: spend
+100 evaluations on an LP-$\tau$ design, estimate the eigenframe from
+\code{ANAL2}'s factor decomposition, and---only when the dominant
+eigen-direction explains markedly more influence than the best
+original axis---run \code{EXKOR} in the rotated frame. On a rotated
+ellipsoid (coordinate search's canonical failure) the compound method
+improves the median gap $4.1\times$ over plain \code{EXKOR} at equal
+total budget, $1.9\times$ on Zakharov, is neutral on Rosenbrock's
+curved valley (a linear frame cannot help), and the influence-ratio
+guard keeps it from destroying separable structure on Rastrigin
+(script and per-instance results in the repository). A second
+composition we have not yet built follows the same logic at the
+acquisition level: use the $O(\ell n)$ criterion~\eqref{eq:fiap1} to
+prescreen thousands of candidates and reserve the $O(\ell^3)$
+Gaussian-process posterior for the shortlist---a budget-matched bridge
+between the 1989 trade and the modern one.
 
 \paragraph{Threats to validity.} Single host, cheap analytic
 objectives (time comparisons expose overheads, not expensive-objective
