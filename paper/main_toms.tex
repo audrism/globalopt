@@ -1,0 +1,73 @@
+%% TOMS submission shell: same shared body as the arXiv version
+%% (body.tex, abstract.tex), ACM acmart class in TOMS (acmsmall) format.
+%% Build: tectonic main_toms.tex   (or pdflatex + bibtex)
+\documentclass[acmsmall,screen,review]{acmart}
+
+\usepackage{booktabs}
+\usepackage{listings}
+
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true}
+
+\newcommand{\pkg}[1]{\textsf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\acmJournal{TOMS}
+\acmVolume{0}
+\acmNumber{0}
+\acmArticle{0}
+\acmMonth{0}
+
+\begin{document}
+
+\title[Wrap or Rewrite? Reviving the 1989 GlobalMinimum Library]{Wrap
+or Rewrite? Reviving the 1989 \emph{GlobalMinimum} Bayesian
+Global-Optimization Library for R and Python}
+
+\author{Audris Mockus}
+\orcid{0000-0002-6591-8226}
+\affiliation{%
+  \institution{University of Tennessee}
+  \city{Knoxville}
+  \state{TN}
+  \country{USA}}
+\email{audris@utk.edu}
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002950.10003714.10003716.10011136.10011137</concept_id>
+<concept_desc>Mathematics of computing~Nonconvex optimization</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10011074.10011099.10011102.10011103</concept_id>
+<concept_desc>Software and its engineering~Software verification and validation</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10002950.10003714.10003715.10003748</concept_id>
+<concept_desc>Mathematics of computing~Mathematical software performance</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Mathematics of computing~Nonconvex optimization}
+\ccsdesc[500]{Mathematics of computing~Mathematical software performance}
+\ccsdesc[300]{Software and its engineering~Software verification and validation}
+
+\keywords{global optimization, Bayesian optimization, legacy software,
+Fortran, Rust, translation fidelity, benchmarking, performance profiles}
+
+\maketitle
+
+\input{body}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

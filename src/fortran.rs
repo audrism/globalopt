@@ -255,9 +255,104 @@ extern "C" {
 
     // -- COMMON blocks --
     static mut laik_: LaikCommon;
-    #[allow(dead_code)]
     static mut bs1_: [f64; 1000];
     static mut statis_: StatisCommon;
+    /// ANAL2 outputs: /ANA2/ VK(20,20) eigenvectors, /ANA3/ DX(20)
+    /// per-axis influence, /ANA4/ DY(20) eigen-direction influence.
+    static mut ana2_: [f64; 400];
+    static mut ana3_: [f64; 20];
+    static mut ana4_: [f64; 20];
+}
+
+/// Result of the ANAL2 variable-influence analysis.
+#[derive(Debug, Clone)]
+pub struct Anal2Result {
+    /// Influence of each variable in the original coordinate system.
+    pub influence: Vec<f64>,
+    /// Influence of each direction in the eigen coordinate system.
+    pub influence_eigen: Vec<f64>,
+    /// Eigenvector matrix, column-major: `eigenvectors[j]` is direction j.
+    pub eigenvectors: Vec<Vec<f64>>,
+}
+
+/// Variable-influence analysis via covariance eigenstructure (original
+/// Fortran ANAL2).  Does not evaluate an objective: analyses a supplied
+/// design of `points` (each of dimension n) with matching `values`.
+pub fn fortran_anal2(
+    a: &[f64],
+    b: &[f64],
+    points: &[Vec<f64>],
+    values: &[f64],
+) -> Result<Anal2Result, OptError> {
+    let n = a.len();
+    let m = values.len();
+    if n == 0 || n > 20 {
+        return Err(OptError::InvalidInput(
+            "ANAL2 requires dimension in 1..=20".to_string(),
+        ));
+    }
+    if b.len() != n {
+        return Err(OptError::InvalidInput(
+            "bounds must have the same length".to_string(),
+        ));
+    }
+    if points.len() != m || !(10..=300).contains(&m) {
+        return Err(OptError::InvalidInput(
+            "ANAL2 requires 10..=300 points with matching values".to_string(),
+        ));
+    }
+    if points.iter().any(|p| p.len() != n) {
+        return Err(OptError::InvalidInput(
+            "every point must have the same dimension as the bounds".to_string(),
+        ));
+    }
+
+    let nm = (n * m) as c_int;
+    let mut xx = vec![0.0f64; n * m];
+    for (i, p) in points.iter().enumerate() {
+        xx[i * n..(i + 1) * n].copy_from_slice(p);
+    }
+    let mut xwork = vec![0.0f64; n * m];
+    let mut ipar = [0 as c_int; 30];
+    ipar[0] = -1;
+    ipar[1] = m as c_int;
+    let ipa: c_int = 0;
+    let nn = n as c_int;
+
+    let _guard = FORTRAN_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+    unsafe {
+        for (i, &v) in values.iter().enumerate() {
+            bs1_[i] = v;
+        }
+        anal2_(
+            a.as_ptr(),
+            b.as_ptr(),
+            &nn,
+            xx.as_mut_ptr(),
+            xwork.as_mut_ptr(),
+            &nm,
+            ipar.as_mut_ptr(),
+            &ipa,
+        );
+        let ifail = ptr::addr_of!(statis_.ifail).read();
+        if ifail == 10 {
+            return Err(OptError::Internal(
+                "ANAL2 rejected its inputs (IFAIL=10)".to_string(),
+            ));
+        }
+        let dx = ptr::addr_of!(ana3_).read();
+        let dy = ptr::addr_of!(ana4_).read();
+        let vk = ptr::addr_of!(ana2_).read();
+        let mut eig = Vec::with_capacity(n);
+        for j in 0..n {
+            eig.push((0..n).map(|i| vk[i + j * 20]).collect());
+        }
+        Ok(Anal2Result {
+            influence: dx[..n].to_vec(),
+            influence_eigen: dy[..n].to_vec(),
+            eigenvectors: eig,
+        })
+    }
 }
 
 /// Serializes every entry into the Fortran library (COMMON blocks and

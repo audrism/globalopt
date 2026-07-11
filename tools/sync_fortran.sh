@@ -27,12 +27,20 @@ ALGO_FILES="anal1.f anal2.f bayes1.f exkor.f extr.f flexi.f glopt.f lbayes.f lpm
 #     (also defined in lpmin.f).
 #  4. glopt.f: LOCOP erroneously lists the scalars SF,SL,SLL in its
 #     DIMENSION statement, which modern compilers reject.
+#  5. exkor.f/extr.f: in the local-parabola block, a degenerate fit on
+#     the first pass jumps to label 300 and stores XA,YA before either
+#     has been assigned (uninitialized locals; present in BOTH upstream
+#     trees, flagged by -Wmaybe-uninitialized and observed as
+#     allocation-history-dependent results).  Initialize them to the
+#     current middle point (XL2,YL2), which the degenerate branch would
+#     otherwise re-store idempotently.
 patch_vendored() {
   local dir="$1"
   sed -i -E 's/\bSRMIN\b/SDMIN/g; s/\bSRMAX\b/SDMAX/g' "$dir/mivar4.f"
   sed -i -E 's/\bCOR\b/CORXK/g; s/\bALNORM\b/ALNMXK/g' "$dir/exkor.f"
   sed -i -E 's/\bFAKTKK\b/FAKT22/g' "$dir/anal2.f"
   sed -i 's/DIMENSION Y(M1),X(M1),S(M),SF,SL,SLL,A(M),C(M)/DIMENSION Y(M1),X(M1),S(M),A(M),C(M)/' "$dir/glopt.f"
+  sed -i 's/^      N8=0$/      N8=0\n      XA=XL2\n      YA=YL2/' "$dir/exkor.f" "$dir/extr.f"
 }
 
 # R package

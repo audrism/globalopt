@@ -769,6 +769,24 @@ fn lptau_fortran_py(c: usize, n: usize) -> PyResult<Vec<f64>> {
     crate::fortran::fortran_lptau(c, n).map_err(to_pyerr)
 }
 
+#[cfg(feature = "fortran")]
+#[pyfunction]
+fn anal2_fortran_py(
+    py: Python<'_>,
+    a: Vec<f64>,
+    b: Vec<f64>,
+    points: Vec<Vec<f64>>,
+    values: Vec<f64>,
+) -> PyResult<PyObject> {
+    let result =
+        crate::fortran::fortran_anal2(&a, &b, &points, &values).map_err(to_pyerr)?;
+    let dict = PyDict::new_bound(py);
+    dict.set_item("influence", result.influence).unwrap();
+    dict.set_item("influence_eigen", result.influence_eigen).unwrap();
+    dict.set_item("eigenvectors", result.eigenvectors).unwrap();
+    Ok(dict.into_py(py))
+}
+
 #[pymodule]
 pub fn globalopt_native(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(furasn_py, m)?)?;
@@ -810,6 +828,7 @@ pub fn globalopt_native(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()
         m.add_function(wrap_pyfunction!(flexi_fortran_py, m)?)?;
         m.add_function(wrap_pyfunction!(reqp_fortran_py, m)?)?;
         m.add_function(wrap_pyfunction!(lptau_fortran_py, m)?)?;
+        m.add_function(wrap_pyfunction!(anal2_fortran_py, m)?)?;
     }
     Ok(())
 }

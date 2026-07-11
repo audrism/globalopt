@@ -1,0 +1,961 @@
+language,method,problem,dim,instance,budget,best_f,evals_used,time_s,error,hit_tol1,hit_tol2,hit_tol3,hit_tol4,hit_tol5,hit_tol6,hit_tol7,hit_tol8
+python,scipy_shgo,sphere,2,1,50,0.2863614979618538,135,2.806909,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,1,200,8.882161481706339e-17,264,0.046235,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,2,50,0.39604288042447133,135,0.017373,,100,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,2,200,9.586290125320103e-17,264,0.046002,,100,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,3,50,0.24518024308178465,135,0.017561,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,3,200,7.987230664651687e-20,264,0.045934,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,4,50,0.16902391429382396,135,0.017362,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,4,200,6.092660273672768e-18,264,0.045911,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,5,50,0.1291529073881778,135,0.017349,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,5,200,2.901514653334268e-17,264,0.04897,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,6,50,0.12556722236484624,135,0.0168,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,6,200,3.8299105638087704e-17,264,0.04524,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,7,50,0.1582668592238292,135,0.01706,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,7,200,5.83644014783344e-17,264,0.045244,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,8,50,0.22725181796512683,135,0.016902,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,8,200,1.0149780402145762e-16,264,0.045229,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,9,50,0.32804868375191804,135,0.01127,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,9,200,8.834522806831373e-17,264,0.02834,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,10,50,0.30852445011730517,135,0.010524,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,10,200,5.8713696610654285e-19,264,0.027866,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,11,50,0.210510639025529,135,0.014732,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,11,200,3.479119888968026e-19,264,0.026513,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,12,50,0.1487821498160674,135,0.009849,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,12,200,1.6466862586017085e-17,264,0.029841,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,13,50,0.12333898248892038,135,0.011104,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,13,200,4.88352236647965e-17,264,0.026744,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,14,50,0.1341811370440879,135,0.010653,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,14,200,4.0770771070055396e-17,264,0.027988,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,15,50,0.18130861348157004,135,0.010815,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,2,15,200,7.711579296502014e-17,264,0.028191,,133,133,133,133,133,133,133,133
+python,scipy_shgo,sphere,5,1,125,1.458995048160031e-15,267,1.253101,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,1,500,1.458995048160031e-15,645,8.374064,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,2,125,9.295598827252554e-16,267,1.253104,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,2,500,9.295598827252554e-16,645,8.048475,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,3,125,1.2118537371931539e-15,267,1.252722,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,3,500,1.2118537371931539e-15,645,8.411841,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,4,125,1.492789995000377e-15,274,1.34209,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,4,500,1.8580013044486148e-16,652,8.428223,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,5,125,3.473114322740066e-16,274,1.256086,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,5,500,1.975097526186629e-16,652,8.032639,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,6,125,3.0487315080882357e-15,267,1.240268,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,6,500,3.0487315080882357e-15,645,8.176238,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,7,125,1.2482825093197952e-15,267,1.263963,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,7,500,1.2482825093197952e-15,645,7.959683,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,8,125,2.3649593826538876e-15,274,1.241594,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,8,500,2.5084341904289106e-16,652,8.017189,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,9,125,6.824232171513084e-16,274,1.248984,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,9,500,1.7373024961212037e-16,652,8.149999,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,10,125,1.067057121247244e-15,267,1.249697,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,10,500,1.067057121247244e-15,645,8.038105,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,11,125,2.670137869305875e-15,267,1.248342,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,11,500,2.670137869305875e-15,645,8.010674,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,12,125,9.75112941060138e-16,274,1.230435,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,12,500,2.594867695514549e-16,652,8.158033,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,13,125,3.422276210769697e-15,274,1.233029,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,13,500,1.772432554109673e-16,652,7.948309,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,14,125,3.3681670396958734e-16,267,1.235767,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,14,500,3.3681670396958734e-16,645,7.906409,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,15,125,1.395467593412887e-15,267,1.293624,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,5,15,500,1.395467593412887e-15,645,7.900926,,119,119,119,119,119,119,119,119
+python,scipy_shgo,sphere,10,1,250,inf,0,4e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,1,1000,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,2,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,2,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,3,250,inf,0,1.4e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,3,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,4,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,5,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,6,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,7,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,8,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,9,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,10,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,11,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,12,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,13,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,14,1000,inf,0,1.8e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,sphere,10,15,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,2,1,50,1.456768841174728,545,0.051452,,58,237,246,249,252,255,255,258
+python,scipy_shgo,rosenbrock,2,1,200,0.03655225971109193,1027,0.11339,,58,237,246,249,252,255,255,258
+python,scipy_shgo,rosenbrock,2,2,50,0.8708669239946586,517,0.048473,,212,224,233,236,242,245,245,248
+python,scipy_shgo,rosenbrock,2,2,200,0.1972139421207688,781,0.09182,,212,224,233,236,242,245,245,248
+python,scipy_shgo,rosenbrock,2,3,50,0.7401050081507394,494,0.04651,,154,167,173,176,179,182,182,185
+python,scipy_shgo,rosenbrock,2,3,200,2.2242706790096953e-11,736,0.085765,,154,167,173,176,179,182,182,185
+python,scipy_shgo,rosenbrock,2,4,50,1.0560254718303566,526,0.049488,,70,175,184,190,193,196,196,196
+python,scipy_shgo,rosenbrock,2,4,200,2.1679775172299323e-11,659,0.108637,,70,175,184,190,193,196,196,196
+python,scipy_shgo,rosenbrock,2,5,50,1.9524917353930664,563,0.052896,,165,181,187,190,193,196,199,199
+python,scipy_shgo,rosenbrock,2,5,200,4.227011249199398e-10,772,0.08948,,165,181,187,190,193,196,199,199
+python,scipy_shgo,rosenbrock,2,6,50,2.208675267781815,518,0.049083,,153,173,180,183,186,186,189,189
+python,scipy_shgo,rosenbrock,2,6,200,1.9406568398973453e-11,736,0.085303,,153,173,180,183,186,186,189,189
+python,scipy_shgo,rosenbrock,2,7,50,1.4413713065845577,546,0.050524,,217,229,235,238,241,244,247,247
+python,scipy_shgo,rosenbrock,2,7,200,0.490657320797411,757,0.087297,,217,229,235,238,241,244,247,247
+python,scipy_shgo,rosenbrock,2,8,50,2.090051030252734,587,0.053039,,58,188,197,200,203,203,206,206
+python,scipy_shgo,rosenbrock,2,8,200,3.527196124669115e-05,1110,0.119527,,58,188,197,200,203,203,206,206
+python,scipy_shgo,rosenbrock,2,9,50,1.154381633117038,510,0.048249,,212,224,230,236,236,239,239,242
+python,scipy_shgo,rosenbrock,2,9,200,0.16392693006453307,851,0.097485,,212,224,230,236,236,239,239,242
+python,scipy_shgo,rosenbrock,2,10,50,0.79926245904759,509,0.051401,,204,216,226,229,232,232,233,235
+python,scipy_shgo,rosenbrock,2,10,200,0.10704595489822033,754,0.088955,,204,216,226,229,232,232,233,235
+python,scipy_shgo,rosenbrock,2,11,50,0.7962055398234495,511,0.048508,,168,180,183,189,192,195,195,195
+python,scipy_shgo,rosenbrock,2,11,200,2.993829800345939e-11,644,0.07712,,168,180,183,189,192,195,195,195
+python,scipy_shgo,rosenbrock,2,12,50,1.3428901885176998,524,0.050154,,165,178,184,187,190,190,193,196
+python,scipy_shgo,rosenbrock,2,12,200,1.9040460938910438e-11,657,0.07877,,165,178,184,187,190,190,193,196
+python,scipy_shgo,rosenbrock,2,13,50,2.4701206407265026,568,0.053646,,220,239,248,254,254,257,260,260
+python,scipy_shgo,rosenbrock,2,13,200,0.1711390783876335,779,0.089924,,220,239,248,254,254,257,260,260
+python,scipy_shgo,rosenbrock,2,14,50,1.8340160268954113,565,0.053745,,212,225,237,240,243,246,246,249
+python,scipy_shgo,rosenbrock,2,14,200,0.2512055181741242,780,0.09189,,212,225,237,240,243,246,246,249
+python,scipy_shgo,rosenbrock,2,15,50,2.9340596443783324,565,0.051817,,160,172,178,184,184,187,187,190
+python,scipy_shgo,rosenbrock,2,15,200,1.8751285032532547e-11,1089,0.122845,,160,172,178,184,184,187,187,190
+python,scipy_shgo,rosenbrock,5,1,125,66.73400690508129,691,1.264896,,275,299,317,323,329,335,335,341
+python,scipy_shgo,rosenbrock,5,1,500,5.040456301343961e-11,1069,7.898198,,275,299,317,323,329,335,335,341
+python,scipy_shgo,rosenbrock,5,2,125,14.235592924343669,847,1.26928,,268,299,311,323,329,335,335,341
+python,scipy_shgo,rosenbrock,5,2,500,5.016694742270697e-11,1225,7.869864,,268,299,311,323,329,335,335,341
+python,scipy_shgo,rosenbrock,5,3,125,18.425765577163123,776,1.258103,,235,259,271,277,283,289,295,295
+python,scipy_shgo,rosenbrock,5,3,500,4.8067812596753025e-11,1499,8.010748,,235,259,271,277,283,289,295,295
+python,scipy_shgo,rosenbrock,5,4,125,81.330167831941,536,1.24121,,330,354,366,372,378,378,384,390
+python,scipy_shgo,rosenbrock,5,4,500,5.294837507308717e-11,917,7.915577,,330,354,366,372,378,378,384,390
+python,scipy_shgo,rosenbrock,5,5,125,77.43057969902912,684,1.240637,,261,286,298,310,310,316,322,322
+python,scipy_shgo,rosenbrock,5,5,500,5.211400739736328e-11,1296,7.938382,,261,286,298,310,310,316,322,322
+python,scipy_shgo,rosenbrock,5,6,125,85.15637467950346,554,1.224041,,,,,,,,,
+python,scipy_shgo,rosenbrock,5,6,500,3.930839434159086,1208,7.984739,,876,901,913,925,925,931,937,937
+python,scipy_shgo,rosenbrock,5,7,125,11.824095670633124,634,1.244942,,227,251,269,281,281,287,287,293
+python,scipy_shgo,rosenbrock,5,7,500,5.308795970783552e-11,1271,7.954671,,227,251,269,281,281,287,287,293
+python,scipy_shgo,rosenbrock,5,8,125,47.83535366390228,498,1.231174,,273,304,316,328,334,340,340,346
+python,scipy_shgo,rosenbrock,5,8,500,5.433143389030777e-11,879,7.863479,,273,304,316,328,334,340,340,346
+python,scipy_shgo,rosenbrock,5,9,125,14.362045319494207,886,1.266342,,261,285,297,303,309,315,321,321
+python,scipy_shgo,rosenbrock,5,9,500,3.886999952960112e-11,1469,8.041731,,261,285,297,303,309,315,321,321
+python,scipy_shgo,rosenbrock,5,10,125,20.567472007820534,940,1.277155,,209,228,240,253,259,259,265,265
+python,scipy_shgo,rosenbrock,5,10,500,5.334642087648885e-11,1551,7.984081,,209,228,240,253,259,259,265,265
+python,scipy_shgo,rosenbrock,5,11,125,79.44172031365733,952,1.265825,,402,434,447,459,459,471,471,483
+python,scipy_shgo,rosenbrock,5,11,500,4.4096347985570875e-11,1332,7.940157,,402,434,447,459,459,471,471,483
+python,scipy_shgo,rosenbrock,5,12,125,75.35452055265118,696,1.250331,,285,317,329,341,347,347,353,353
+python,scipy_shgo,rosenbrock,5,12,500,4.381640725780892e-11,1307,8.006037,,285,317,329,341,347,347,353,353
+python,scipy_shgo,rosenbrock,5,13,125,78.15450616804384,499,1.227138,,287,311,329,335,341,347,347,353
+python,scipy_shgo,rosenbrock,5,13,500,5.0880540311947746e-11,1139,7.923514,,287,311,329,335,341,347,347,353
+python,scipy_shgo,rosenbrock,5,14,125,6.689070830482173,645,1.249053,,248,278,291,297,303,309,315,315
+python,scipy_shgo,rosenbrock,5,14,500,5.2684627668328713e-11,1278,7.96993,,248,278,291,297,303,309,315,315
+python,scipy_shgo,rosenbrock,5,15,125,15.656113018805094,827,1.266765,,277,307,326,338,338,344,350,356
+python,scipy_shgo,rosenbrock,5,15,500,5.318243355978524e-11,1474,8.003931,,277,307,326,338,338,344,350,356
+python,scipy_shgo,rosenbrock,10,1,250,inf,0,7.9e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,1,1000,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,2,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,2,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,3,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,3,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,4,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,7,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,7,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,8,1000,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,9,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,10,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,11,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,12,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,13,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,14,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rosenbrock,10,15,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,2,1,50,10.729006344195826,480,0.047292,,466,469,469,469,469,472,472,472
+python,scipy_shgo,rastrigin,2,1,200,4.9605013086875545,827,0.114086,,466,469,469,469,469,472,472,472
+python,scipy_shgo,rastrigin,2,2,50,7.271258410458046,538,0.051178,,,,,,,,,
+python,scipy_shgo,rastrigin,2,2,200,7.271258410458046,1213,0.153938,,1045,1048,1048,1048,1048,1051,1051,1051
+python,scipy_shgo,rastrigin,2,3,50,3.4057991971807375,545,0.051883,,,,,,,,,
+python,scipy_shgo,rastrigin,2,3,200,3.4057991971807375,1122,0.151988,,708,711,711,711,711,714,714,714
+python,scipy_shgo,rastrigin,2,4,50,6.114857485999551,681,0.065734,,,,,,,,,
+python,scipy_shgo,rastrigin,2,4,200,6.114857485999551,1053,0.154809,,950,950,950,953,953,953,953,956
+python,scipy_shgo,rastrigin,2,5,50,4.98416678448163,697,0.072111,,,,,,,,,
+python,scipy_shgo,rastrigin,2,5,200,4.98416678448163,1080,0.158485,,,,,,,,,
+python,scipy_shgo,rastrigin,2,6,50,2.0513203102954414,754,0.074131,,746,746,746,746,746,749,749,749
+python,scipy_shgo,rastrigin,2,6,200,2.0513203102954414,1043,0.16535,,746,746,746,746,746,749,749,749
+python,scipy_shgo,rastrigin,2,7,50,5.344256297943179,633,0.060735,,619,622,622,622,625,625,625,628
+python,scipy_shgo,rastrigin,2,7,200,4.974790247647402,1032,0.151936,,619,622,622,622,625,625,625,628
+python,scipy_shgo,rastrigin,2,8,50,7.398067097458759,443,0.041625,,429,432,432,432,435,435,435,438
+python,scipy_shgo,rastrigin,2,8,200,4.212311661084286,825,0.110055,,429,432,432,432,435,435,435,438
+python,scipy_shgo,rastrigin,2,9,50,9.791249914640177,394,0.036533,,,,,,,,,
+python,scipy_shgo,rastrigin,2,9,200,6.746471284915728,957,0.117528,,804,804,804,807,807,807,810,810
+python,scipy_shgo,rastrigin,2,10,50,5.013154360275692,556,0.056545,,,,,,,,,
+python,scipy_shgo,rastrigin,2,10,200,5.013154360275692,1161,0.155095,,775,778,778,778,778,781,781,781
+python,scipy_shgo,rastrigin,2,11,50,3.7401274324089826,567,0.054947,,,,,,,,,
+python,scipy_shgo,rastrigin,2,11,200,3.7401274324089826,1091,0.148054,,791,791,791,791,794,794,794,794
+python,scipy_shgo,rastrigin,2,12,50,6.438102115292693,724,0.070328,,,,,,,,,
+python,scipy_shgo,rastrigin,2,12,200,1.989918114186601,1097,0.163619,,,,,,,,,
+python,scipy_shgo,rastrigin,2,13,50,3.045130613565828,688,0.067163,,,,,,,,,
+python,scipy_shgo,rastrigin,2,13,200,3.045130613565828,1068,0.158106,,,,,,,,,
+python,scipy_shgo,rastrigin,2,14,50,2.804945732172385,635,0.060227,,621,624,624,624,624,627,627,627
+python,scipy_shgo,rastrigin,2,14,200,2.804945732172385,1023,0.147447,,621,624,624,624,624,627,627,627
+python,scipy_shgo,rastrigin,2,15,50,5.56523894807486,631,0.066293,,617,620,623,623,623,623,626,626
+python,scipy_shgo,rastrigin,2,15,200,4.974790247647412,987,0.144699,,617,620,623,623,623,623,626,626
+python,scipy_shgo,rastrigin,5,1,125,41.89563057974959,756,1.268962,,,,,,,,,
+python,scipy_shgo,rastrigin,5,1,500,22.883952154295542,1305,8.008467,,,,,,,,,
+python,scipy_shgo,rastrigin,5,2,125,41.58321398620059,706,1.261088,,,,,,,,,
+python,scipy_shgo,rastrigin,5,2,500,18.90418173678193,1284,7.969015,,,,,,,,,
+python,scipy_shgo,rastrigin,5,3,125,42.88365033234898,741,1.277513,,,,,,,,,
+python,scipy_shgo,rastrigin,5,3,500,9.94958049529481,1368,8.085703,,,,,,,,,
+python,scipy_shgo,rastrigin,5,4,125,31.13068963929284,399,1.227791,,,,,,,,,
+python,scipy_shgo,rastrigin,5,4,500,10.944539552388107,1138,7.979528,,,,,,,,,
+python,scipy_shgo,rastrigin,5,5,125,42.74209059020953,651,1.275105,,,,,,,,,
+python,scipy_shgo,rastrigin,5,5,500,18.90418173678181,1189,7.940149,,,,,,,,,
+python,scipy_shgo,rastrigin,5,6,125,42.860113044647456,697,1.333838,,,,,,,,,
+python,scipy_shgo,rastrigin,5,6,500,18.90418173678182,1329,8.279896,,,,,,,,,
+python,scipy_shgo,rastrigin,5,7,125,37.43806181882563,432,1.225263,,,,,,,,,
+python,scipy_shgo,rastrigin,5,7,500,10.944539552388093,812,8.005048,,,,,,,,,
+python,scipy_shgo,rastrigin,5,8,125,34.76238523985706,720,1.279106,,,,,,,,,
+python,scipy_shgo,rastrigin,5,8,500,6.964708361834042,1091,7.967787,,,,,,,,,
+python,scipy_shgo,rastrigin,5,9,125,27.930298236909604,810,1.3123,,,,,,,,,
+python,scipy_shgo,rastrigin,5,9,500,12.9344374698602,1537,8.033199,,,,,,,,,
+python,scipy_shgo,rastrigin,5,10,125,44.68386336119435,1189,1.357749,,,,,,,,,
+python,scipy_shgo,rastrigin,5,10,500,22.883952154295518,1543,8.080363,,,,,,,,,
+python,scipy_shgo,rastrigin,5,11,125,25.116177353166364,422,1.301966,,,,,,,,,
+python,scipy_shgo,rastrigin,5,11,500,8.954621438201947,1053,7.984362,,,,,,,,,
+python,scipy_shgo,rastrigin,5,12,125,40.91531981534923,607,1.263399,,,,,,,,,
+python,scipy_shgo,rastrigin,5,12,500,14.924350546227735,981,7.948317,,,,,,,,,
+python,scipy_shgo,rastrigin,5,13,125,20.030429945001224,324,1.228048,,,,,,,,,
+python,scipy_shgo,rastrigin,5,13,500,9.949580495294825,971,7.977082,,,,,,,,,
+python,scipy_shgo,rastrigin,5,14,125,29.256444007028133,764,1.378177,,,,,,,,,
+python,scipy_shgo,rastrigin,5,14,500,12.934452628755565,1320,7.986541,,,,,,,,,
+python,scipy_shgo,rastrigin,5,15,125,39.45113979403846,698,1.262374,,,,,,,,,
+python,scipy_shgo,rastrigin,5,15,500,27.858722205228595,1269,7.992164,,,,,,,,,
+python,scipy_shgo,rastrigin,10,1,250,inf,0,2.9e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,1,1000,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,2,250,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,2,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,3,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,3,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,4,250,inf,0,2.5e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,7,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,8,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,9,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,10,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,11,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,12,1000,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,13,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,14,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,rastrigin,10,15,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,2,1,50,7.844617185345232,395,0.038344,,,,,,,,,
+python,scipy_shgo,ackley,2,1,200,7.844617185345232,998,0.120742,,774,786,801,813,828,840,857,861
+python,scipy_shgo,ackley,2,2,50,8.549460178108902,362,0.034218,,,,,,,,,
+python,scipy_shgo,ackley,2,2,200,7.411842232038218,864,0.168918,,,,,,,,,
+python,scipy_shgo,ackley,2,3,50,6.544573546276091,510,0.04692,,395,411,429,446,459,472,485,
+python,scipy_shgo,ackley,2,3,200,5.998560631778151,949,0.12095,,395,411,429,446,459,472,485,
+python,scipy_shgo,ackley,2,4,50,4.8920091539505215,353,0.03556,,,,,,,,,
+python,scipy_shgo,ackley,2,4,200,4.494072170923648,768,0.099482,,,,,,,,,
+python,scipy_shgo,ackley,2,5,50,4.408195274471684,406,0.038488,,,,,,,,,
+python,scipy_shgo,ackley,2,5,200,4.202626452400075,858,0.112576,,,,,,,,,
+python,scipy_shgo,ackley,2,6,50,5.340978187399287,390,0.037215,,,,,,,,,
+python,scipy_shgo,ackley,2,6,200,5.340978187399287,732,0.102676,,,,,,,,,
+python,scipy_shgo,ackley,2,7,50,6.904374806396724,380,0.038718,,,,,,,,,
+python,scipy_shgo,ackley,2,7,200,6.733863875379182,840,0.107674,,,,,,,,,
+python,scipy_shgo,ackley,2,8,50,8.398032010355736,382,0.035543,,,,,,,,,
+python,scipy_shgo,ackley,2,8,200,8.302760194576065,805,0.104847,,,,,,,,,
+python,scipy_shgo,ackley,2,9,50,9.395575474499374,378,0.035867,,,,,,,,,
+python,scipy_shgo,ackley,2,9,200,8.471187290385622,839,0.10982,,,,,,,,,
+python,scipy_shgo,ackley,2,10,50,8.286961438442253,460,0.044358,,,,,,,,,
+python,scipy_shgo,ackley,2,10,200,6.4153961696463035,911,0.125958,,,,,,,,,
+python,scipy_shgo,ackley,2,11,50,6.866348268469723,419,0.041804,,,,,,,,,
+python,scipy_shgo,ackley,2,11,200,4.5183724664029725,768,0.105528,,,,,,,,,
+python,scipy_shgo,ackley,2,12,50,5.399837256645306,406,0.042704,,,,,,,,,
+python,scipy_shgo,ackley,2,12,200,3.52566746773492,893,0.117114,,,,,,,,,
+python,scipy_shgo,ackley,2,13,50,4.567713589290275,373,0.037037,,,,,,,,,
+python,scipy_shgo,ackley,2,13,200,4.567713589290275,860,0.111705,,,,,,,,,
+python,scipy_shgo,ackley,2,14,50,4.989784341707214,441,0.041026,,342,351,365,378,391,404,419,
+python,scipy_shgo,ackley,2,14,200,4.989784341707214,837,0.103557,,342,351,365,378,391,404,419,
+python,scipy_shgo,ackley,2,15,50,6.485757677872762,401,0.037616,,,,,,,,,
+python,scipy_shgo,ackley,2,15,200,6.485757677872762,841,0.109038,,738,750,762,776,793,806,820,828
+python,scipy_shgo,ackley,5,1,125,16.798390214291427,519,1.25649,,,,,,,,,
+python,scipy_shgo,ackley,5,1,500,15.907954024073781,1003,7.988161,,,,,,,,,
+python,scipy_shgo,ackley,5,2,125,17.54889240735181,562,1.301948,,,,,,,,,
+python,scipy_shgo,ackley,5,2,500,15.989169845072006,1178,8.00004,,,,,,,,,
+python,scipy_shgo,ackley,5,3,125,16.8696298387024,504,1.260217,,,,,,,,,
+python,scipy_shgo,ackley,5,3,500,16.491730614925498,1061,7.991996,,,,,,,,,
+python,scipy_shgo,ackley,5,4,125,16.40343959077185,460,1.251875,,,,,,,,,
+python,scipy_shgo,ackley,5,4,500,15.647431169518276,919,8.024042,,,,,,,,,
+python,scipy_shgo,ackley,5,5,125,17.946945574969888,585,1.270332,,,,,,,,,
+python,scipy_shgo,ackley,5,5,500,16.999060559187367,957,7.966781,,,,,,,,,
+python,scipy_shgo,ackley,5,6,125,17.813944672014806,440,1.245864,,,,,,,,,
+python,scipy_shgo,ackley,5,6,500,13.503098962660745,999,7.986327,,,,,,,,,
+python,scipy_shgo,ackley,5,7,125,15.740046146063817,514,1.266861,,,,,,,,,
+python,scipy_shgo,ackley,5,7,500,15.635986582104804,1003,8.040143,,,,,,,,,
+python,scipy_shgo,ackley,5,8,125,16.687053307809876,657,1.288379,,,,,,,,,
+python,scipy_shgo,ackley,5,8,500,16.515793202066074,1156,8.010647,,,,,,,,,
+python,scipy_shgo,ackley,5,9,125,17.31376454534053,625,1.270746,,,,,,,,,
+python,scipy_shgo,ackley,5,9,500,16.171930391752124,1106,7.994062,,,,,,,,,
+python,scipy_shgo,ackley,5,10,125,17.668049840291726,429,1.235559,,,,,,,,,
+python,scipy_shgo,ackley,5,10,500,15.72173055105987,932,8.01386,,,,,,,,,
+python,scipy_shgo,ackley,5,11,125,17.207609730308413,504,1.258287,,,,,,,,,
+python,scipy_shgo,ackley,5,11,500,15.68146991679788,879,7.91165,,,,,,,,,
+python,scipy_shgo,ackley,5,12,125,17.591216851866164,488,1.256912,,,,,,,,,
+python,scipy_shgo,ackley,5,12,500,16.861478251777474,975,7.951565,,,,,,,,,
+python,scipy_shgo,ackley,5,13,125,17.749552093774728,522,1.245343,,,,,,,,,
+python,scipy_shgo,ackley,5,13,500,15.228102685760625,1011,8.047827,,,,,,,,,
+python,scipy_shgo,ackley,5,14,125,16.741571615197806,537,1.250592,,,,,,,,,
+python,scipy_shgo,ackley,5,14,500,15.999137686528778,1022,7.948564,,,,,,,,,
+python,scipy_shgo,ackley,5,15,125,17.597711886368707,456,1.238941,,,,,,,,,
+python,scipy_shgo,ackley,5,15,500,14.693430746550025,932,7.92489,,,,,,,,,
+python,scipy_shgo,ackley,10,1,250,inf,0,3.7e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,1,1000,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,2,250,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,2,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,3,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,3,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,4,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,7,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,8,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,9,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,10,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,11,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,12,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,13,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,14,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,ackley,10,15,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,2,1,50,0.9693947009900474,153,0.012835,,136,,,,,,,
+python,scipy_shgo,griewank,2,1,200,0.04683501858787642,282,0.093885,,136,,,,,,,
+python,scipy_shgo,griewank,2,2,50,0.0684387195774494,149,0.258917,,7,132,,,,,,
+python,scipy_shgo,griewank,2,2,200,0.007396040334115228,278,0.028863,,7,132,,,,,,
+python,scipy_shgo,griewank,2,3,50,0.8614761637599926,150,0.012258,,,,,,,,,
+python,scipy_shgo,griewank,2,3,200,0.12571297354293165,279,0.029753,,,,,,,,,
+python,scipy_shgo,griewank,2,4,50,0.26376283747447693,171,0.014996,,,,,,,,,
+python,scipy_shgo,griewank,2,4,200,0.2169340832744946,301,0.035215,,,,,,,,,
+python,scipy_shgo,griewank,2,5,50,1.2581516781108153,177,0.014745,,,,,,,,,
+python,scipy_shgo,griewank,2,5,200,0.5324458708607431,338,0.037924,,,,,,,,,
+python,scipy_shgo,griewank,2,6,50,1.4640979274778365,149,0.011555,,,,,,,,,
+python,scipy_shgo,griewank,2,6,200,1.1116872357082144,302,0.032101,,,,,,,,,
+python,scipy_shgo,griewank,2,7,50,1.0651666995307139,149,0.014732,,,,,,,,,
+python,scipy_shgo,griewank,2,7,200,0.5324458708609496,278,0.028739,,,,,,,,,
+python,scipy_shgo,griewank,2,8,50,0.6491520669310538,150,0.012008,,,,,,,,,
+python,scipy_shgo,griewank,2,8,200,0.12571297354290223,279,0.028348,,,,,,,,,
+python,scipy_shgo,griewank,2,9,50,0.11791759790091338,149,0.011331,,132,135,,,,,,
+python,scipy_shgo,griewank,2,9,200,0.007396040334116005,278,0.027984,,132,135,,,,,,
+python,scipy_shgo,griewank,2,10,50,0.5611107425595306,149,0.01158,,138,,,,,,,
+python,scipy_shgo,griewank,2,10,200,0.03945868819549159,278,0.02829,,138,,,,,,,
+python,scipy_shgo,griewank,2,11,50,0.2148349421752036,149,0.011663,,,,,,,,,
+python,scipy_shgo,griewank,2,11,200,0.11833664285783874,278,0.029023,,,,,,,,,
+python,scipy_shgo,griewank,2,12,50,1.497832361322612,150,0.012106,,,,,,,,,
+python,scipy_shgo,griewank,2,12,200,0.35497049442135187,303,0.031844,,,,,,,,,
+python,scipy_shgo,griewank,2,13,50,0.9505355838403751,149,0.015045,,,,,,,,,
+python,scipy_shgo,griewank,2,13,200,0.8356144749415249,278,0.029076,,,,,,,,,
+python,scipy_shgo,griewank,2,14,50,1.7024893733977113,150,0.011773,,,,,,,,,
+python,scipy_shgo,griewank,2,14,200,0.7493602055970803,279,0.029688,,,,,,,,,
+python,scipy_shgo,griewank,2,15,50,0.4604539532467733,170,0.014511,,,,,,,,,
+python,scipy_shgo,griewank,2,15,200,0.24402990209360775,300,0.03516,,,,,,,,,
+python,scipy_shgo,griewank,5,1,125,31.374171317787134,715,1.271465,,,,,,,,,
+python,scipy_shgo,griewank,5,1,500,4.850499678036961,1090,7.930998,,,,,,,,,
+python,scipy_shgo,griewank,5,2,125,33.6392759832945,792,1.277477,,,,,,,,,
+python,scipy_shgo,griewank,5,2,500,0.8850759184191352,1164,7.933297,,,,,,,,,
+python,scipy_shgo,griewank,5,3,125,29.975715152381518,819,1.271217,,,,,,,,,
+python,scipy_shgo,griewank,5,3,500,4.926471210134612,1191,7.930088,,,,,,,,,
+python,scipy_shgo,griewank,5,4,125,22.399486739788035,843,1.275856,,,,,,,,,
+python,scipy_shgo,griewank,5,4,500,6.741374992431511,1215,7.949292,,,,,,,,,
+python,scipy_shgo,griewank,5,5,125,30.587551757304283,634,1.259908,,,,,,,,,
+python,scipy_shgo,griewank,5,5,500,8.11842262846929,1009,7.878392,,,,,,,,,
+python,scipy_shgo,griewank,5,6,125,26.42709560075619,864,1.294898,,,,,,,,,
+python,scipy_shgo,griewank,5,6,500,0.6705489113554665,1236,7.894455,,,,,,,,,
+python,scipy_shgo,griewank,5,7,125,27.936219747900417,621,1.253338,,,,,,,,,
+python,scipy_shgo,griewank,5,7,500,1.377062447854069,996,7.944536,,,,,,,,,
+python,scipy_shgo,griewank,5,8,125,30.552321877847866,749,1.260309,,,,,,,,,
+python,scipy_shgo,griewank,5,8,500,21.275600642026987,1124,7.86822,,,,,,,,,
+python,scipy_shgo,griewank,5,9,125,37.13227877104633,834,1.281995,,,,,,,,,
+python,scipy_shgo,griewank,5,9,500,0.6876151316099477,1206,7.92044,,,,,,,,,
+python,scipy_shgo,griewank,5,10,125,31.25986023147536,717,1.265761,,,,,,,,,
+python,scipy_shgo,griewank,5,10,500,1.8349207289697498,1092,7.921045,,,,,,,,,
+python,scipy_shgo,griewank,5,11,125,25.22786199369901,916,1.289254,,,,,,,,,
+python,scipy_shgo,griewank,5,11,500,7.1297207568754075,1288,7.896499,,,,,,,,,
+python,scipy_shgo,griewank,5,12,125,29.509736610054006,661,1.248251,,465,,,,,,,
+python,scipy_shgo,griewank,5,12,500,0.05662130610380167,1036,7.874487,,465,,,,,,,
+python,scipy_shgo,griewank,5,13,125,29.264018037905796,895,1.349642,,,,,,,,,
+python,scipy_shgo,griewank,5,13,500,1.234771208149339,1267,7.908049,,,,,,,,,
+python,scipy_shgo,griewank,5,14,125,29.54465920750715,686,1.2579,,,,,,,,,
+python,scipy_shgo,griewank,5,14,500,7.917909360270063,1061,7.921154,,,,,,,,,
+python,scipy_shgo,griewank,5,15,125,29.940180060362906,854,1.292067,,,,,,,,,
+python,scipy_shgo,griewank,5,15,500,0.4116014262103067,1226,8.008575,,,,,,,,,
+python,scipy_shgo,griewank,10,1,250,inf,0,3.9e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,1,1000,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,2,250,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,2,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,3,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,3,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,4,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,4,1000,inf,0,1.7e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,7,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,8,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,9,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,10,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,11,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,12,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,13,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,14,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,14,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,griewank,10,15,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,2,1,50,0.7508998378966183,513,0.143803,,456,460,460,463,466,472,472,472
+python,scipy_shgo,levy,2,1,200,0.20688566417738213,793,0.120266,,456,460,460,463,466,472,472,472
+python,scipy_shgo,levy,2,2,50,0.7641526215364228,522,0.055644,,152,156,159,162,162,165,165,168
+python,scipy_shgo,levy,2,2,200,1.5166648226353632e-14,790,0.117448,,152,156,159,162,162,165,165,168
+python,scipy_shgo,levy,2,3,50,0.7840462742945011,491,0.052754,,109,169,175,178,178,181,181,181
+python,scipy_shgo,levy,2,3,200,6.110000505467707e-15,746,0.111933,,109,169,175,178,178,181,181,181
+python,scipy_shgo,levy,2,4,50,0.2426178856814959,517,0.054181,,381,385,388,391,391,394,397,397
+python,scipy_shgo,levy,2,4,200,0.2426178856814959,829,0.11998,,381,385,388,391,391,394,397,397
+python,scipy_shgo,levy,2,5,50,0.25477752210394716,582,0.062798,,485,485,489,489,492,492,495,495
+python,scipy_shgo,levy,2,5,200,0.25477752210394716,913,0.136062,,485,485,489,489,492,492,495,495
+python,scipy_shgo,levy,2,6,50,0.3243157936534896,606,0.064468,,484,487,490,493,496,499,499,502
+python,scipy_shgo,levy,2,6,200,0.2623901145769107,848,0.137884,,484,487,490,493,496,499,499,502
+python,scipy_shgo,levy,2,7,50,0.47300311245979954,756,0.079851,,321,328,328,331,334,337,340,340
+python,scipy_shgo,levy,2,7,200,0.24406945496035815,1044,0.160048,,321,328,328,331,334,337,340,340
+python,scipy_shgo,levy,2,8,50,0.7066906969043596,539,0.057291,,437,440,443,446,449,452,452,455
+python,scipy_shgo,levy,2,8,200,0.22998470061749915,735,0.112884,,437,440,443,446,449,452,452,455
+python,scipy_shgo,levy,2,9,50,0.758925357967607,512,0.053477,,489,492,492,495,495,495,498,504
+python,scipy_shgo,levy,2,9,200,0.1854386075933957,810,0.120297,,489,492,492,495,495,495,498,504
+python,scipy_shgo,levy,2,10,50,0.7677797818284917,545,0.058197,,148,151,157,160,160,163,163,163
+python,scipy_shgo,levy,2,10,200,8.727211415604289e-15,825,0.122275,,148,151,157,160,160,163,163,163
+python,scipy_shgo,levy,2,11,50,0.2344262820493756,512,0.054134,,465,469,472,472,475,475,478,481
+python,scipy_shgo,levy,2,11,200,0.2344262820493756,793,0.12274,,465,469,472,472,475,475,478,481
+python,scipy_shgo,levy,2,12,50,0.24526094527733316,568,0.064635,,467,474,477,477,480,480,483,486
+python,scipy_shgo,levy,2,12,200,0.24526094527733316,891,0.133283,,467,474,477,477,480,480,483,486
+python,scipy_shgo,levy,2,13,50,0.2714120988520066,611,0.0658,,476,487,490,493,496,499,499,502
+python,scipy_shgo,levy,2,13,200,0.2714120988520066,907,0.140987,,476,487,490,493,496,499,499,502
+python,scipy_shgo,levy,2,14,50,0.3824839411011548,599,0.06275,,284,290,290,296,296,299,299,299
+python,scipy_shgo,levy,2,14,200,0.25052174658183046,807,0.1278,,284,290,290,296,296,299,299,299
+python,scipy_shgo,levy,2,15,50,0.5518303025728025,617,0.065161,,384,387,390,393,393,396,396,399
+python,scipy_shgo,levy,2,15,200,0.24105206722637476,863,0.131273,,384,387,390,393,393,396,396,399
+python,scipy_shgo,levy,5,1,125,3.5993820498160254,516,1.254633,,,,,,,,,
+python,scipy_shgo,levy,5,1,500,0.90864803718155,891,7.91599,,,,,,,,,
+python,scipy_shgo,levy,5,2,125,1.1335742603240593,467,1.233809,,,,,,,,,
+python,scipy_shgo,levy,5,2,500,0.9737115955768549,931,7.949403,,,,,,,,,
+python,scipy_shgo,levy,5,3,125,5.38091986071406,577,1.239679,,,,,,,,,
+python,scipy_shgo,levy,5,3,500,3.522645736375477,956,7.992072,,,,,,,,,
+python,scipy_shgo,levy,5,4,125,3.8681584658354593,437,1.241185,,,,,,,,,
+python,scipy_shgo,levy,5,4,500,1.817274918449874,926,8.025359,,,,,,,,,
+python,scipy_shgo,levy,5,5,125,5.291293176304867,520,1.246994,,,,,,,,,
+python,scipy_shgo,levy,5,5,500,0.9462065342321342,977,7.914931,,,,,,,,,
+python,scipy_shgo,levy,5,6,125,3.1124032702169404,545,1.263093,,,,,,,,,
+python,scipy_shgo,levy,5,6,500,1.4289998660698817,920,7.957751,,,,,,,,,
+python,scipy_shgo,levy,5,7,125,1.9926608606317333,572,1.242735,,,,,,,,,
+python,scipy_shgo,levy,5,7,500,1.063239845993472,949,8.150426,,,,,,,,,
+python,scipy_shgo,levy,5,8,125,7.234257366655685,720,1.269211,,,,,,,,,
+python,scipy_shgo,levy,5,8,500,1.005697071800152,1470,7.99231,,,,,,,,,
+python,scipy_shgo,levy,5,9,125,1.9165502436582988,622,1.256543,,,,,,,,,
+python,scipy_shgo,levy,5,9,500,1.8259212089570043,997,7.837142,,,,,,,,,
+python,scipy_shgo,levy,5,10,125,6.085610006756861,455,1.30096,,,,,,,,,
+python,scipy_shgo,levy,5,10,500,1.4280356141676254,925,7.951788,,620,632,638,644,650,650,656,656
+python,scipy_shgo,levy,5,11,125,5.413100260270799,500,1.244365,,,,,,,,,
+python,scipy_shgo,levy,5,11,500,4.127826076213217,1000,7.915089,,,,,,,,,
+python,scipy_shgo,levy,5,12,125,3.3925248631078335,432,1.238205,,,,,,,,,
+python,scipy_shgo,levy,5,12,500,1.9068031688661116,810,7.964243,,,,,,,,,
+python,scipy_shgo,levy,5,13,125,5.137403650831199,466,1.237456,,,,,,,,,
+python,scipy_shgo,levy,5,13,500,1.8172749184494046,927,7.939386,,,,,,,,,
+python,scipy_shgo,levy,5,14,125,3.923254787127948,487,1.239773,,,,,,,,,
+python,scipy_shgo,levy,5,14,500,1.2436803334129634,962,7.927045,,,,,,,,,
+python,scipy_shgo,levy,5,15,125,1.3871724941568178,428,1.234894,,,,,,,,,
+python,scipy_shgo,levy,5,15,500,1.1527680964098406,991,8.019196,,,,,,,,,
+python,scipy_shgo,levy,10,1,250,inf,0,3.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,1,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,2,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,2,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,3,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,3,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,4,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,6,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,7,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,8,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,9,250,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,9,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,10,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,11,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,12,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,13,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,14,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,levy,10,15,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,2,1,50,281.6337843252405,749,0.078888,,138,138,138,141,,,,
+python,scipy_shgo,schwefel,2,1,200,4.569186603475828e-05,1159,0.173503,,138,138,138,141,,,,
+python,scipy_shgo,schwefel,2,2,50,317.20464968892543,696,0.071513,,138,144,147,150,,,,
+python,scipy_shgo,schwefel,2,2,200,4.5691865693697764e-05,1102,0.162902,,138,144,147,150,,,,
+python,scipy_shgo,schwefel,2,3,50,342.8555314213486,746,0.077307,,144,144,147,150,,,,
+python,scipy_shgo,schwefel,2,3,200,4.569187490233162e-05,1161,0.171695,,144,144,147,150,,,,
+python,scipy_shgo,schwefel,2,4,50,275.9168930892539,691,0.071317,,,,,,,,,
+python,scipy_shgo,schwefel,2,4,200,185.89267294072465,1128,0.170411,,887,893,896,896,,,,
+python,scipy_shgo,schwefel,2,5,50,246.71665240643495,687,0.071112,,,,,,,,,
+python,scipy_shgo,schwefel,2,5,200,124.0988821177989,1041,0.158942,,866,875,875,878,,,,
+python,scipy_shgo,schwefel,2,6,50,256.7752019526988,736,0.07404,,,,,,,,,
+python,scipy_shgo,schwefel,2,6,200,118.43838030633037,1154,0.165824,,942,942,945,945,,,,
+python,scipy_shgo,schwefel,2,7,50,277.8230276487079,587,0.058611,,168,168,168,168,168,168,168,168
+python,scipy_shgo,schwefel,2,7,200,-79.80458743589975,974,0.141358,,168,168,168,168,168,168,168,168
+python,scipy_shgo,schwefel,2,8,50,280.825414567306,925,0.092666,,138,138,141,147,,,,
+python,scipy_shgo,schwefel,2,8,200,4.569195118619973e-05,1208,0.186051,,138,138,141,147,,,,
+python,scipy_shgo,schwefel,2,9,50,290.8537641044377,690,0.073666,,138,138,147,150,,,,
+python,scipy_shgo,schwefel,2,9,200,4.56919088946961e-05,1104,0.158729,,138,138,147,150,,,,
+python,scipy_shgo,schwefel,2,10,50,342.4598099170837,685,0.070545,,141,147,147,150,,,,
+python,scipy_shgo,schwefel,2,10,200,4.569186830849503e-05,1080,0.16107,,141,147,147,150,,,,
+python,scipy_shgo,schwefel,2,11,50,312.3021059981953,683,0.071355,,144,144,144,144,,,,
+python,scipy_shgo,schwefel,2,11,200,4.5691864215768874e-05,1075,0.16209,,144,144,144,144,,,,
+python,scipy_shgo,schwefel,2,12,50,259.33897216611103,695,0.072304,,,,,,,,,
+python,scipy_shgo,schwefel,2,12,200,185.8273814984865,1109,0.168835,,922,928,931,931,,,,
+python,scipy_shgo,schwefel,2,13,50,246.96302277536608,698,0.072212,,,,,,,,,
+python,scipy_shgo,schwefel,2,13,200,118.43838030632492,1055,0.162008,,920,923,929,932,,,,
+python,scipy_shgo,schwefel,2,14,50,259.9934427436217,708,0.07461,,192,192,192,192,192,192,192,192
+python,scipy_shgo,schwefel,2,14,200,-31.618550267656246,1144,0.162286,,192,192,192,192,192,192,192,192
+python,scipy_shgo,schwefel,2,15,50,297.7050142598539,491,0.049697,,188,188,188,188,188,188,188,188
+python,scipy_shgo,schwefel,2,15,200,-104.13999582097188,965,0.1356,,188,188,188,188,188,188,188,188
+python,scipy_shgo,schwefel,5,1,125,1070.066445069251,1279,1.364643,,,,,,,,,
+python,scipy_shgo,schwefel,5,1,500,513.3383758935797,1931,8.091286,,,,,,,,,
+python,scipy_shgo,schwefel,5,2,125,943.1545427113329,1112,1.335478,,,,,,,,,
+python,scipy_shgo,schwefel,5,2,500,532.9834972172293,1757,8.058876,,,,,,,,,
+python,scipy_shgo,schwefel,5,3,125,1004.8988713424837,1319,1.358569,,,,,,,,,
+python,scipy_shgo,schwefel,5,3,500,532.9834972174758,1769,7.989072,,,,,,,,,
+python,scipy_shgo,schwefel,5,4,125,1109.406469163566,893,1.276216,,,,,,,,,
+python,scipy_shgo,schwefel,5,4,500,532.9834972171591,1559,8.008003,,,,,,,,,
+python,scipy_shgo,schwefel,5,5,125,941.7471723573606,680,1.253722,,,,,,,,,
+python,scipy_shgo,schwefel,5,5,500,550.3296667902819,1487,8.056161,,,,,,,,,
+python,scipy_shgo,schwefel,5,6,125,899.9623558761327,1062,1.317727,,,,,,,,,
+python,scipy_shgo,schwefel,5,6,500,473.78635416519046,1710,8.091702,,,,,,,,,
+python,scipy_shgo,schwefel,5,7,125,927.5690618364747,930,1.302159,,,,,,,,,
+python,scipy_shgo,schwefel,5,7,500,524.0378210273218,1552,8.043719,,,,,,,,,
+python,scipy_shgo,schwefel,5,8,125,982.1894998049097,1138,1.402596,,,,,,,,,
+python,scipy_shgo,schwefel,5,8,500,414.545727560283,1724,8.334269,,,,,,,,,
+python,scipy_shgo,schwefel,5,9,125,1074.8421764503692,825,1.285932,,,,,,,,,
+python,scipy_shgo,schwefel,5,9,500,690.9260235556335,1324,8.02044,,,,,,,,,
+python,scipy_shgo,schwefel,5,10,125,927.4328175206376,1233,1.33562,,,,,,,,,
+python,scipy_shgo,schwefel,5,10,500,513.3383758934883,1813,8.072208,,,,,,,,,
+python,scipy_shgo,schwefel,5,11,125,990.8958268863541,841,1.592743,,,,,,,,,
+python,scipy_shgo,schwefel,5,11,500,726.4760714012248,1388,7.977674,,,,,,,,,
+python,scipy_shgo,schwefel,5,12,125,1150.691715771642,944,1.297422,,,,,,,,,
+python,scipy_shgo,schwefel,5,12,500,533.4760344915235,1375,7.983329,,,,,,,,,
+python,scipy_shgo,schwefel,5,13,125,930.8112811289561,894,1.300809,,,,,,,,,
+python,scipy_shgo,schwefel,5,13,500,473.7863541652853,1642,8.096077,,,,,,,,,
+python,scipy_shgo,schwefel,5,14,125,1039.46971161181,826,1.319584,,,,,,,,,
+python,scipy_shgo,schwefel,5,14,500,691.0067550376136,1383,8.024962,,,,,,,,,
+python,scipy_shgo,schwefel,5,15,125,885.2903100053875,854,1.278684,,,,,,,,,
+python,scipy_shgo,schwefel,5,15,500,532.9834972170784,1702,8.093793,,,,,,,,,
+python,scipy_shgo,schwefel,10,1,250,inf,0,5.8e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,1,1000,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,2,250,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,2,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,3,250,inf,0,1.3e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,3,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,4,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,5,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,7,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,8,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,9,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,10,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,11,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,12,250,inf,0,2.5e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,12,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,13,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,14,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,schwefel,10,15,1000,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,2,1,50,2.111847432003952,142,0.011881,,97,133,133,137,137,137,137,137
+python,scipy_shgo,zakharov,2,1,200,1.4458795505072743e-16,271,0.028802,,97,133,133,137,137,137,137,137
+python,scipy_shgo,zakharov,2,2,50,1.156051835438236,145,0.078523,,97,133,137,140,140,140,140,143
+python,scipy_shgo,zakharov,2,2,200,3.788831738623617e-16,274,0.296778,,97,133,137,140,140,140,140,143
+python,scipy_shgo,zakharov,2,3,50,0.5887225371105917,151,0.012258,,133,136,139,139,139,143,146,146
+python,scipy_shgo,zakharov,2,3,200,1.3876959254293795e-16,280,0.029184,,133,136,139,139,139,143,146,146
+python,scipy_shgo,zakharov,2,4,50,0.2987714032950797,148,0.011648,,133,137,140,140,140,143,143,143
+python,scipy_shgo,zakharov,2,4,200,1.3866057835439825e-16,277,0.028829,,133,137,140,140,140,143,143,143
+python,scipy_shgo,zakharov,2,5,50,0.21148756967020854,145,0.011481,,133,137,137,137,140,140,140,140
+python,scipy_shgo,zakharov,2,5,200,8.771737057555509e-15,274,0.029045,,133,137,137,137,140,140,140,140
+python,scipy_shgo,zakharov,2,6,50,3.3673992742694767,153,0.012376,,139,139,139,142,142,145,145,145
+python,scipy_shgo,zakharov,2,6,200,1.0759430825993116e-16,282,0.029132,,139,139,139,142,142,145,145,145
+python,scipy_shgo,zakharov,2,7,50,4.013887267025063,148,0.011449,,133,137,140,140,140,140,140,143
+python,scipy_shgo,zakharov,2,7,200,1.2720984624677844e-16,277,0.030868,,133,137,140,140,140,140,140,143
+python,scipy_shgo,zakharov,2,8,50,2.934945586615454,145,0.011263,,97,137,137,137,140,140,140,140
+python,scipy_shgo,zakharov,2,8,200,7.459254465666872e-17,274,0.028279,,97,137,137,137,140,140,140,140
+python,scipy_shgo,zakharov,2,9,50,1.676410893549217,145,0.011279,,97,133,137,137,137,137,140,140
+python,scipy_shgo,zakharov,2,9,200,1.3592959024849848e-16,274,0.028967,,97,133,137,137,137,137,140,140
+python,scipy_shgo,zakharov,2,10,50,0.8907817174381871,150,0.011721,,133,133,139,142,142,142,145,145
+python,scipy_shgo,zakharov,2,10,200,1.8234694656365874e-14,279,0.028803,,133,133,139,142,142,142,145,145
+python,scipy_shgo,zakharov,2,11,50,0.44506528119604605,153,0.01186,,133,136,142,142,145,145,148,148
+python,scipy_shgo,zakharov,2,11,200,2.842343269314191e-13,282,0.028925,,133,136,142,142,145,145,148,148
+python,scipy_shgo,zakharov,2,12,50,0.2426460771409192,145,0.011501,,133,137,140,140,140,140,143,143
+python,scipy_shgo,zakharov,2,12,200,2.60813364780991e-13,274,0.028862,,133,137,140,140,140,140,143,143
+python,scipy_shgo,zakharov,2,13,50,3.0759813163287477,153,0.012212,,139,139,142,145,145,145,148,148
+python,scipy_shgo,zakharov,2,13,200,2.5816941158495563e-14,282,0.032947,,139,139,142,145,145,145,148,148
+python,scipy_shgo,zakharov,2,14,50,3.597446712444728,147,0.011139,,136,139,139,139,142,142,142,145
+python,scipy_shgo,zakharov,2,14,200,1.0849565539298482e-13,276,0.027858,,136,139,139,139,142,142,142,145
+python,scipy_shgo,zakharov,2,15,50,3.990245089509842,146,0.011087,,133,137,140,140,140,140,143,143
+python,scipy_shgo,zakharov,2,15,200,1.3876534498082746e-16,275,0.02755,,133,137,140,140,140,140,143,143
+python,scipy_shgo,zakharov,5,1,125,6.006607788469351,552,1.26041,,183,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,1,500,5.511850044603835e-15,971,7.949851,,183,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,2,125,20.572694634088542,548,1.263777,,183,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,2,500,4.0004924190328e-16,920,7.905751,,183,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,3,125,57.87690559789171,571,1.266055,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,3,500,2.3479734956638623e-15,943,7.956709,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,4,125,57.19204217672428,570,1.2594,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,4,500,1.9899708775585127e-16,942,7.917816,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,5,125,42.04316890272923,591,1.327328,,183,189,195,201,207,213,213,219
+python,scipy_shgo,zakharov,5,5,500,4.4593993073511446e-17,963,7.895168,,183,189,195,201,207,213,213,219
+python,scipy_shgo,zakharov,5,6,125,7.428101150390263,567,1.261706,,177,189,189,195,195,195,201,207
+python,scipy_shgo,zakharov,5,6,500,7.121664859943131e-16,939,7.847584,,177,189,189,195,195,195,201,207
+python,scipy_shgo,zakharov,5,7,125,19.47156091019137,477,1.247697,,183,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,7,500,4.369297829192633e-16,852,7.955316,,183,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,8,125,29.11290041752663,589,1.253542,,189,195,195,207,213,213,213,219
+python,scipy_shgo,zakharov,5,8,500,2.1874295728787722e-16,961,8.147798,,189,195,195,207,213,213,213,219
+python,scipy_shgo,zakharov,5,9,125,52.87846058358487,647,1.280866,,183,189,195,195,201,201,207,213
+python,scipy_shgo,zakharov,5,9,500,1.8752076327864375e-16,1016,7.888653,,183,189,195,195,201,201,207,213
+python,scipy_shgo,zakharov,5,10,125,47.323655027343534,565,1.271633,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,10,500,8.197287328054185e-15,994,8.209313,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,11,125,45.34996989751925,571,1.261354,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,11,500,1.2598381302948641e-14,943,7.905182,,183,189,195,195,201,201,207,207
+python,scipy_shgo,zakharov,5,12,125,42.2505228142788,655,1.277331,,183,189,195,195,207,207,213,219
+python,scipy_shgo,zakharov,5,12,500,7.813942017132445e-17,1024,7.910324,,183,189,195,195,207,207,213,219
+python,scipy_shgo,zakharov,5,13,125,51.752870190537074,660,1.269789,,183,189,195,202,202,208,208,208
+python,scipy_shgo,zakharov,5,13,500,9.425555502488155e-16,1105,7.959679,,183,189,195,202,202,208,208,208
+python,scipy_shgo,zakharov,5,14,125,15.128170931677062,482,1.248452,,177,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,14,500,3.514294600426415e-15,857,7.89245,,177,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,15,125,15.039816719291922,487,1.243299,,177,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,5,15,500,2.528613399979825e-14,862,7.887395,,177,189,189,195,195,201,201,207
+python,scipy_shgo,zakharov,10,1,250,inf,0,3.8e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,1,1000,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,2,250,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,2,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,3,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,3,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,4,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,4,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,5,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,5,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,6,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,6,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,7,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,7,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,8,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,8,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,9,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,9,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,10,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,10,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,11,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,11,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,12,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,12,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,13,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,13,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,14,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,14,1000,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,15,250,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,zakharov,10,15,1000,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,branin,2,1,50,0.035123121694537573,229,0.021597,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,1,200,1.7763568394002505e-15,362,0.116004,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,2,50,0.0678934856427933,233,0.021681,,45,140,140,140,140,143,143,143
+python,scipy_shgo,branin,2,2,200,0.0,366,0.049045,,45,140,140,140,140,143,143,143
+python,scipy_shgo,branin,2,3,50,0.5649611743764513,256,0.024791,,109,140,140,143,143,146,146,146
+python,scipy_shgo,branin,2,3,200,0.0,433,0.061022,,109,140,140,143,143,146,146,146
+python,scipy_shgo,branin,2,4,50,0.6596553791711521,230,0.020921,,109,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,4,200,0.0,386,0.051019,,109,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,5,50,0.5626272497234961,233,0.021141,,137,137,140,140,140,140,140,140
+python,scipy_shgo,branin,2,5,200,0.0,366,0.049004,,137,137,140,140,140,140,140,140
+python,scipy_shgo,branin,2,6,50,0.3149154745511389,230,0.021386,,137,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,6,200,0.0,363,0.049621,,137,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,7,50,0.14505594341035177,261,0.024671,,137,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,7,200,0.0,395,0.059645,,137,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,8,50,0.05304865634328948,235,0.022067,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,8,200,1.7763568394002505e-15,368,0.04927,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,9,50,0.038893613392099624,231,0.020823,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,9,200,0.0,364,0.049615,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,10,50,0.5452174003363179,256,0.024463,,109,140,140,143,143,146,146,146
+python,scipy_shgo,branin,2,10,200,0.0,430,0.059433,,109,140,140,143,143,146,146,146
+python,scipy_shgo,branin,2,11,50,0.5930310653077502,253,0.02428,,109,140,140,143,143,146,146,146
+python,scipy_shgo,branin,2,11,200,3.552713678800501e-15,409,0.057211,,109,140,140,143,143,146,146,146
+python,scipy_shgo,branin,2,12,50,0.7187110007445909,232,0.021902,,109,137,140,140,140,140,143,143
+python,scipy_shgo,branin,2,12,200,0.0,387,0.05124,,109,137,140,140,140,140,143,143
+python,scipy_shgo,branin,2,13,50,0.45497616682510333,234,0.021544,,137,137,140,140,140,140,143,143
+python,scipy_shgo,branin,2,13,200,0.0,367,0.053355,,137,137,140,140,140,140,143,143
+python,scipy_shgo,branin,2,14,50,0.23819122897826261,232,0.021269,,137,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,14,200,0.0,365,0.049116,,137,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,15,50,0.09925853539337481,230,0.021739,,45,137,140,140,140,143,143,143
+python,scipy_shgo,branin,2,15,200,0.0,363,0.050039,,45,137,140,140,140,143,143,143
+python,scipy_shgo,goldstein_price,2,1,50,61.85163638313293,406,0.038272,,331,334,340,343,346,349,349,349
+python,scipy_shgo,goldstein_price,2,1,200,27.004270463516235,541,0.073591,,331,334,340,343,346,349,349,349
+python,scipy_shgo,goldstein_price,2,2,50,37.78294203230529,370,0.034138,,169,172,175,178,178,181,181,184
+python,scipy_shgo,goldstein_price,2,2,200,1.865174681370263e-14,504,0.064974,,169,172,175,178,178,181,181,184
+python,scipy_shgo,goldstein_price,2,3,50,20.945689879613926,295,0.026743,,144,147,147,147,150,150,153,153
+python,scipy_shgo,goldstein_price,2,3,200,4.1300296516055823e-14,534,0.066532,,144,147,147,147,150,150,153,153
+python,scipy_shgo,goldstein_price,2,4,50,10.323875215030322,250,0.026798,,147,147,150,150,150,153,153,156
+python,scipy_shgo,goldstein_price,2,4,200,3.241851231905457e-14,652,0.07388,,147,147,150,150,150,153,153,156
+python,scipy_shgo,goldstein_price,2,5,50,4.379566966560818,228,0.018938,,143,146,146,146,149,149,152,152
+python,scipy_shgo,goldstein_price,2,5,200,-3.68594044175552e-14,584,0.067507,,143,146,146,146,149,149,152,152
+python,scipy_shgo,goldstein_price,2,6,50,1.4927011036549294,250,0.022038,,143,143,146,146,149,149,149,149
+python,scipy_shgo,goldstein_price,2,6,200,2.4868995751603507e-14,422,0.050003,,143,143,146,146,149,149,149,149
+python,scipy_shgo,goldstein_price,2,7,50,44.001088649399364,385,0.036454,,145,148,151,154,154,157,157,160
+python,scipy_shgo,goldstein_price,2,7,200,3.197442310920451e-14,642,0.078883,,145,148,151,154,154,157,157,160
+python,scipy_shgo,goldstein_price,2,8,50,67.91356785968027,365,0.033893,,144,150,150,153,153,156,156,156
+python,scipy_shgo,goldstein_price,2,8,200,7.72715225139109e-14,499,0.066372,,144,150,150,153,153,156,156,156
+python,scipy_shgo,goldstein_price,2,9,50,51.37721864168053,416,0.039391,,341,344,347,350,350,353,353,356
+python,scipy_shgo,goldstein_price,2,9,200,27.519385596107306,551,0.073739,,341,344,347,350,350,353,353,356
+python,scipy_shgo,goldstein_price,2,10,50,30.261506681590767,307,0.028743,,166,169,172,175,175,175,178,178
+python,scipy_shgo,goldstein_price,2,10,200,1.3455903058456897e-13,495,0.066774,,166,169,172,175,175,175,178,178
+python,scipy_shgo,goldstein_price,2,11,50,16.05511477226817,293,0.027175,,144,147,150,150,150,153,153,153
+python,scipy_shgo,goldstein_price,2,11,200,-1.687538997430238e-14,573,0.07165,,144,147,150,150,150,153,153,153
+python,scipy_shgo,goldstein_price,2,12,50,7.494863929894066,251,0.022438,,143,149,149,149,152,152,152,155
+python,scipy_shgo,goldstein_price,2,12,200,0.0,622,0.070149,,143,149,149,149,152,152,152,155
+python,scipy_shgo,goldstein_price,2,13,50,2.945689979472877,248,0.021722,,142,145,145,148,148,148,151,151
+python,scipy_shgo,goldstein_price,2,13,200,2.1316282072803006e-14,410,0.047667,,142,145,145,148,148,148,151,151
+python,scipy_shgo,goldstein_price,2,14,50,0.9258616499427283,281,0.025481,,134,143,143,146,146,146,149,149
+python,scipy_shgo,goldstein_price,2,14,200,-2.0872192862952943e-14,499,0.06017,,134,143,143,146,146,146,149,149
+python,scipy_shgo,goldstein_price,2,15,50,50.40191878024186,313,0.028585,,147,150,153,156,156,159,159,162
+python,scipy_shgo,goldstein_price,2,15,200,-3.419486915845482e-14,507,0.065147,,147,150,153,156,156,159,159,162
+python,scipy_shgo,six_hump_camel,2,1,50,0.6781481164293617,300,0.028392,,256,256,263,263,263,266,266,269
+python,scipy_shgo,six_hump_camel,2,1,200,0.25550757609153574,434,0.063181,,256,256,263,263,263,266,266,269
+python,scipy_shgo,six_hump_camel,2,2,50,0.5617727633916343,259,0.023499,,191,194,197,200,200,200,203,203
+python,scipy_shgo,six_hump_camel,2,2,200,1.417756829713568e-07,392,0.050171,,191,194,197,200,200,200,203,203
+python,scipy_shgo,six_hump_camel,2,3,50,0.44171894703379244,256,0.023653,,184,192,192,192,195,198,198,198
+python,scipy_shgo,six_hump_camel,2,3,200,3.954707450404271e-09,389,0.050528,,184,192,192,192,195,198,198,198
+python,scipy_shgo,six_hump_camel,2,4,50,0.3235587724661443,264,0.023698,,179,187,187,187,187,190,190,190
+python,scipy_shgo,six_hump_camel,2,4,200,1.3988810110276972e-14,397,0.052119,,179,187,187,187,187,190,190,190
+python,scipy_shgo,six_hump_camel,2,5,50,0.9557590168968283,232,0.02093,,83,198,201,201,204,204,204,207
+python,scipy_shgo,six_hump_camel,2,5,200,0.0011749583785332085,427,0.052605,,83,198,201,201,204,204,204,207
+python,scipy_shgo,six_hump_camel,2,6,50,0.931074607721657,229,0.020174,,83,194,201,201,201,204,204,204
+python,scipy_shgo,six_hump_camel,2,6,200,0.0016418336154979674,427,0.052077,,83,194,201,201,201,204,204,204
+python,scipy_shgo,six_hump_camel,2,7,50,0.8451018429823327,220,0.020042,,181,185,188,188,191,191,194,194
+python,scipy_shgo,six_hump_camel,2,7,200,8.881784197001252e-16,379,0.051056,,181,185,188,188,191,191,194,194
+python,scipy_shgo,six_hump_camel,2,8,50,0.7443984922554336,230,0.02017,,188,192,195,198,198,198,198,201
+python,scipy_shgo,six_hump_camel,2,8,200,9.350822538500836e-08,362,0.045536,,188,192,195,198,198,198,198,201
+python,scipy_shgo,six_hump_camel,2,9,50,0.6326220356173575,304,0.02825,,259,263,266,266,269,269,269,269
+python,scipy_shgo,six_hump_camel,2,9,200,0.2540858342284076,438,0.060423,,259,263,266,266,269,269,269,269
+python,scipy_shgo,six_hump_camel,2,10,50,0.5141656744577736,253,0.023111,,191,194,194,197,197,200,200,203
+python,scipy_shgo,six_hump_camel,2,10,200,6.31136023443446e-08,386,0.050431,,191,194,194,197,197,200,200,203
+python,scipy_shgo,six_hump_camel,2,11,50,0.39415833147962376,257,0.022579,,182,190,190,193,193,196,196,196
+python,scipy_shgo,six_hump_camel,2,11,200,2.1871393585115584e-13,390,0.049762,,182,190,190,193,193,196,196,196
+python,scipy_shgo,six_hump_camel,2,12,50,0.9362461557987751,263,0.024388,,83,191,194,194,197,197,197,200
+python,scipy_shgo,six_hump_camel,2,12,200,1.961342199763294e-11,426,0.055827,,83,191,194,194,197,197,197,200
+python,scipy_shgo,six_hump_camel,2,13,50,0.9744738488563613,229,0.019996,,83,194,194,204,204,204,204,204
+python,scipy_shgo,six_hump_camel,2,13,200,0.0006302809543232701,418,0.201005,,83,194,194,204,204,204,204,204
+python,scipy_shgo,six_hump_camel,2,14,50,0.8988335032597636,229,0.020113,,194,198,201,201,201,204,204,204
+python,scipy_shgo,six_hump_camel,2,14,200,0.0013445899250252857,424,0.051142,,194,198,201,201,201,204,204,204
+python,scipy_shgo,six_hump_camel,2,15,50,0.8066144586657636,226,0.019426,,185,192,192,195,195,198,198,198
+python,scipy_shgo,six_hump_camel,2,15,200,1.6213985709612189e-10,385,0.048326,,185,192,192,195,195,198,198,198
+python,scipy_shgo,shekel5,4,1,100,9.735226652770645,427,0.108027,,304,314,319,319,324,329,334,334
+python,scipy_shgo,shekel5,4,1,400,4.263256414560601e-14,980,1.054605,,304,314,319,319,324,329,334,334
+python,scipy_shgo,shekel5,4,2,100,9.784858179290946,462,0.110141,,271,276,281,294,294,299,299,304
+python,scipy_shgo,shekel5,4,2,400,2.788880237858393e-13,916,1.058328,,271,276,281,294,294,299,299,304
+python,scipy_shgo,shekel5,4,3,100,9.785434171021267,490,0.191479,,288,300,305,310,310,310,310,315
+python,scipy_shgo,shekel5,4,3,400,2.4868995751603507e-14,964,1.29097,,288,300,305,310,310,310,310,315
+python,scipy_shgo,shekel5,4,4,100,9.757941808760513,631,0.122409,,298,304,309,314,314,314,320,320
+python,scipy_shgo,shekel5,4,4,400,2.0250467969162855e-13,1082,1.096467,,298,304,309,314,314,314,320,320
+python,scipy_shgo,shekel5,4,5,100,9.729752655120633,580,0.119624,,295,301,307,312,317,317,317,317
+python,scipy_shgo,shekel5,4,5,400,2.4868995751603507e-14,1015,1.079829,,295,301,307,312,317,317,317,317
+python,scipy_shgo,shekel5,4,6,100,9.757059196404946,562,0.134513,,164,174,174,174,174,187,187,192
+python,scipy_shgo,shekel5,4,6,400,2.3092638912203256e-14,1097,1.09706,,164,174,174,174,174,187,187,192
+python,scipy_shgo,shekel5,4,7,100,9.749620588986085,457,0.109079,,285,285,297,297,303,303,303,308
+python,scipy_shgo,shekel5,4,7,400,2.4868995751603507e-14,922,1.06118,,285,285,297,297,303,303,303,308
+python,scipy_shgo,shekel5,4,8,100,9.6550832256895,541,0.115821,,287,292,297,297,297,297,302,307
+python,scipy_shgo,shekel5,4,8,400,2.113864638886298e-13,1052,1.101921,,287,292,297,297,297,297,302,307
+python,scipy_shgo,shekel5,4,9,100,9.771672906373407,507,0.114356,,296,296,301,306,311,316,316,316
+python,scipy_shgo,shekel5,4,9,400,2.3092638912203256e-14,966,1.064977,,296,296,301,306,311,316,316,316
+python,scipy_shgo,shekel5,4,10,100,9.763128268008053,470,0.128604,,284,289,300,305,305,305,310,310
+python,scipy_shgo,shekel5,4,10,400,2.1316282072803006e-14,982,1.074545,,284,289,300,305,305,305,310,310
+python,scipy_shgo,shekel5,4,11,100,9.770815611924016,475,0.11149,,300,310,315,320,320,330,330,330
+python,scipy_shgo,shekel5,4,11,400,1.0835776720341528e-13,936,1.069523,,300,310,315,320,320,330,330,330
+python,scipy_shgo,shekel5,4,12,100,9.705413881581032,546,0.116794,,277,277,282,287,292,292,292,297
+python,scipy_shgo,shekel5,4,12,400,8.348877145181177e-14,996,1.076047,,277,277,282,287,292,292,292,297
+python,scipy_shgo,shekel5,4,13,100,9.732519601831928,572,0.118621,,284,290,296,296,301,301,306,311
+python,scipy_shgo,shekel5,4,13,400,3.019806626980426e-14,1022,1.0833,,284,290,296,296,301,301,306,311
+python,scipy_shgo,shekel5,4,14,100,9.71444001102675,601,0.121169,,301,301,311,311,316,321,321,326
+python,scipy_shgo,shekel5,4,14,400,1.1013412404281553e-13,1051,1.109438,,301,301,311,311,316,321,321,326
+python,scipy_shgo,shekel5,4,15,100,9.776105935252405,448,0.108264,,283,288,293,293,298,298,303,303
+python,scipy_shgo,shekel5,4,15,400,1.4210854715202004e-14,902,1.060811,,283,288,293,293,298,298,303,303
+python,scipy_shgo,shekel7,4,1,100,9.61852002150919,627,0.126084,,166,172,178,184,184,189,189,194
+python,scipy_shgo,shekel7,4,1,400,2.4868995751603507e-14,1081,1.104207,,166,172,178,184,184,189,189,194
+python,scipy_shgo,shekel7,4,2,100,9.60655461673346,688,0.128607,,175,175,180,190,190,195,195,200
+python,scipy_shgo,shekel7,4,2,400,1.0480505352461478e-13,1177,1.123002,,175,175,180,190,190,195,195,200
+python,scipy_shgo,shekel7,4,3,100,9.430537220273647,408,0.122352,,162,167,167,172,172,177,177,182
+python,scipy_shgo,shekel7,4,3,400,4.440892098500626e-14,860,1.066738,,162,167,167,172,172,177,177,182
+python,scipy_shgo,shekel7,4,4,100,9.749861649991653,508,0.116133,,472,472,484,494,494,494,494,499
+python,scipy_shgo,shekel7,4,4,400,5.274117769853219,888,1.0552,,472,472,484,494,494,494,494,499
+python,scipy_shgo,shekel7,4,5,100,9.63617749658532,629,0.126732,,514,514,519,524,529,529,534,534
+python,scipy_shgo,shekel7,4,5,400,5.274117769853236,1072,1.105769,,514,514,519,524,529,529,534,534
+python,scipy_shgo,shekel7,4,6,100,9.563969304965333,676,0.131184,,169,187,192,192,192,192,197,197
+python,scipy_shgo,shekel7,4,6,400,1.0658141036401503e-14,1054,1.087941,,169,187,192,192,192,192,197,197
+python,scipy_shgo,shekel7,4,7,100,9.403759407217516,665,0.148316,,170,175,185,185,195,200,210,215
+python,scipy_shgo,shekel7,4,7,400,2.1316282072803006e-14,1110,1.103998,,170,175,185,185,195,200,210,215
+python,scipy_shgo,shekel7,4,8,100,9.656168502174825,828,0.143528,,575,575,580,590,595,595,600,600
+python,scipy_shgo,shekel7,4,8,400,5.274117769853376,1285,1.133735,,575,575,580,590,595,595,600,600
+python,scipy_shgo,shekel7,4,9,100,9.457508795680017,744,0.134453,,515,528,533,533,538,538,543,543
+python,scipy_shgo,shekel7,4,9,400,5.274117769853221,1192,1.129263,,515,528,533,533,538,538,543,543
+python,scipy_shgo,shekel7,4,10,100,9.578395398668697,677,0.131301,,167,177,177,182,187,187,187,192
+python,scipy_shgo,shekel7,4,10,400,1.2967404927621828e-13,1132,1.109441,,167,177,177,182,187,187,187,192
+python,scipy_shgo,shekel7,4,11,100,9.516769284983027,449,0.10962,,169,174,179,184,189,189,194,199
+python,scipy_shgo,shekel7,4,11,400,3.197442310920451e-14,873,1.072678,,169,174,179,184,189,189,194,199
+python,scipy_shgo,shekel7,4,12,100,9.378954456844209,628,0.126428,,175,180,180,180,185,185,190,195
+python,scipy_shgo,shekel7,4,12,400,6.572520305780927e-14,1006,1.089909,,175,180,180,180,185,185,190,195
+python,scipy_shgo,shekel7,4,13,100,9.697973395981084,523,0.114384,,193,199,199,205,211,211,216,216
+python,scipy_shgo,shekel7,4,13,400,2.3092638912203256e-14,977,1.079797,,193,199,199,205,211,211,216,216
+python,scipy_shgo,shekel7,4,14,100,9.554199923736272,655,0.127612,,174,184,189,189,194,200,205,210
+python,scipy_shgo,shekel7,4,14,400,3.197442310920451e-14,1033,1.097839,,174,184,189,189,194,200,205,210
+python,scipy_shgo,shekel7,4,15,100,9.500241668429403,677,0.146742,,193,198,198,203,213,213,218,218
+python,scipy_shgo,shekel7,4,15,400,4.440892098500626e-14,1055,1.095221,,193,198,198,203,213,213,218,218
+python,scipy_shgo,shekel10,4,1,100,9.789304205897912,631,0.127417,,394,400,410,420,420,420,425,425
+python,scipy_shgo,shekel10,4,1,400,0.005084178434412223,1010,1.086187,,394,400,410,420,420,420,425,425
+python,scipy_shgo,shekel10,4,2,100,9.666747808876293,630,0.127558,,365,371,377,382,387,387,387,387
+python,scipy_shgo,shekel10,4,2,400,5.1514348342607263e-14,1008,1.08916,,365,371,377,382,387,387,387,387
+python,scipy_shgo,shekel10,4,3,100,9.605461913172217,499,0.116606,,256,261,266,266,271,276,276,276
+python,scipy_shgo,shekel10,4,3,400,0.0,948,1.084284,,256,261,266,266,271,276,276,276
+python,scipy_shgo,shekel10,4,4,100,9.406445377622964,607,0.1456,,334,340,340,346,356,356,361,361
+python,scipy_shgo,shekel10,4,4,400,1.7763568394002505e-15,1055,1.105262,,334,340,340,346,356,356,361,361
+python,scipy_shgo,shekel10,4,5,100,9.769432936204918,591,0.12241,,231,231,244,244,257,257,257,257
+python,scipy_shgo,shekel10,4,5,400,0.0,1219,1.120804,,231,231,244,244,257,257,257,257
+python,scipy_shgo,shekel10,4,6,100,9.631242996604376,581,0.123453,,359,371,377,377,382,382,387,387
+python,scipy_shgo,shekel10,4,6,400,7.105427357601002e-14,1127,1.09997,,359,371,377,377,382,382,387,387
+python,scipy_shgo,shekel10,4,7,100,9.588810773053499,661,0.131702,,372,378,388,398,398,398,403,403
+python,scipy_shgo,shekel10,4,7,400,5.407000429613618e-07,1200,1.135664,,372,378,388,398,398,398,403,403
+python,scipy_shgo,shekel10,4,8,100,9.49415998211684,476,0.115154,,171,171,171,181,181,186,191,191
+python,scipy_shgo,shekel10,4,8,400,8.881784197001252e-15,977,1.075141,,171,171,171,181,181,186,191,191
+python,scipy_shgo,shekel10,4,9,100,9.709680314604885,486,0.11551,,376,376,388,393,398,398,398,398
+python,scipy_shgo,shekel10,4,9,400,1.1104006603090966e-10,942,1.079188,,376,376,388,393,398,398,398,398
+python,scipy_shgo,shekel10,4,10,100,9.595903173381531,529,0.117562,,336,341,341,351,351,356,361,361
+python,scipy_shgo,shekel10,4,10,400,1.9539925233402755e-14,908,1.070623,,336,341,341,351,351,356,361,361
+python,scipy_shgo,shekel10,4,11,100,9.561869430770466,547,0.119602,,353,368,380,385,390,390,395,395
+python,scipy_shgo,shekel10,4,11,400,1.3145040611561853e-13,998,1.106561,,353,368,380,385,390,390,395,395
+python,scipy_shgo,shekel10,4,12,100,9.56708407818233,459,0.114095,,226,239,239,244,244,244,249,249
+python,scipy_shgo,shekel10,4,12,400,-5.329070518200751e-15,905,1.067837,,226,239,239,244,244,244,249,249
+python,scipy_shgo,shekel10,4,13,100,9.661498962606776,449,0.111039,,269,275,275,280,285,290,295,295
+python,scipy_shgo,shekel10,4,13,400,-1.0658141036401503e-14,1050,1.074614,,269,275,275,280,285,290,295,295
+python,scipy_shgo,shekel10,4,14,100,9.72946769659012,575,0.12456,,330,330,330,335,335,340,340,340
+python,scipy_shgo,shekel10,4,14,400,-1.5987211554602254e-14,1099,1.107331,,330,330,330,335,335,340,340,340
+python,scipy_shgo,shekel10,4,15,100,9.590313288065923,547,0.121122,,159,172,177,177,177,177,182,182
+python,scipy_shgo,shekel10,4,15,400,7.460698725481052e-14,1101,1.110375,,159,172,177,177,177,177,182,182
+python,scipy_shgo,hartmann3,3,1,75,0.5750925406704308,376,0.047651,,138,138,138,143,147,151,151,155
+python,scipy_shgo,hartmann3,3,1,300,7.105427357601002e-15,799,0.226778,,138,138,138,143,147,151,151,155
+python,scipy_shgo,hartmann3,3,2,75,0.3182088953004354,232,0.03288,,102,179,183,183,188,188,192,192
+python,scipy_shgo,hartmann3,3,2,300,7.993605777301127e-15,639,0.181299,,102,179,183,183,188,188,192,192
+python,scipy_shgo,hartmann3,3,3,75,0.34309280334535597,235,0.034348,,175,179,183,187,191,191,195,195
+python,scipy_shgo,hartmann3,3,3,300,7.993605777301127e-15,643,0.179818,,175,179,183,187,191,191,195,195
+python,scipy_shgo,hartmann3,3,4,75,0.4192265211021651,229,0.033047,,105,173,177,177,181,181,185,185
+python,scipy_shgo,hartmann3,3,4,300,2.4913404672588513e-13,703,0.196882,,105,173,177,177,181,181,185,185
+python,scipy_shgo,hartmann3,3,5,75,0.6236484981920354,324,0.04228,,178,182,186,190,190,190,194,198
+python,scipy_shgo,hartmann3,3,5,300,4.884981308350689e-15,700,0.206344,,178,182,186,190,190,190,194,198
+python,scipy_shgo,hartmann3,3,6,75,0.5497011144499004,302,0.039381,,234,238,242,242,246,250,250,254
+python,scipy_shgo,hartmann3,3,6,300,2.353672812205332e-14,660,0.197028,,234,238,242,242,246,250,250,254
+python,scipy_shgo,hartmann3,3,7,75,0.16697550514493953,271,0.037675,,102,140,144,144,148,148,148,152
+python,scipy_shgo,hartmann3,3,7,300,6.217248937900877e-15,644,0.190944,,102,140,144,144,148,148,148,152
+python,scipy_shgo,hartmann3,3,8,75,0.34487627521778297,237,0.03318,,140,144,148,152,152,152,156,160
+python,scipy_shgo,hartmann3,3,8,300,7.105427357601002e-15,668,0.188503,,140,144,148,152,152,152,156,160
+python,scipy_shgo,hartmann3,3,9,75,0.6175007264801575,347,0.043244,,133,138,143,147,151,151,151,155
+python,scipy_shgo,hartmann3,3,9,300,7.105427357601002e-15,767,0.221291,,133,138,143,147,151,151,151,155
+python,scipy_shgo,hartmann3,3,10,75,0.7670272765431694,335,0.043266,,138,143,148,148,148,148,152,152
+python,scipy_shgo,hartmann3,3,10,300,3.552713678800501e-15,823,0.226217,,138,143,148,148,148,148,152,152
+python,scipy_shgo,hartmann3,3,11,75,0.30569287307619497,235,0.033411,,175,179,179,187,191,191,191,195
+python,scipy_shgo,hartmann3,3,11,300,7.549516567451064e-15,686,0.191186,,175,179,179,187,191,191,191,195
+python,scipy_shgo,hartmann3,3,12,75,0.36587796528708516,232,0.032923,,105,176,180,180,184,184,188,188
+python,scipy_shgo,hartmann3,3,12,300,1.1546319456101628e-14,708,0.194786,,105,176,180,180,184,184,188,188
+python,scipy_shgo,hartmann3,3,13,75,0.556724769182896,289,0.037622,,185,189,193,197,197,201,201,205
+python,scipy_shgo,hartmann3,3,13,300,3.1086244689504383e-15,675,0.202287,,185,189,193,197,197,201,201,205
+python,scipy_shgo,hartmann3,3,14,75,0.5209189399537366,278,0.037052,,214,218,222,222,226,226,226,230
+python,scipy_shgo,hartmann3,3,14,300,5.329070518200751e-15,610,0.245375,,214,218,222,222,226,226,226,230
+python,scipy_shgo,hartmann3,3,15,75,0.17845611435322084,277,0.037579,,102,140,144,144,148,148,148,152
+python,scipy_shgo,hartmann3,3,15,300,5.329070518200751e-15,689,0.197869,,102,140,144,144,148,148,148,152
+python,scipy_shgo,hartmann6,6,1,150,inf,0,1.7e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,1,600,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,2,150,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,2,600,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,3,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,3,600,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,4,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,4,600,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,5,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,5,600,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,6,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,6,600,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,7,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,7,600,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,8,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,8,600,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,9,150,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,9,600,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,10,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,10,600,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,11,150,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,11,600,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,12,150,inf,0,1.2e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,12,600,inf,0,1.7e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,13,150,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,13,600,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,14,150,inf,0,1.1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,14,600,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,15,150,inf,0,1e-05,RuntimeError: shgo skipped for dim > 5,,,,,,,,
+python,scipy_shgo,hartmann6,6,15,600,inf,0,9e-06,RuntimeError: shgo skipped for dim > 5,,,,,,,,

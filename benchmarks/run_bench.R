@@ -79,6 +79,7 @@ m_globalopt <- function(name, backend = "fortran") {
     } else if (name == "exkor") {
       per_coord <- max(6L, min(500L, budget %/% (2L * n)))
       exkor(lo, hi, per_coord, x0 = (lo + hi) / 2, objective = rec$wrapped,
+            model_evals = 6L, cycles = 2L, first_coord = 1L, acc = 1e-4,
             trace = FALSE)
     } else if (name == "lbayes") {
       lbayes(lo, hi, max(2L, budget %/% 8L), objective = rec$wrapped,
@@ -127,8 +128,49 @@ m_nloptr <- function(algorithm) {
   }
 }
 
+# Compound 1989 method (EXKOR/A2): LP-tau design -> ANAL2 eigenframe ->
+# EXKOR in the rotated frame, with the influence-ratio guard.  Mirrors
+# m_exkor_a2 in run_bench.py.
+m_exkor_a2 <- function(rec, lo, hi, budget, seed) {
+  n <- length(lo)
+  best_f <- Inf; best_x <- (lo + hi) / 2
+  f <- function(x) {
+    v <- rec$wrapped(x)
+    if (v < best_f) { best_f <<- v; best_x <<- x }
+    v
+  }
+
+  m <- max(10L, min(300L, budget %/% 10L))
+  pts <- t(vapply(seq_len(m), function(k) lo + lp_tau_point(k, n) * (hi - lo),
+                  numeric(n)))
+  vals <- apply(pts, 1, f)
+  a2 <- anal2(lo, hi, pts, vals)
+  rotate <- max(a2$influence_eigen) > 1.3 * max(a2$influence)
+  V <- a2$eigenvectors
+
+  half_budget <- (budget - m) %/% 2L
+  per_coord <- max(6L, min(500L, half_budget %/% (2L * n)))
+  exkor(lo, hi, per_coord, x0 = (lo + hi) / 2, objective = f,
+        model_evals = 6L, cycles = 2L, first_coord = 1L, acc = 1e-4,
+        trace = FALSE)
+
+  xc <- best_x
+  if (rotate) {
+    rad <- sqrt(sum(((hi - lo) / 2)^2)) / sqrt(n)
+    g <- function(y) f(pmin(pmax(xc + as.numeric(V %*% y), lo), hi))
+    exkor(rep(-rad, n), rep(rad, n), per_coord, x0 = rep(0, n), objective = g,
+          model_evals = 6L, cycles = 2L, first_coord = 1L, acc = 1e-4,
+          trace = FALSE)
+  } else {
+    exkor(lo, hi, per_coord, x0 = xc, objective = f,
+          model_evals = 6L, cycles = 2L, first_coord = 1L, acc = 1e-5,
+          trace = FALSE)
+  }
+}
+
 METHODS <- list(
   random_search = m_random_search,
+  globalopt_exkor_a2 = m_exkor_a2,
   globalopt_bayes1_fortran = m_globalopt("bayes1", "fortran"),
   globalopt_mig2_fortran = m_globalopt("mig2", "fortran"),
   globalopt_glopt_fortran = m_globalopt("glopt"),
@@ -164,9 +206,9 @@ writeLines(paste(header, collapse = ","), con)
 
 t_start <- proc.time()[[3]]
 n_done <- 0L
-for (pi in seq_len(nrow(prob_specs))) {
-  pname <- prob_specs$name[[pi]]
-  dim <- prob_specs$dim[[pi]]
+for (spec_i in seq_len(nrow(prob_specs))) {
+  pname <- prob_specs$name[[spec_i]]
+  dim <- prob_specs$dim[[spec_i]]
   for (inst in seq_len(instances)) {
     prob <- make_problem(pname, dim, inst)
     for (budget in budgets_for(dim)) {

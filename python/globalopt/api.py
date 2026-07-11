@@ -60,6 +60,15 @@ class OptResult:
 
 
 @dataclass
+class Anal2Result:
+    """Result of the original Fortran ANAL2 analysis of a design."""
+
+    influence: list[float]
+    influence_eigen: list[float]
+    eigenvectors: list[list[float]]  # eigenvectors[j] is direction j
+
+
+@dataclass
 class AnalResult:
     variable_order: list[int]
     influence_scores: list[float]
@@ -575,8 +584,33 @@ def anal1(a: Sequence[float], b: Sequence[float], samples: int, objective: Objec
     )
 
 
-def anal2(a: Sequence[float], b: Sequence[float], samples: int, objective: Objective = furasn) -> AnalResult:
-    """Variance-based variable screening (rust backend only)."""
+def anal2(a: Sequence[float], b: Sequence[float], samples: int = 0, objective: Objective = furasn,
+          *, points: Sequence[Sequence[float]] | None = None,
+          values: Sequence[float] | None = None,
+          backend: str = "rust") -> "AnalResult | Anal2Result":
+    """Variance-based variable screening.
+
+    backend="rust": evaluate `samples` LP-tau points of `objective`
+    (translation-backed; influence scores only).
+    backend="fortran": analyse a supplied design (`points`, `values`)
+    with the original ANAL2, returning per-axis influence, eigen-system
+    influence, and the estimated eigenvector frame.
+    """
+    if backend == "fortran":
+        if points is None or values is None:
+            raise ValueError("backend='fortran' requires points= and values=")
+        res = _native.anal2_fortran_py(
+            _floats(a, "a"), _floats(b, "b"),
+            [_floats(p, "point") for p in points],
+            _floats(values, "values"),
+        )
+        return Anal2Result(
+            influence=list(res["influence"]),
+            influence_eigen=list(res["influence_eigen"]),
+            eigenvectors=[list(col) for col in res["eigenvectors"]],
+        )
+    if backend != "rust":
+        raise ValueError(f"unknown backend: {backend!r}")
     return _wrap_anal_result(
         _native.anal2_py(_floats(a, "a"), _floats(b, "b"), samples, _rust_objective(objective))
     )

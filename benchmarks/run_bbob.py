@@ -62,8 +62,11 @@ def one_problem(args):
     func = p.id.split("_i")[0]  # bbob_f001_i02_d05 -> bbob_f001
     inst = int(p.id.split("_i")[1].split("_")[0])
 
+    sel = os.environ.get("BBOB_METHODS")
+    items = (METHODS.items() if not sel
+             else [(k, METHODS[k]) for k in sel.split(",")])
     rows = []
-    for mname, fn in METHODS.items():
+    for mname, fn in items:
         rec = Recorder(lambda x: p(x) - fopt, budget)
         err = ""
         t0 = time.perf_counter()

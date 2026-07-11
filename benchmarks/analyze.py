@@ -58,6 +58,7 @@ STYLE = {
     "nloptr_crs2": ("CRS2", OKABE["green"], "--"),
     "nloptr_isres": ("ISRES", OKABE["yellow"], "--"),
     "skopt_gp": ("GP-EI (skopt)", OKABE["green"], ":"),
+    "globalopt_exkor_a2": ("EXKOR/A2 (compound)", OKABE["orange"], "-."),
     "random_search": ("random search", OKABE["black"], ":"),
     "globalopt_bayes1_rust": ("BAYES1 (Rust)", OKABE["blue"], "-."),
     "globalopt_mig2_rust": ("MIG2 (Rust)", "#888888", "-."),
@@ -65,12 +66,12 @@ STYLE = {
 
 PY_PROFILE_METHODS = [
     "globalopt_bayes1_fortran", "globalopt_exkor_fortran",
-    "globalopt_lbayes_fortran", "scipy_dual_annealing", "nlopt_direct_l",
+    "globalopt_exkor_a2", "scipy_dual_annealing", "nlopt_direct_l",
     "cma", "random_search",
 ]
 R_PROFILE_METHODS = [
     "globalopt_bayes1_fortran", "globalopt_exkor_fortran",
-    "globalopt_lbayes_fortran", "gensa", "deoptim",
+    "globalopt_exkor_a2", "gensa", "deoptim",
     "nloptr_direct_l", "random_search",
 ]
 
@@ -92,9 +93,8 @@ TOL_COL = {1e-1: "hit_tol1", 1e-2: "hit_tol2", 1e-4: "hit_tol4",
 
 def load(lang: str) -> pd.DataFrame:
     df = pd.read_csv(RES / f"results_{lang}.csv")
-    # expensive baselines run by separate sharded drivers (e.g. skopt_gp)
-    extra = RES / f"results_{lang}_gp.csv"
-    if extra.exists():
+    # methods run by separate drivers (skopt_gp, exkor_a2, ...)
+    for extra in sorted(RES.glob(f"results_{lang}_*.csv")):
         df = pd.concat([df, pd.read_csv(extra)], ignore_index=True)
     df["error"] = df["error"].fillna("")
     return df
@@ -184,7 +184,7 @@ def fig_profiles(py: pd.DataFrame, r: pd.DataFrame, tol: float,
     if "skopt_gp" in set(py.method):
         methods_25 = ["skopt_gp", "globalopt_bayes1_fortran",
                       "globalopt_lbayes_fortran", "scipy_dual_annealing",
-                      "nlopt_direct_l", "cma", "random_search"]
+                      "nlopt_direct_l", "cma", "random_search"]  # GP tier
         d25 = py[py.dim <= 6]
         fig, ax = plt.subplots(figsize=(4.2, 3.1))
         n = data_profile(d25, methods_25, tol, 25, ax)
@@ -321,6 +321,8 @@ def summarize(py: pd.DataFrame, r: pd.DataFrame, gaps: pd.DataFrame):
         "py_bayes1_fortran_vs_rust": paired_mcnemar(py, "globalopt_bayes1_fortran", "globalopt_bayes1_rust"),
         "r_exkor_vs_direct_l": paired_mcnemar(r, "globalopt_exkor_fortran", "nloptr_direct_l"),
         "r_gensa_vs_exkor": paired_mcnemar(r, "gensa", "globalopt_exkor_fortran"),
+        "py_a2_vs_exkor": paired_mcnemar(py, "globalopt_exkor_a2", "globalopt_exkor_fortran"),
+        "r_a2_vs_exkor": paired_mcnemar(r, "globalopt_exkor_a2", "globalopt_exkor_fortran"),
     }
     for lang, df in (("python", py), ("r", r)):
         d = df[df.error == ""]
@@ -414,6 +416,7 @@ def summarize_bbob(bb: pd.DataFrame, out: dict):
         "exkor_vs_dual_annealing_100n": paired_mcnemar(bb, "globalopt_exkor_fortran", "scipy_dual_annealing"),
         "exkor_vs_direct_l_100n": paired_mcnemar(bb, "globalopt_exkor_fortran", "nlopt_direct_l"),
         "bayes1_fortran_vs_rust_100n": paired_mcnemar(bb, "globalopt_bayes1_fortran", "globalopt_bayes1_rust"),
+        "a2_vs_exkor_100n": paired_mcnemar(bb, "globalopt_exkor_a2", "globalopt_exkor_fortran"),
     }
 
 

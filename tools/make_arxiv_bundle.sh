@@ -10,6 +10,7 @@ cd "$(dirname "$0")/../paper"
 FIGS="perf_profile_python perf_profile_r data_profile_python \
 data_profile_python_25n ffi_decomposition perf_profile_bbob \
 data_profile_bbob_25n"
+# (keep in sync with \includegraphics in body.tex)
 
 rm -f main.aux main.bbl main.blg main.log main.out
 tectonic --keep-intermediates main.tex >/dev/null
@@ -17,7 +18,7 @@ tectonic --keep-intermediates main.tex >/dev/null
 rm -rf arxiv_bundle
 mkdir -p arxiv_bundle/fig arxiv_bundle/tab
 { echo '\pdfoutput=1'; cat main.tex; } > arxiv_bundle/main.tex
-cp main.bbl arxiv_bundle/
+cp main.bbl body.tex abstract.tex arxiv_bundle/
 cp tab/median_gap.tex arxiv_bundle/tab/
 for f in $FIGS; do cp "fig/$f.pdf" arxiv_bundle/fig/; done
 
@@ -30,6 +31,6 @@ sed -i '1d' "$vdir/main.tex"
 rm -rf "$vdir"
 
 tar czf globalopt_arxiv.tar.gz -C arxiv_bundle main.tex main.bbl \
-    tab/median_gap.tex fig
+    body.tex abstract.tex tab/median_gap.tex fig
 echo "wrote paper/globalopt_arxiv.tar.gz:"
 tar tzf globalopt_arxiv.tar.gz

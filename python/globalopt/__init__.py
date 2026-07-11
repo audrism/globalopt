@@ -1,6 +1,7 @@
 try:
-    from .api import AnalResult, BUILTIN_OBJECTIVES, HAS_FORTRAN, OptResult, bayes1, fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7, glopt, lbayes, lp_tau_point, lpmin, mig1, mig2, mivar4, anal1, anal2, exkor, extr, flexi, reqp, unt
+    from .api import Anal2Result, AnalResult, BUILTIN_OBJECTIVES, HAS_FORTRAN, OptResult, bayes1, fubran, fugold, fuhar3, fuhar6, furasn, fush10, fush5, fush7, glopt, lbayes, lp_tau_point, lpmin, mig1, mig2, mivar4, anal1, anal2, exkor, extr, flexi, reqp, unt
 except Exception:  # pragma: no cover - allows utility modules to be imported without compiled native extension
+    Anal2Result = None  # type: ignore[assignment]
     AnalResult = None  # type: ignore[assignment]
     BUILTIN_OBJECTIVES = ()  # type: ignore[assignment]
     HAS_FORTRAN = False
@@ -50,6 +51,7 @@ from .benchmarks import (
 )
 
 __all__ = [
+    "Anal2Result",
     "AnalResult",
     "BUILTIN_OBJECTIVES",
     "HAS_FORTRAN",

@@ -145,9 +145,11 @@ def m_scipy_direct(rec, lo, hi, budget, seed):
 
 
 def m_scipy_shgo(rec, lo, hi, budget, seed):
+    import numpy as np
     from scipy.optimize import shgo
 
-    del seed
+    # shgo's scrambled-Sobol sampling draws from the global RNG
+    np.random.seed(seed)
     if len(lo) > 5:
         # shgo's simplicial machinery grows explosively with dimension
         # (minutes and gigabytes per run at n=10); skip above n=5.
@@ -219,8 +221,74 @@ def m_skopt_gp(rec, lo, hi, budget, seed):
                     random_state=seed, verbose=False)
 
 
+def m_exkor_a2(rec, lo, hi, budget, seed):
+    """Compound 1989 method (EXKOR/A2), portfolio form: a 10% LP-tau
+    design feeds ANAL2's eigenframe estimate; 45% of the budget runs
+    plain EXKOR on the full box; the final 45% restarts EXKOR at the
+    incumbent, in the ANAL2 eigenframe when the dominant eigen-direction
+    explains markedly more influence than the best axis, otherwise in
+    the original axes.  All components are the original Fortran
+    routines; the recorder tracks the best point across all phases."""
+    import math
+
+    import globalopt
+
+    del seed  # deterministic
+    n = len(lo)
+    best = {"f": math.inf, "x": None}
+
+    def f(x):
+        v = rec(x)
+        if v < best["f"]:
+            best["f"] = v
+            best["x"] = list(x)
+        return v
+
+    # phase 0: LP-tau design for ANAL2 (10% of budget)
+    m = max(10, min(300, budget // 10))
+    pts = []
+    vals = []
+    for k in range(1, m + 1):
+        u = globalopt.lp_tau_point(k, n)
+        p = [lo[j] + u[j] * (hi[j] - lo[j]) for j in range(n)]
+        pts.append(p)
+        vals.append(f(p))
+    a2 = globalopt.anal2(lo, hi, points=pts, values=vals, backend="fortran")
+    rotate = max(a2.influence_eigen) > 1.3 * max(a2.influence)
+    V = a2.eigenvectors
+
+    # phase 1: plain EXKOR on the full box (45%)
+    half_budget = (budget - m) // 2
+    per_coord = max(6, min(500, half_budget // (2 * n) or 6))
+    x0 = [(a + b) / 2 for a, b in zip(lo, hi)]
+    globalopt.exkor(x0, lo, hi, objective=f, evals_per_coord=per_coord,
+                    model_evals=6, cycles=2, first_coord=1, acc=1e-4,
+                    backend="fortran")
+
+    # phase 2: restart at the incumbent (45%), rotated iff the guard fires
+    xc = best["x"]
+    per_coord = max(6, min(500, half_budget // (2 * n) or 6))
+    if rotate:
+        rad = math.sqrt(sum(((hi[j] - lo[j]) / 2) ** 2
+                            for j in range(n))) / math.sqrt(n)
+
+        def g(y):
+            x = [xc[i] + sum(y[j] * V[j][i] for j in range(n))
+                 for i in range(n)]
+            return f([min(max(x[i], lo[i]), hi[i]) for i in range(n)])
+
+        globalopt.exkor([0.0] * n, [-rad] * n, [rad] * n, objective=g,
+                        evals_per_coord=per_coord, model_evals=6, cycles=2,
+                        first_coord=1, acc=1e-4, backend="fortran")
+    else:
+        globalopt.exkor(xc, lo, hi, objective=f, evals_per_coord=per_coord,
+                        model_evals=6, cycles=2, first_coord=1, acc=1e-5,
+                        backend="fortran")
+
+
 METHODS = {
     "random_search": m_random_search,
+    "globalopt_exkor_a2": m_exkor_a2,
     "skopt_gp": m_skopt_gp,
     "globalopt_bayes1_fortran": _globalopt("bayes1", "fortran"),
     "globalopt_mig2_fortran": _globalopt("mig2", "fortran"),

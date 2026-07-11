@@ -69,6 +69,14 @@ r2 = globalopt.bayes1([-1, -1], [1, 1], 200, 20, lambda x: sum(v*v for v in x),
 - Re-implemented Shekel/Hartmann test functions in earlier R and Rust
   ports had transposed coefficient matrices — caught only by running the
   compiled original next to the rewrites.
+- Cross-language bitwise replication of the wrapped methods caught two
+  further defects: an uninitialized read in upstream EXKOR's 1-D engine
+  (fixed upstream in EXTR but not in the duplicated copy) and a harness
+  bug where `pi` as an R loop index shadowed the π constant.
+- A compound method (EXKOR/A2: LP-tau design + ANAL2 eigenframe + EXKOR
+  under an influence-ratio guard, all original 1989 components) repairs
+  4 of 5 of EXKOR's zero-solve families and improves its mean rank in
+  both ecosystems, at a statistical tie in aggregate solve rate.
 
 ## Reproducing the benchmark
 

@@ -234,6 +234,8 @@ C
       YL2=Y1(N3)
       YL3=Y1(N3+1)
       N8=0
+      XA=XL2
+      YA=YL2
   220 EE1=DBLE(YL1-YL2)
       EE2=DBLE(XL1-XL2)
       IF (DABS(EE1).LE.DM17.OR.DABS(EE2).LE.DM17) GO TO 300
