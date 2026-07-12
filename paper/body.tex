@@ -22,7 +22,7 @@ search \code{LPMIN}~\cite{sobol1967distribution}, local methods
 (\code{ANAL1}, \code{ANAL2}).
 
 This library is scientifically interesting today for two reasons. As
-\emph{methods}, its algorithms are extremely cheap
+\emph{methods}, its algorithms are extremely inexpensive
 surrogate-based optimizers: the \code{BAYES1} planner selects each new
 point by maximizing a closed-form acquisition over the full evaluation
 history at $O(\ell n)$ cost per candidate, in contrast to the $O(\ell^3)$
@@ -96,9 +96,9 @@ We did both, and instrumented the difference. This paper reports:
   influence-ratio guard. The compound repairs four of five of
   \code{EXKOR}'s total-failure families and improves its mean rank in
   both ecosystems while conceding a statistical tie in aggregate solve
-  rate---evidence that composition buys robustness rather than
+  rate---evidence that composition yields robustness rather than
   throughput, and that the 1989 interfaces' inability to warm-start
-  taxes any composition.
+  burdens any composition.
 \end{itemize}
 
 Beyond the specific library, the paper argues a methodological point for
@@ -438,7 +438,7 @@ original axis, in the original axes otherwise. The guard matters: an
 initial always-rotate variant repaired \code{EXKOR}'s failures on
 linearly coupled problems but destroyed separable ones (rotating a
 separable function makes it non-separable), and a fixed 25\% design
-fraction taxed every problem; we report the portfolio form above and
+fraction consumed budget on every problem; we report the portfolio form above and
 disclose that it is the second of two design iterations, both scripted
 in the repository.
 
@@ -542,15 +542,16 @@ protocol.
 \paragraph{Against modern Bayesian optimization.} On the tier where
 GP-based expected improvement is computationally feasible ($25n$
 budget, $n\le 6$; 360 instances), it solves 27.5\% of instances ---
-decisively ahead of its 1989 ancestors \code{BAYES1} (4.2\%, McNemar
+far ahead of its 1989 ancestors \code{BAYES1} (4.2\%, McNemar
 $p<10^{-21}$) and \code{LBAYES} (12.8\%, $p<10^{-10}$), and behind
 only dual annealing (35.8\%, $p=8\times10^{-4}$). Figure~\ref{fig:data}
 (right) shows the full data profile. The quality gap is what
 thirty-five years of surrogate and acquisition development bought; the
-price is solver-internal cost: median 77\,s per $25n$-budget run for
-GP-EI versus 9\,ms for \code{BAYES1} on the same tier --- nearly four
-orders of magnitude --- which is exactly the
-cheap-acquisition/many-evaluations trade the 1989 design targeted.
+counterweight is solver-internal time: median 77\,s per $25n$-budget
+run for GP-EI versus 9\,ms for \code{BAYES1} on the same tier ---
+nearly four orders of magnitude --- which is exactly the
+inexpensive-acquisition, many-evaluations regime the 1989 design
+targeted.
 
 \paragraph{The compound method.} \code{EXKOR/A2} answers its research
 question with a precise ``yes, for robustness --- no, for aggregate
@@ -560,7 +561,7 @@ Goldstein--Price $0\to27\%$, Rosenbrock $0\to13\%$; only Branin
 resists), cutting zero-solve families from five to two, and improves
 the all-problems mean rank in both ecosystems (6.3 versus 6.7 in
 Python; 4.2 versus 4.8 in R, where it overtakes plain \code{EXKOR} for
-third place). The price is paid exactly where the budget split
+third place). The concession appears exactly where the budget split
 predicts: on multimodal separable problems that plain \code{EXKOR}
 solved with its full budget (Rastrigin $-78$, six-hump camel $-60$,
 Schwefel $-24$ percentage points), for an aggregate solve rate of
@@ -568,9 +569,9 @@ Schwefel $-24$ percentage points), for an aggregate solve rate of
 statistical tie, identical in both languages). On BBOB it is nominally
 ahead (15.3\% versus 14.6\%, $p=0.32$). At the $25n$ tier its
 three-phase structure starves every phase and it should not be used.
-The composition also surfaces a structural tax: the 1989 interfaces
-cannot warm-start from prior evaluations, so each phase re-buys
-information the process already paid for.
+The composition also surfaces a structural burden: the 1989 interfaces
+cannot warm-start from prior evaluations, so each phase re-acquires
+information the process already holds.
 
 \paragraph{Deployed fidelity check.} The repaired Rust translation of
 \code{BAYES1} is statistically indistinguishable from the wrapped
@@ -584,7 +585,7 @@ uninitialized-variable defect of Section~\ref{sec:archaeology} and the
 harness defect discussed under threats.
 
 \paragraph{Baselines and sanity checks.} Random search solves 0.6\% of
-instances at $100n$; every method clears it decisively. Differential
+instances at $100n$; every method clears it comfortably. Differential
 evolution and GA suffer from population sizing at these budgets
 ($10n$--$50$ individuals leave few generations); we report them under
 the same budget-scaled defaults as everything else rather than tuning
@@ -608,7 +609,7 @@ The BBOB replication (Figure~\ref{fig:bbob}) separates what
 generalizes from what was structure-specific. Three findings
 replicate. Dual annealing remains the overall winner (35.5\% of
 instances at $100n$, ahead of SHGO at 30.0\%; 14.6\% at $25n$,
-$n\le6$). GP-EI remains decisively ahead of its 1989 ancestors at
+$n\le6$). GP-EI remains well ahead of its 1989 ancestors at
 tight budgets (9.9\% versus 5.3\% for \code{EXKOR/A2} and 5.0\% for
 \code{LBAYES}). And the repaired Rust translation of \code{BAYES1}
 remains statistically indistinguishable from the wrapped Fortran (23
@@ -637,8 +638,9 @@ compound \code{EXKOR/A2}, 2.5--2.7\,ms for \code{MIG2} and
 in Python, i.e.\ below the interpreter cost of the objective itself.
 NLopt methods run at 5--7\,ms, SciPy DIRECT at 7\,ms, while dual
 annealing (38\,ms), differential evolution (42\,ms), and CMA-ES
-(107\,ms) pay their library-internal overheads, and \code{BAYES1}
-(79\,ms Python, 102\,ms R) pays its $O(\ell^2 n)$ acquisition scan.
+(107\,ms) carry their library-internal overheads, and \code{BAYES1}
+(79\,ms Python, 102\,ms R) spends its time in the $O(\ell^2 n)$
+acquisition scan.
 Combined with Section~\ref{sec:fidelity}: for objectives costing under
 a microsecond the callback into the host language dominates everything
 else, and the built-in compiled-objective path of our packages removes
@@ -670,13 +672,13 @@ several methods a generation younger---while GenSA and dual annealing,
 which postdate the library by a decade or more, are the consistent
 overall winners. For practitioners the packages are thus more than a
 museum: on separable or near-separable problems \code{EXKOR} is a
-legitimately strong, extremely cheap choice, and the library's
+strong and extremely inexpensive choice, and the library's
 LP-$\tau$ designs and screening routines remain useful building
 blocks. Against its direct descendant, GP-based expected improvement,
 the comparison quantifies the field's progress cleanly: the modern
 acquisition solves $6.5\times$ as many tight-budget instances as
 \code{BAYES1} while spending nearly four orders of magnitude more time
-per run---each side of that trade still has its regime.
+per run---each side of that trade-off still has its regime.
 
 \paragraph{Scope: what the 1989 artifact cannot address.} Our
 experiments stop at $n=10$ continuous box-constrained problems because
@@ -696,7 +698,7 @@ objectives---the concerns of modern configuration search were visible
 in 1989, at 1989 scale.
 
 \paragraph{Recommendations.} The measured evidence supports concrete
-guidance. (1)~Under generous budgets on cheap continuous problems,
+guidance. (1)~Under generous budgets on inexpensive continuous objectives,
 dual annealing (Python) and GenSA (R) are the strongest defaults we
 measured; DIRECT-L is the strongest deterministic choice. (2)~Under
 tight budgets with expensive objectives, GP-based expected improvement
@@ -716,9 +718,9 @@ legacy control flow as load-bearing until proven otherwise.
 \paragraph{Toward compound algorithms.} The compound question is
 answered quantitatively in Section~\ref{sec:results}: composing the
 library's own parts (LP-$\tau$ + \code{ANAL2} + \code{EXKOR} under
-an influence-ratio guard) buys robustness --- four of five total-failure
-families repaired, better mean ranks in both ecosystems, a nominal edge
-on BBOB --- but not aggregate throughput, and the design iterations
+an influence-ratio guard) yields robustness --- four of five
+total-failure families repaired, better mean ranks in both ecosystems,
+a nominal edge on BBOB --- but not aggregate throughput, and the design iterations
 that led to the guard and the portfolio split are themselves evidence
 of how easily naive composition destroys the very structure a
 coordinate method exploits. A second composition we have not yet built
