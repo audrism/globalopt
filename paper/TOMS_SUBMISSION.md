@@ -8,7 +8,7 @@ Everything below is copy-paste-ready. Files referenced live in `paper/`.
 | --- | --- |
 | Main document (review PDF) | `main_toms.pdf` |
 | Source files (zip) | `globalopt_toms.zip` |
-| Supplementary / artifact | link to https://github.com/audrism/globalopt (or attach a repo snapshot tarball) |
+| Supplementary / artifact | `globalopt_replication.tar.gz` (build with `tools/make_replication_artifact.sh`; replication-only snapshot, no submission meta-files), plus the link https://github.com/audrism/globalopt in the data-availability statement |
 
 ## Form fields
 

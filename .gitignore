@@ -33,3 +33,10 @@ paper/main.log
 paper/main.blg
 paper/main.out
 ._bbob_problem_best_parameter.txt
+paper/main_toms.aux
+paper/main_toms.bbl
+paper/main_toms.blg
+paper/main_toms.log
+paper/main_toms.out
+paper/toms_package/
+globalopt_replication.tar.gz
