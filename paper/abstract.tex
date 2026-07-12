@@ -1,45 +1,21 @@
-The \emph{GlobalMinimum} (MINIMUM) library of Jonas Mockus (1989)
-implements some of the earliest practical Bayesian global-optimization
-methods---one-step Bayesian search over a simple surrogate, Wiener-process
-one-dimensional models, low-discrepancy designs, and clustering
-multistart---that anticipate the acquisition-function machinery of modern
-Bayesian optimization. We modernize this Fortran~66/77 codebase along the
-two standard routes: \emph{wrapping} the original compiled routines behind
-idiomatic R and Python packages, and \emph{translating} the core methods to
-Rust. The exercise yields three contributions. First, we release polished R
-and Python packages in which every optimizer runs the genuine 1989
-algorithms (with callback objectives, deterministic seeding, full
-evaluation traces, and input validation that retrofits memory- and
-I/O-safety onto COMMON-block Fortran), plus a Rust crate exposing both the
-translation and the wrapped original. Second, we dissect a
-translation-fidelity incident: the Rust port of the one-step Bayesian
-planner was up to $12\times$ slower than the wrapped Fortran---an artifact
-initially misattributed to foreign-function overhead. Controlled
-decomposition shows call overhead is microseconds and near-identical across
-backends; the real cause was two dropped pruning rules (a partial-distance
-early exit and a second-minimum bound) whose restoration recovers bitwise
-trajectory agreement \emph{and} speed parity. The same audit surfaced
-transposed coefficient matrices in re-implemented Shekel and Hartmann test
-functions---quiet correctness bugs of the rewrite route. Third, we
-benchmark the 1989 methods against modern global optimizers in both
-ecosystems (SciPy, NLopt, CMA-ES, Gaussian-process Bayesian
-optimization, GenSA, DEoptim, GA) on a COCO-style
-shifted-instance suite of 16~test families at dimensions 2--10 under
-matched evaluation budgets, using performance and data profiles, with
-external validation on the official BBOB/COCO suite; the wrapped
-methods replicate bitwise across the two ecosystems. On the classical
-test set the coordinate Wiener-model search EXKOR is competitive with
-the best modern methods (solving 56\% of instances to gap $10^{-2}$,
-statistically tied with SHGO, dual annealing, and GenSA); on BBOB,
-whose functions are predominantly non-separable and ill-conditioned,
-it drops to mid-field (15\% versus 36\% for dual annealing), cleanly
-quantifying how much of that strength is separability. At tight
-budgets modern annealing and Gaussian-process expected improvement
-dominate the 1989 acquisition machinery decisively---the latter at
-three orders of magnitude more solver-internal time per run. Finally,
-we ask whether the historic components compose: EXKOR/A2, which routes
-EXKOR through the eigenframe estimated by the library's own screening
-routine, repairs four of EXKOR's five zero-solve families and improves
-its mean rank in both ecosystems, at the cost of a statistical tie in
-aggregate solve rate---composition buys robustness, not throughput.
-All code, data, and scripts are available for replication.
+The GlobalMinimum library of Jonas Mockus (1989) implements some of the
+earliest practical Bayesian global-optimization methods. We modernize
+this Fortran 66/77 codebase along both standard routes: wrapping the
+original compiled routines behind R and Python packages, and
+translating the core methods to Rust. First, we release packages in
+which every optimizer runs the genuine 1989 algorithms, with callback
+objectives, deterministic seeding, evaluation traces, and validation
+that retrofits memory- and I/O-safety onto COMMON-block Fortran.
+Second, we dissect a translation-fidelity incident: the Rust port ran
+up to 12x slower than the wrapped Fortran---not from foreign-function
+overhead, but from two dropped pruning rules whose restoration recovers
+bitwise trajectory agreement and speed parity. The same audit surfaced
+transposed test-function matrices and an uninitialized read in the
+upstream code itself. Third, we benchmark the 1989 methods against
+modern optimizers in both ecosystems (78,000 runs, externally validated
+on BBOB/COCO, bitwise-replicated across languages): the coordinate
+Wiener-model search EXKOR statistically ties SHGO, dual annealing, and
+GenSA on classical test functions but drops to mid-field on BBOB's
+non-separable landscapes, and a compound method built from the
+library's own components trades aggregate solve rate for markedly
+fewer total failures. All code and data are available for replication.
