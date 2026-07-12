@@ -15,7 +15,7 @@ Everything below is copy-paste-ready. Files referenced live in `paper/`.
 - **Type**: Full paper (research contribution + software).
 - **Title**: Wrap or Rewrite? Reviving the 1989 GlobalMinimum Bayesian
   Global-Optimization Library for R and Python
-- **Abstract**: paste `abstract.txt` (1,833 chars, plain text).
+- **Abstract**: paste `abstract.txt` (197 words / 1,438 chars, plain text).
 - **Keywords**: global optimization; Bayesian optimization; legacy
   software; Fortran; Rust; translation fidelity; benchmarking;
   performance profiles
@@ -24,9 +24,7 @@ Everything below is copy-paste-ready. Files referenced live in `paper/`.
   software performance (500); Software and its engineering -> Software
   verification and validation (300).
 - **Author**: Audris Mockus, University of Tennessee, Knoxville;
-  audris@utk.edu; ORCID 0000-0002-6591-8226 (verify -- the ORCID in
-  main_toms.tex was carried from earlier metadata; correct it there too
-  if it is not yours).
+  audris@utk.edu; ORCID 0000-0002-7987-7598.
 - **Data/software availability statement**: All code, raw benchmark
   results, and every script producing a number or figure in the paper
   are available at https://github.com/audrism/globalopt. The upstream
@@ -93,7 +91,7 @@ Audris Mockus
 
 ## Before you click submit
 
-1. Verify the ORCID in `main_toms.tex` is yours.
+1. Submission type: **Regular Paper for RCR Initiative**.
 2. Decide arXiv timing (TOMS permits preprints; posting first gives a
    citable version).
 3. ScholarOne will ask for suggested reviewers/editors -- your call.
